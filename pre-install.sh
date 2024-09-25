@@ -45,6 +45,15 @@ then
     DEBIAN_FRONTEND=noninteractive apt upgrade -y
     DEBIAN_FRONTEND=noninteractive apt autoremove -y
 
+    apt install pipx -y
+
+    export PIPX_HOME="/home/$USER_TO_ADD/.local/pipx"
+    export PIPX_BIN_DIR="/home/$USER_TO_ADD/.local/bin"
+    pipx ensurepath --force 
+
+    # Installer Ansible-core avec pipx
+    pipx install ansible-core --force
+
     # Installer la collection Ansible 'community.general'
     ansible-galaxy collection install community.general
 
@@ -55,14 +64,7 @@ else
     
 fi
 
-apt install pipx -y
 
-export PIPX_HOME="/home/$USER_TO_ADD/.local/pipx"
-export PIPX_BIN_DIR="/home/$USER_TO_ADD/.local/bin"
-pipx ensurepath --force 
-
-# Installer Ansible-core avec pipx
-pipx install ansible-core --force
 
 ansible-playbook -vvv -i inventory.ini --ask-become main.yml -e "user_env=$USER_TO_ADD"
 
