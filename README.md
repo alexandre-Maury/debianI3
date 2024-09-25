@@ -14,7 +14,7 @@ Il utilise principalement Ansible pour l'automatisation, avec des rôles et des 
 2. `apt install git`
 3. `git clone https://github.com/alexandre-Maury/debianI3.git`
 4. `mv debianI3 /opt/debianI3`
-5. `cd /opt/debianI3 && bash -x pre-install.sh`
+5. `cd /opt/debianI3 && bash -x pre-install.sh -> Ce script ajoute l'utilisateur courant au groupe sudo (Optionnel)`
 6. `cd /opt/debianI3 && bash -x install.sh -> Ce script ne doit pas être exécuté en tant qu'utilisateur root.`
 
 ## Feuille de route

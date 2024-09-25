@@ -17,6 +17,12 @@ if [ "$(whoami)" == "root" ]; then
     exit 1  # Quitte le script avec un code d'erreur
 fi
 
+# Vérifier si l'utilisateur est dans le groupe sudo
+if ! groups "$(whoami)" | grep -q "\bsudo\b"; then
+    echo "Erreur : L'utilisateur $(whoami) n'est pas dans le groupe sudo."
+    exit 1  # Quitte le script avec un code d'erreur
+fi
+
 export PATH="$HOME/.local/bin:$PATH"
 
 # Vérification si Ansible est déjà installé
