@@ -1,5 +1,4 @@
-# Nom
-`debianI3`
+# `debianI3`
 
 ## Description
 Le projet est un ensemble de configurations et de scripts pour installer et configurer i3-gaps sur une base Debian.
