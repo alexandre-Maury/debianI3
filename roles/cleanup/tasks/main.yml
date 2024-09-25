@@ -1,8 +1,6 @@
----
-
 # roles/cleanup/task/main.yml
 
-
+---
 
 
 - name: Recharger le shell .bashrc
@@ -10,10 +8,278 @@
   args:
     executable: /bin/bash
   ignore_errors: yes
+  become: true  # Utilisation des privilèges sudo
 
 - name: Recharger le shell .zshrc
   shell: source {{ ansible_env.HOME }}/.zshrc
   args:
     executable: /bin/zsh
   ignore_errors: yes
+  become: true  # Utilisation des privilèges sudo
 
+- name: Créer le répertoire applications local
+  ansible.builtin.file:
+    path: ~/.local/share/applications/
+    state: directory
+    mode: '0755'
+  become: true  # Utilisation des privilèges sudo
+
+- name: Activer le service avahi-daemon
+  ansible.builtin.systemd:
+    name: avahi-daemon
+    enabled: true
+  become: true  # Utilisation des privilèges sudo
+
+- name: Activer le service acpid
+  ansible.builtin.systemd:
+    name: acpid
+    enabled: true
+  become: true  # Utilisation des privilèges sudo
+
+- name: Activer le service bluetooth
+  ansible.builtin.systemd:
+    name: bluetooth
+    enabled: true
+  become: true  # Utilisation des privilèges sudo
+
+- name: Copier le fichier pinta.desktop
+  ansible.builtin.copy:
+    src: /var/lib/snapd/desktop/applications/pinta_pinta.desktop
+    dest: ~/.local/share/applications/
+    remote_src: yes
+  become: true  # Utilisation des privilèges sudo
+
+- name: Copier le fichier authpass.desktop
+  ansible.builtin.copy:
+    src: /var/lib/snapd/desktop/applications/authpass_authpass.desktop
+    dest: ~/.local/share/applications/
+    remote_src: yes
+  become: true  # Utilisation des privilèges sudo
+
+- name: Mettre à jour les répertoires utilisateur
+  ansible.builtin.command: xdg-user-dirs-update
+  become: true  # Utilisation des privilèges sudo
+
+- name: Ajouter NOPASSWD pour UFW dans sudoers.d
+  ansible.builtin.copy:
+    dest: /etc/sudoers.d/ufw-status
+    content: 'user ALL=(ALL) NOPASSWD: /usr/sbin/ufw status'
+    mode: '0440'
+  become: true  # Utilisation des privilèges sudo
+
+- name: Activer le service lightdm
+  ansible.builtin.systemd:
+    name: lightdm
+    enabled: true
+  become: true  # Utilisation des privilèges sudo
+
+- name: Mettre à jour les paquets APT
+  ansible.builtin.apt:
+    update_cache: yes
+    upgrade: dist
+  become: true  # Utilisation des privilèges sudo
+
+- name: Supprimer les paquets inutilisés
+  ansible.builtin.apt:
+    autoremove: yes
+  become: true  # Utilisation des privilèges sudo
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+- name: Copier les scripts vers le répertoire personnel
+  ansible.builtin.copy:
+    src: scripts/
+    dest: ~/scripts/
+    remote_src: yes
+  become: true  # Utilisation des privilèges sudo
+
+- name: Copier les fonds d'écran vers le répertoire de configuration
+  ansible.builtin.copy:
+    src: config/backgrounds/
+    dest: ~/.config/
+    remote_src: yes
+  become: true  # Utilisation des privilèges sudo
+  
+- name: Copier les configurations du gestionnaire de fenêtres i3
+  ansible.builtin.copy:
+    src: config/i3/
+    dest: ~/.config/
+    remote_src: yes
+  become: true  # Utilisation des privilèges sudo
+  
+- name: Copier les configurations d'i3blocks
+  ansible.builtin.copy:
+    src: config/i3blocks/
+    dest: ~/.config/
+    remote_src: yes
+  become: true  # Utilisation des privilèges sudo
+  
+- name: Copier la configuration du daemon de notifications Dunst
+  ansible.builtin.copy:
+    src: config/dunst/
+    dest: ~/.config/
+    remote_src: yes
+  become: true  # Utilisation des privilèges sudo
+  
+- name: Copier la configuration du lanceur d'applications Rofi
+  ansible.builtin.copy:
+    src: config/rofi/
+    dest: ~/.config/
+    remote_src: yes
+  become: true  # Utilisation des privilèges sudo
+  
+- name: Copier les configurations du navigateur Chromium
+  ansible.builtin.copy:
+    src: config/chromium/
+    dest: ~/.config/
+    remote_src: yes
+  become: true  # Utilisation des privilèges sudo
+  
+- name: Copier les fichiers de configuration de Mozilla
+  ansible.builtin.copy:
+    src: .mozilla/
+    dest: ~/
+    remote_src: yes
+  become: true  # Utilisation des privilèges sudo
+  
+- name: Copier les configurations du navigateur Brave
+  ansible.builtin.copy:
+    src: config/Brave-Browser/
+    dest: ~/.config/
+    remote_src: yes
+  become: true  # Utilisation des privilèges sudo
+  
+- name: Copier les configurations du terminal Terminator
+  ansible.builtin.copy:
+    src: config/terminator/
+    dest: ~/.config/
+    remote_src: yes
+  become: true  # Utilisation des privilèges sudo
+  
+- name: Copier les configurations du terminal Konsole
+  ansible.builtin.copy:
+    src: config/konsole/
+    dest: ~/.local/share/
+    remote_src: yes
+  become: true  # Utilisation des privilèges sudo
+  
+- name: Copier la configuration de Konsolerc
+  ansible.builtin.copy:
+    src: config/konsolerc
+    dest: ~/.config/
+    remote_src: yes
+  become: true  # Utilisation des privilèges sudo
+  
+- name: Copier les thèmes XFCE4
+  ansible.builtin.copy:
+    src: config/xfce4/
+    dest: ~/.config/
+    remote_src: yes
+  become: true  # Utilisation des privilèges sudo
+  
+- name: Copier les thèmes GTK 3.0
+  ansible.builtin.copy:
+    src: config/gtk-3.0/
+    dest: ~/.config/
+    remote_src: yes
+  become: true  # Utilisation des privilèges sudo
+  
+- name: Copier les thèmes GTK 4.0
+  ansible.builtin.copy:
+    src: config/gtk-4.0/
+    dest: ~/.config/
+    remote_src: yes
+  become: true  # Utilisation des privilèges sudo
+  
+- name: Copier la configuration de QtProject
+  ansible.builtin.copy:
+    src: config/QtProject.conf
+    dest: ~/.config/
+    remote_src: yes
+  become: true  # Utilisation des privilèges sudo
+  
+- name: Copier le thème Sweet-Dark-v40 vers les thèmes système
+  ansible.builtin.copy:
+    src: config/Sweet-Dark-v40/
+    dest: /usr/share/themes/
+    remote_src: yes
+  become: true  # Utilisation des privilèges sudo
+  
+- name: Copier la configuration de CopyQ
+  ansible.builtin.copy:
+    src: config/copyq/
+    dest: ~/.config/
+    remote_src: yes
+  become: true  # Utilisation des privilèges sudo
+  
+- name: Copier la configuration de Galculator
+  ansible.builtin.copy:
+    src: config/galculator/
+    dest: ~/.config/
+    remote_src: yes
+  become: true  # Utilisation des privilèges sudo
+  
+- name: Copier la configuration de Kcalcrc
+  ansible.builtin.copy:
+    src: config/kcalcrc
+    dest: ~/.config/
+    remote_src: yes
+  become: true  # Utilisation des privilèges sudo
+  
+# Uncomment these if you want to import editor configs
+# - name: Copier les configurations de Sublime Text
+#   ansible.builtin.copy:
+#     src: config/sublime-text/
+#     dest: ~/.config/
+#     remote_src: yes
+
+# - name: Copier les configurations de Brackets
+#   ansible.builtin.copy:
+#     src: config/Brackets/
+#     dest: ~/.config/
+#     remote_src: yes
+
+- name: Rendre les scripts exécutables
+  ansible.builtin.file:
+    path: "{{ item }}"
+    mode: '0755'
+  loop:
+    - ~/.config/i3/autostart.sh
+    - ~/.config/i3blocks/cpu/cpu_info.sh
+    - ~/.config/i3blocks/battery/battery_info.sh
+    - ~/.config/i3blocks/weather/weather.sh
+    - ~/.config/i3blocks/weather/weather.py
+    - ~/scripts/*.sh
+  become: true  # Utilisation des privilèges sudo
+  

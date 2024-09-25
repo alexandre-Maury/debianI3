@@ -20,6 +20,9 @@ LAZYVIM_REPO: "https://github.com/LazyVim/starter"
 FONTS_REPO_JETBRAINSMONO: "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/JetBrainsMono.tar.xz"
 FONTS_REPO_IOSEVKA: "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/Iosevka.tar.xz"
 
+ICONS_REPO_CANDY: "https://github.com/EliverLara/candy-icons"
+
+
 
 PACKER_REPO: "https://github.com/wbthomason/packer.nvim"
 

@@ -3,3 +3,8 @@
 ---
 
 
+- include_tasks: install_librewolf.yml
+- include_tasks: install_bravebrowser.yml
+- include_tasks: install_anydesk.yml
+- include_tasks: install_signal.yml
+- include_tasks: install_nordvpn.yml

@@ -48,8 +48,29 @@
     - {src: '{{ SOURCE_DIR }}/misc/dotfiles/fonts/MaterialIcon/materialdesignicons-webfont.woff', dest: '$HOME/.local/share/fonts'}
     - {src: '{{ SOURCE_DIR }}/misc/dotfiles/fonts/MaterialIcon/materialdesignicons-webfont.woff2', dest: '$HOME/.local/share/fonts'}
 
+- name: Cloner le dépôt candy-icons
+  ansible.builtin.git:
+    repo: "{{ ICONS_REPO_CANDY }}"
+    dest: "/usr/share/icons/candy-icons"
+    update: yes  # Met à jour le dépôt s'il existe déjà
+  become: true  # Utilisation des privilèges sudo
 
-- name: Rafraîchir le cache des polices
+- name: Créer le fichier index.theme
+  ansible.builtin.copy:
+    dest: "/usr/share/icons/candy-icons/index.theme"
+    content: |
+      [Icon Theme]
+      Name=Candy Icons
+      Comment=Beautiful candy icons
+      Inherits=Default
+    mode: '0644'
+
+- name: Mettre à jour le cache des icônes
+  ansible.builtin.command: gtk-update-icon-cache "/usr/share/icons/candy-icons"
+  args:
+    removes: "/usr/share/icons/candy-icons/index.theme"
+
+- name: Mettre à jour le cache des polices
   ansible.builtin.command:
     cmd: fc-cache -fv
   become: true

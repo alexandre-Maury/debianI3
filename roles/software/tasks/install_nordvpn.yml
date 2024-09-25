@@ -1,0 +1,21 @@
+# roles/software/tasks/install_nordvpn.yml
+
+---
+
+- name: Télécharger le script d'installation de NordVPN
+  ansible.builtin.get_url:
+    url: https://downloads.nordcdn.com/apps/linux/install.sh
+    dest: /tmp/nordvpn_install.sh
+    mode: '0755'
+  become: true  # Utilisation des privilèges sudo
+
+- name: Exécuter le script d'installation de NordVPN
+  ansible.builtin.shell: sh /tmp/nordvpn_install.sh
+  become: true  # Utilisation des privilèges sudo
+
+- name: Ajouter l'utilisateur actuel au groupe nordvpn
+  ansible.builtin.user:
+    name: "{{ lookup('env', 'USER') }}"
+    groups: nordvpn
+    append: yes
+  become: true  # Utilisation des privilèges sudo

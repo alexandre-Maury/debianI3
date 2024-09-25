@@ -2,25 +2,129 @@
 
 ---
 
+  # mkdir ~/.local/share/applications/
+  # sudo systemctl enable avahi-daemon
+  # sudo systemctl enable acpid
+  # sudo systemctl enable bluetooth
+  # sudo cp /var/lib/snapd/desktop/applications/pinta_pinta.desktop ~/.local/share/applications/
+  # sudo cp /var/lib/snapd/desktop/applications/authpass_authpass.desktop ~/.local/share/applications/
+  # xdg-user-dirs-update
+  # git clone https://github.com/EliverLara/candy-icons
+  # echo 'user ALL=(ALL) NOPASSWD: /usr/sbin/ufw status' | sudo tee /etc/sudoers.d/ufw-status
+  # sudo chmod 0440 /etc/sudoers.d/ufw-status
+  # sudo systemctl enable lightdm
+  # sudo apt-get update && sudo apt-get upgrade -y
+  # sudo apt-get auto-remove -y
 
-base_cli_deps:
-  # - build-essential 
-  - git-all 
-  # - python3
-  # - python3-dev
-  # - python3-pip
-  # - meson
-  # - ninja-build
-  # - curl
-  # - rofi
-  # - dunst
-  # - imagemagick
-  # - feh
-  # - gnome-terminal
-  # - network-manager
-  # - picom
-  # - arandr
-  # - mpd
+
 
 base_cli_pipx:
   - pywal
+
+base_cli_snaps:
+  - core
+  - pinta
+  - authpass
+
+
+base_cli_deps:
+  - git
+  - network-manager-gnome # network manager
+  - ufw # firewall -> sudo ufw enable
+  - lxappearance # appearance managers
+  - picom # appearance managers
+  - thunar # file managers - krusader, nautilus
+  - fzf # terminal file search
+  - exa # terminal list directory (on steroids)
+  - xfce4-settings # settings interface
+  - xfce4-power-manager # settings interface
+  - dialog # Network File Tools/System Events 
+  - mtools # Network File Tools/System Events 
+  - dosfstools # Network File Tools/System Events 
+  - avahi-daemon # Network File Tools/System Events  
+  - acpi # Network File Tools/System Events 
+  - acpid # Network File Tools/System Events - 
+  - gvfs-backends # Network File Tools/System Events
+  - terminator # terminal emulators - kitty
+  - konsole # terminal emulators
+  - tmux # terminal multiplexer
+  - procinfo # hardware info
+  - hwinfo # hardware info
+  - hdparm # hardware info
+  - lm-sensors # hardware info
+  - psensor # hardware info
+  - pulseaudio # audio
+  - alsa-utils # audio
+  - pavucontrol # audio
+  - volumeicon-alsa # audio
+  - pulseeffects # audio
+  - neofetch # terminal apps
+  - htop # terminal apps
+  - glances # terminal apps
+  - figlet # terminal apps
+  - calc # terminal apps
+  - cmatrix # # cmatrix donne un terminal de code de chute de matrice mais fait planter i3 dans la vm - fonctionne bien sur le système hôte
+  - gnome-system-monitor # gui system monitor
+  - software-properties-common
+  - apt-transport-https
+  - curl
+  - ca-certificates
+  - bluez # bluetooth support
+  - blueman # bluetooth support 
+  - galculator # calculator
+  - firefox-esr # non-privacy browsers
+  - chromium # non-privacy browsers
+  - feh # background / image manager
+  - gthumb # image viewer
+  - rofi # app launcher ($mod + Space)
+  - numlockx # auto numlock
+  - dunst # notification daemon
+  - libnotify-bin # notification daemon
+  - yad # user dialog
+  - snapd # snap store (Supports installation of containerized apps)
+  - geany # text editor
+  - cockpit # system management - admin web console
+  - arandr # display settings
+  - vlc # media player
+  - ttf-mscorefonts-installer # non free codecs (NOT FOSS)
+  - libavcodec-extra # non free codecs (NOT FOSS)
+  - gstreamer1.0-libav # non free codecs (NOT FOSS)
+  - gstreamer1.0-plugins-ugly # non free codecs (NOT FOSS)
+  - gnome-disk-utility # disk utilities
+  - gsmartcontrol # disk utilities
+  - gparted # disk utilities
+  - copyq # clipboard manager
+  - zim # notes manager
+  - thunderbird # email client
+  - maim # screenshots
+  - xclip # screenshots
+  - xdotool # screenshots
+  - jq # screenshots
+  - tar # zip utilities
+  - gzip # zip utilities
+  - timeshift # backup manager
+  - dirmngr
+  - mc # ftp client (midnight commander)
+  - kleopatra # gpg encryption manager
+  - keepass2 # password manager
+  - libpam-google-authenticator # Google Authenticator (NOT FOSS)
+  - transmission # torrent client
+  - simplescreenrecorder # screen recorder
+  - ffmpeg # video converter
+  - tldr # simplified man pages
+  - libgtk-4-dev
+  - fonts-noto-color-emoji 
+  - lightdm # display manager
+  - lightdm-gtk-greeter # display manager
+  - lightdm-gtk-greeter-settings # display manager
+  - python3
+  - python3-dev
+  - meson
+  - ninja-build
+  - i3 # window manager
+  - i3blocks # window manager
+  - acpi-support # window manager
+
+
+
+

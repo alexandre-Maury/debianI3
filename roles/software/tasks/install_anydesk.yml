@@ -1,0 +1,28 @@
+# roles/software/tasks/install_anydesk.yml
+
+---
+
+- name: Télécharger et ajouter la clé GPG d'AnyDesk
+  ansible.builtin.apt_key:
+    url: https://keys.anydesk.com/repos/DEB-GPG-KEY
+    state: present
+    keyring: /usr/share/keyrings/anydesk.gpg
+  become: true  # Utilisation des privilèges sudo
+
+- name: Ajouter le dépôt AnyDesk
+  ansible.builtin.apt_repository:
+    repo: 'deb [signed-by=/usr/share/keyrings/anydesk.gpg] http://deb.anydesk.com/ all main'
+    state: present
+    filename: 'anydesk.list'
+  become: true  # Utilisation des privilèges sudo
+
+- name: Mettre à jour les listes de paquets
+  ansible.builtin.apt:
+    update_cache: yes
+  become: true  # Utilisation des privilèges sudo
+
+- name: Installer AnyDesk
+  ansible.builtin.apt:
+    name: anydesk
+    state: present
+  become: true  # Utilisation des privilèges sudo

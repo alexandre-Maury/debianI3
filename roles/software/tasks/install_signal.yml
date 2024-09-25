@@ -1,0 +1,28 @@
+# roles/software/tasks/install_signal.yml
+
+---
+
+- name: Télécharger et ajouter la clé GPG de Signal Desktop
+  ansible.builtin.apt_key:
+    url: https://updates.signal.org/desktop/apt/keys.asc
+    state: present
+    keyring: /usr/share/keyrings/signal-desktop-keyring.gpg
+  become: true  # Utilisation des privilèges sudo
+
+- name: Ajouter le dépôt Signal Desktop
+  ansible.builtin.apt_repository:
+    repo: 'deb [arch=amd64 signed-by=/usr/share/keyrings/signal-desktop-keyring.gpg] https://updates.signal.org/desktop/apt xenial main'
+    state: present
+    filename: 'signal-xenial.list'
+  become: true  # Utilisation des privilèges sudo
+
+- name: Mettre à jour les listes de paquets
+  ansible.builtin.apt:
+    update_cache: yes
+  become: true  # Utilisation des privilèges sudo
+
+- name: Installer Signal Desktop
+  ansible.builtin.apt:
+    name: signal-desktop
+    state: present
+  become: true  # Utilisation des privilèges sudo

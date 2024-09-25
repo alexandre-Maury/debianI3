@@ -1,0 +1,44 @@
+# roles/software/tasks/install_librewolf.yml
+
+---
+
+- name: Déterminer la distribution
+  ansible.builtin.shell: |
+    if echo "bookworm" | grep -q "$(lsb_release -sc)"; then
+      echo "$(lsb_release -sc)"
+    else
+      echo "focal"
+    fi
+  register: distro_result
+  become: true  # Utilisation des privilèges sudo
+
+- name: Afficher la distribution utilisée
+  ansible.builtin.debug:
+    msg: "Distribution détectée : {{ distro_result.stdout }}"
+  become: true  # Utilisation des privilèges sudo
+
+- name: Télécharger et ajouter la clé GPG de LibreWolf
+  ansible.builtin.apt_key:
+    url: https://deb.librewolf.net/keyring.gpg
+    state: present
+    keyring: /usr/share/keyrings/librewolf.gpg
+  become: true  # Utilisation des privilèges sudo
+
+- name: Ajouter le dépôt de LibreWolf
+  ansible.builtin.apt_repository:
+    repo: |
+      deb [signed-by=/usr/share/keyrings/librewolf.gpg] https://deb.librewolf.net {{ distro_result.stdout }} main
+    state: present
+    filename: 'librewolf.sources'
+  become: true  # Utilisation des privilèges sudo
+
+- name: Mettre à jour les listes de paquets
+  ansible.builtin.apt:
+    update_cache: yes
+  become: true  # Utilisation des privilèges sudo
+
+- name: Installer LibreWolf
+  ansible.builtin.apt:
+    name: librewolf
+    state: present
+  become: true  # Utilisation des privilèges sudo
