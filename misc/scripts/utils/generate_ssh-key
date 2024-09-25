@@ -1,0 +1,73 @@
+#!/bin/bash
+
+set -uo pipefail
+IFS=$'\n\t'
+
+# Nom et emplacement par défaut de la clé SSH
+KEY_NAME="$HOME/.ssh/private_key"
+LOG_FILE="$HOME/Log/ssh_key_setup.log"  # Fichier de log pour stocker les résultats
+
+mkdir -p "$HOME/Log"
+
+# Fonction pour écrire dans le fichier de log
+log_message() {
+    local message="$1"
+    echo "$(date +"%Y-%m-%d %H:%M:%S") - $message" >> "$LOG_FILE"
+}
+
+echo -e "\033[0;33m Début de la configuration SSH \033[0m"
+
+# Demande à l'utilisateur de saisir son email s'il n'est pas déjà défini
+echo -e "\033[0;33m Entrez votre adresse email : \033[0m" # Jaune
+read EMAIL
+
+log_message "Adresse email utilisée : $EMAIL"
+
+# Vérifier si une clé SSH existe déjà
+if [ -f "$KEY_NAME" ]; then
+    
+    echo -e "\033[0;31m Une clé SSH existe déjà à l'emplacement $KEY_NAME. \033[0m" # Rouge
+    echo -e "\033[0;33m Voulez-vous écraser cette clé ? (o/n) : \033[0m" overwrite_choice # Jaune
+    read overwrite_choice
+
+    if [[ "$overwrite_choice" != [OoYy]* ]]; then
+        log_message "L'utilisateur a choisi d'écraser la clé existante."
+        return
+    fi
+
+
+fi
+
+# Générer la clé SSH
+ssh-keygen -t rsa -b 4096 -C "$EMAIL" -f "$KEY_NAME" -N ""
+
+# S'assurer que les permissions de la clé privée sont correctes
+chmod 600 "$KEY_NAME"
+log_message "Permissions de la clé privée définies sur 600."
+
+# Démarrer l'agent SSH et ajouter la clé privée à l'agent
+eval "$(ssh-agent -s)"
+ssh-add "$KEY_NAME"
+
+# Copier la clé publique dans le presse-papiers (Linux)
+if command -v xclip &> /dev/null; then
+    xclip -sel clip < "${KEY_NAME}.pub"
+    echo -e "\033[0;32m La clé SSH publique a été copiée dans le presse-papiers (xclip). \033[0m" # Vert
+    
+else
+    echo -e "\033[0;33m Installez xclip pour copier automatiquement dans le presse-papiers. \033[0m" # Jaune
+    echo -e "\033[0;32m Voici votre clé publique SSH : \033[0m" # Vert
+    cat "${KEY_NAME}.pub"
+fi
+
+# Inscrire la clé publique dans le fichier de log
+echo -e "\033[0;31m Penser à la supprimer du fichier log pour plus de sécurité. \033[0m" # Rouge
+log_message "Clé SSH publique générée :"
+cat "${KEY_NAME}.pub" >> "$LOG_FILE"
+
+# Finalisation
+echo -e "\033[0;32m Ajoutez cette clé à votre compte GitHub/GitLab ou à tout autre service utilisant SSH. \033[0m" # Vert
+
+
+
+

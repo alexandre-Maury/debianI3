@@ -1,0 +1,239 @@
+
+# Utiliser la touche Windows comme modificateur
+set $mod Mod4 
+
+# Police pour les titres des fenêtres. Sera également utilisée par la barre à moins qu'une police différente
+# ne soit utilisée dans le bloc bar {} ci-dessous.
+font pango:monospace 8
+
+# AJOUT :
+# Met à jour i3status pour refléter les changements de volume
+set $refresh_i3status killall -SIGUSR1 i3status
+# Augmente le volume de 1% et actualise l'affichage d'i3status
+bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +1% && $refresh_i3status
+# Diminue le volume de 1% et actualise l'affichage d'i3status
+bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -1% && $refresh_i3status
+# Bascule le mute du son et actualise l'affichage d'i3status
+bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle && $refresh_i3status
+# Bascule le mute du microphone et actualise l'affichage d'i3status
+bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle && $refresh_i3status
+
+# augmenter le volume sonore
+# bindsym $mod+period exec --no-startup-id pactl set-sink-volume 1 +5%
+# diminuer le volume sonore
+# bindsym $mod+comma exec --no-startup-id pactl set-sink-volume 1 -5%
+# couper le son
+# bindsym $mod+p exec --no-startup-id pactl set-sink-mute 1 toggle
+
+
+# Utilisez la souris + $mod pour faire glisser les fenêtres flottantes à leur position désirée
+floating_modifier $mod
+
+# AJOUT :
+# Ouvrir un terminal -> Changement du terminal
+bindsym $mod+Return exec gnome-terminal
+# Ouvrir Firefox
+bindsym $mod+b exec firefox
+# Quitter une fenêtre
+bindsym $mod+Shift+q kill
+# Lancer le centre de contrôle GNOME
+bindsym $mod+Shift+p exec gnome-control-center
+
+
+# démarrer dmenu (un lanceur d'applications)
+# bindsym $mod+d exec dmenu_run
+
+# AJOUT :
+bindsym $mod+d exec rofi -modi drun -show drun -config ~/.config/rofi/rofidmenu.rasi  # Raccourci pour ouvrir le menu d'applications
+bindsym $mod+t exec rofi -show window -config ~/.config/rofi/rofidmenu.rasi  # Raccourci pour ouvrir le menu des fenêtres
+
+# AJOUT :
+# Utilisez ces touches pour le focus, les mouvements et redimensionner dans les directions lorsque les flèches ne sont pas pratiques
+set $up k
+set $down j
+set $left h
+set $right l
+
+# changer le focus
+bindsym $mod+$left focus left
+bindsym $mod+$down focus down
+bindsym $mod+$up focus up
+bindsym $mod+$right focus right
+
+# déplacer la fenêtre sélectionnée
+bindsym $mod+Shift+$left move left
+bindsym $mod+Shift+$down move down
+bindsym $mod+Shift+$up move up
+bindsym $mod+Shift+$right move right
+
+# diviser en orientation horizontale
+bindsym $mod+x split h
+
+# diviser en orientation verticale
+bindsym $mod+y split v
+
+# entrer en mode plein écran pour le conteneur sélectionné
+bindsym $mod+f fullscreen toggle
+
+# changer la disposition des conteneurs (empilé, onglets, basculer division)
+bindsym $mod+s layout stacking
+bindsym $mod+w layout tabbed
+bindsym $mod+e layout toggle split
+
+# basculer entre le carrelage et le flottant
+bindsym $mod+Shift+space floating toggle
+
+# changer le focus entre les fenêtres carrelées et flottantes
+bindsym $mod+space focus mode_toggle
+
+# focaliser le conteneur parent
+bindsym $mod+a focus parent
+
+# Définir des noms pour les espaces de travail par défaut
+set $ws1 "1"
+set $ws2 "2"
+set $ws3 "3"
+set $ws4 "4"
+set $ws5 "5"
+set $ws6 "6"
+set $ws7 "7"
+set $ws8 "8"
+set $ws9 "9"
+set $ws10 "10"
+
+# basculer vers le bureau
+bindsym $mod+1 workspace number $ws1
+bindsym $mod+2 workspace number $ws2
+bindsym $mod+3 workspace number $ws3
+bindsym $mod+4 workspace number $ws4
+bindsym $mod+5 workspace number $ws5
+bindsym $mod+6 workspace number $ws6
+bindsym $mod+7 workspace number $ws7
+bindsym $mod+8 workspace number $ws8
+bindsym $mod+9 workspace number $ws9
+bindsym $mod+0 workspace number $ws10
+
+# déplacer le conteneur sélectionné vers le bureau
+bindsym $mod+Shift+1 move container to workspace number $ws1
+bindsym $mod+Shift+2 move container to workspace number $ws2
+bindsym $mod+Shift+3 move container to workspace number $ws3
+bindsym $mod+Shift+4 move container to workspace number $ws4
+bindsym $mod+Shift+5 move container to workspace number $ws5
+bindsym $mod+Shift+6 move container to workspace number $ws6
+bindsym $mod+Shift+7 move container to workspace number $ws7
+bindsym $mod+Shift+8 move container to workspace number $ws8
+bindsym $mod+Shift+9 move container to workspace number $ws9
+bindsym $mod+Shift+0 move container to workspace number $ws10
+
+# Basculer entre les espaces de travail : $mod + Ctrl + Page Précédente pour aller au prochain espace de travail, et $mod + Ctrl + Page Suivante pour revenir au précédent.
+bindsym $mod+Control+Prior workspace next
+bindsym $mod+Control+Next workspace prev
+
+# Mode pour redimensionner les fenêtres (il est également possible d'utiliser la souris pour cela)
+mode "resize" {
+        bindsym $left       resize shrink width 10 px or 10 ppt
+        bindsym $down       resize grow height 10 px or 10 ppt
+        bindsym $up         resize shrink height 10 px or 10 ppt
+        bindsym $right      resize grow width 10 px or 10 ppt
+
+        # same bindings, but for the arrow keys
+        bindsym Left        resize shrink width 10 px or 10 ppt
+        bindsym Down        resize grow height 10 px or 10 ppt
+        bindsym Up          resize shrink height 10 px or 10 ppt
+        bindsym Right       resize grow width 10 px or 10 ppt
+        
+        bindsym Shift+$left   resize shrink width 1 px or 1 ppt
+        bindsym Shift+$down   resize grow height 1 px or 1 ppt
+        bindsym Shift+$up     resize shrink height 1 px or 1 ppt
+        bindsym Shift+$right  resize grow width 1 px or 1 ppt
+
+        # back to normal: Enter or Escape or $mod+r
+        bindsym Return mode "default"
+        bindsym Escape mode "default"
+        bindsym $mod+r mode "default"
+}
+bindsym $mod+r mode "resize"
+
+# recharger le fichier de configuration
+bindsym $mod+Shift+c reload
+
+# redémarrer i3 sur place (préserve votre mise en page/session, peut être utilisé pour mettre à jour i3)
+bindsym $mod+Shift+r restart
+
+# quitter i3 (vous déconnecte de votre session X)
+bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'Tu pars mon pote ?' -b 'ouais, laisse-moi sortir' 'i3-msg exit'"
+
+# Pas de titre dans les bordures de fenêtres
+font pango:DejaVu Sans Mono 0
+
+# Épaisseur de la bordure des nouvelles fenêtres
+new_window pixel 3
+
+# Couleurs des bordures et arrière-plans pour les fenêtres
+# Fenêtre actuellement focalisée
+client.focused          #ff6ac1 #285577 #ffffff #2e9ef4   #ff6ac1
+# Fenêtre inactivée mais pas focalisée
+client.focused_inactive #333333 #5f676a #ffffff #484e50   #5f676a
+# Fenêtre non focalisée
+client.unfocused        #333333 #222222 #888888 #292d2e   #222222
+# Fenêtre urgente (par exemple, notifications)
+client.urgent           #2f343a #900000 #ffffff #900000   #900000
+# Fenêtre en attente de placement (placeholders)
+client.placeholder      #000000 #0c0c0c #ffffff #000000   #0c0c0c
+# Couleur de fond générale pour les clients
+client.background       #ffffff
+
+# Contrôles de luminosité de l'écran
+# https://github.com/multiplexd/brightlight
+bindsym $mod+F11 exec brightlight -d 750
+bindsym $mod+F12 exec brightlight -i 750
+
+
+# exec --no-startup-id ~/.screenlayout/monitor.sh
+exec --no-startup-id feh --bg-fill ~/Pictures/wallpapers/wp2071865-parrot-security-os-wallpapers.jpg 
+
+exec --no-startup-id ~/.config/polybar/launch.sh
+
+# exec_always --no-startup-id compton -b --config ~/.config/picom/picom.conf
+# exec_always --no-startup-id wal -i /chemin/vers/votre/image.jpg
+exec --no-startup-id picom --config ~/.config/picom/picom.conf
+exec --no-startup-id /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
+exec --no-startup-id nm-applet
+exec --no-startup-id dunst 
+
+
+# Copier la capture d'écran de la fenêtre active dans le presse-papiers
+bindsym Print exec maim -i $(xdotool getactivewindow) | xclip -selection clipboard -t image/png
+# Enregistrer la capture d'écran de la fenêtre active dans ~/Pictures/Captures
+bindsym Shift+Print exec maim -i $(xdotool getactivewindow) ~/Pictures/Captures/$(date +%T).png
+# Capture d'écran de sélection par l'utilisateur
+# Copier la sélection de l'écran dans le presse-papiers
+bindsym --release $mod+Print exec maim -s | xclip -selection clipboard -t image/png
+# Enregistrer la sélection de l'écran dans le presse-papiers
+bindsym --release $mod+Shift+Print exec maim -s ~/Pictures/Captures/$(date +%T).png
+
+# Raccourci clavier F1 pour afficher les astuces de raccourcis clavier
+bindsym F1 exec ~/.config/i3/keyhint-2
+
+# alternative : autre méthode pour afficher la liste des raccourcis
+# Raccourci clavier $mod+F1 pour ouvrir le fichier de raccourcis dans l'éditeur
+bindsym $mod+F1 exec ~/.config/i3/keybindings
+
+
+# Définir des variables pour les valeurs des gaps
+set $gaps_size 7
+set $gaps_none 0
+
+# Gaps si i3-GAPS n'est pas installé, commente cette ligne !
+gaps inner $gaps_size
+gaps outer $gaps_size
+
+# Activer les smart gaps
+smart_gaps on
+
+#https://www.youtube.com/watch?v=HIiJ9GNtwAM
+# Réduit les gaps intérieurs et extérieurs à zéro
+bindsym $mod+Shift+d gaps inner all set $gaps_none; gaps outer all set $gaps_none
+# Rétablit les gaps intérieurs et extérieurs à la valeur définie
+bindsym $mod+Shift+g gaps inner all set $gaps_size; gaps outer all set $gaps_size
+

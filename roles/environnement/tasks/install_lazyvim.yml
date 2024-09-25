@@ -1,0 +1,147 @@
+# roles/environnement/task/install_lazyvim.yml
+
+---
+
+- name: Installation de neovim
+  ansible.builtin.apt:
+    name: neovim
+    state: present
+  become: true
+
+- name: Vérifier si LazyVim est installé
+  ansible.builtin.stat:
+    path: '{{ ansible_env.HOME }}/.config/nvim'
+  register: lazyvim_installed
+
+- name: Cloner LazyVim à partir de Git
+  ansible.builtin.git:
+    repo: '{{ LAZYVIM_REPO }}'
+    dest: '{{ ansible_env.HOME }}/.config/nvim'
+    force: yes
+  when: not lazyvim_installed.stat.exists
+
+- name: Installer Packer si ce n'est pas déjà fait
+  ansible.builtin.git:
+    repo: '{{ PACKER_REPO }}'
+    dest: '{{ ansible_env.HOME }}/.local/share/nvim/site/pack/packer/start/packer.nvim'
+    update: yes
+    force: yes
+
+# Installation nvim-treesitter
+- name: Installer le plugin nvim-treesitter
+  ansible.builtin.copy:
+    dest: '{{ ansible_env.HOME }}/.config/nvim/lua/plugins/nvim-treesitter.lua'
+    content: |
+      return {
+        "nvim-treesitter/nvim-treesitter",
+        build = ":TSUpdate",
+        event = { "BufReadPre", "BufNewFile" },
+        dependencies = {
+          "nvim-treesitter/nvim-treesitter-textobjects",
+        },
+        config = function()
+          local treesitter = require("nvim-treesitter.configs")
+
+          -- configure treesitter
+          treesitter.setup({ -- enable syntax highlighting
+            highlight = { enable = true },
+            -- enable indentation
+            indent = { enable = true },
+            -- ensure these language parsers are installed
+            ensure_installed = { "{{ treesitter_languages | join('", "') }}" },
+            incremental_selection = {
+              enable = true,
+              keymaps = {
+                init_selection = "<C-space>",
+                node_incremental = "<C-space>",
+                scope_incremental = false,
+                node_decremental = "<bs>",
+              },
+            },
+          })
+        end,
+      }
+    owner: "{{ ansible_user_id }}"
+    group: "{{ ansible_user_id }}"
+    mode: '0644'
+
+- name: Installer le plugin nvim-treesitter-textobjects.lua
+  ansible.builtin.copy:
+    dest: '{{ ansible_env.HOME }}/.config/nvim/lua/plugins/nvim-treesitter-textobjects.lua'
+    content: |
+      return {
+        "nvim-treesitter/nvim-treesitter-textobjects",
+        lazy = true,
+        config = function() require("nvim-treesitter.configs").setup({
+            textobjects = {
+              select = {
+                enable = true,
+                -- Automatically jump forward to textobj, similar to targets.vim
+                lookahead = true,
+
+                keymaps = {
+                  -- Keymaps génériques pour tous les langages
+                  ["af"] = { query = "@function.outer", desc = "Sélectionner la partie externe d'une fonction" },
+                  ["if"] = { query = "@function.inner", desc = "Sélectionner la partie interne d'une fonction" },
+                  ["ac"] = { query = "@class.outer", desc = "Sélectionner la partie externe d'une classe" },
+                  ["ic"] = { query = "@class.inner", desc = "Sélectionner la partie interne d'une classe" },
+                  ["aa"] = { query = "@parameter.outer", desc = "Sélectionner la partie externe d'un paramètre/argument" },
+                  ["ia"] = { query = "@parameter.inner", desc = "Sélectionner la partie interne d'un paramètre/argument" },
+                  ["ai"] = { query = "@conditional.outer", desc = "Sélectionner la partie externe d'une condition" },
+                  ["ii"] = { query = "@conditional.inner", desc = "Sélectionner la partie interne d'une condition" },
+                  ["al"] = { query = "@loop.outer", desc = "Sélectionner la partie externe d'une boucle" },
+                  ["il"] = { query = "@loop.inner", desc = "Sélectionner la partie interne d'une boucle" },
+                  ["a/"] = { query = "@comment.outer", desc = "Sélectionner la partie externe d'un commentaire" },
+                  ["i/"] = { query = "@comment.inner", desc = "Sélectionner la partie interne d'un commentaire" },
+                  -- Keymaps spécifiques pour Python
+                  ["aF"] = { query = "@function.outer", desc = "Sélectionner la partie externe d'une fonction Python" },
+                  ["iF"] = { query = "@function.inner", desc = "Sélectionner la partie interne d'une fonction Python" },
+                  ["aC"] = { query = "@class.outer", desc = "Sélectionner la partie externe d'une classe Python" },
+                  ["iC"] = { query = "@class.inner", desc = "Sélectionner la partie interne d'une classe Python" },
+                  ["ad"] = { query = "@decorator.outer", desc = "Sélectionner la partie externe d'un décorateur Python" },
+                  ["id"] = { query = "@decorator.inner", desc = "Sélectionner la partie interne d'un décorateur Python" },
+                  ["ap"] = { query = "@parameter.outer", desc = "Sélectionner la partie externe d'un paramètre Python" },
+                  ["ip"] = { query = "@parameter.inner", desc = "Sélectionner la partie interne d'un paramètre Python" },
+                  ["as"] = { query = "@statement.outer", desc = "Sélectionner la partie externe d'une instruction Python" },
+                  ["is"] = { query = "@statement.inner", desc = "Sélectionner la partie interne d'une instruction Python" },
+                },
+              },
+              swap = {
+                enable = true,
+                swap_next = {
+                  ["<leader>nf"] = "@function.outer", -- Échanger la fonction avec la suivante
+                  ["<leader>np"] = "@parameter.inner", -- Échanger le paramètre avec le suivant
+                },
+                swap_previous = {
+                  ["<leader>pf"] = "@function.outer", -- Échanger la fonction avec la précédente
+                  ["<leader>pp"] = "@parameter.inner", -- Échanger le paramètre avec le précédent
+                },
+              },
+            },
+          })
+        end,
+      }
+    owner: "{{ ansible_user_id }}"
+    group: "{{ ansible_user_id }}"
+    mode: '0644'
+
+- name: Paramétrage du fichier init
+  ansible.builtin.lineinfile:
+    path: '{{ ansible_env.HOME }}/.config/nvim/init.lua'
+    state: present
+    line: |
+      require("plugins.nvim-treesitter")
+      require("plugins.nvim-treesitter-textobjects")
+    insertafter: EOF
+
+- name: Désactiver l'intégration de la souris dans Neovim
+  ansible.builtin.lineinfile:
+    path: '{{ ansible_env.HOME }}/.config/nvim/init.lua'
+    state: present
+    line: 'vim.opt.mouse = ""'
+    insertafter: EOF
+
+- name: Appliquer les modifications et installer les plugins dans Neovim
+  ansible.builtin.shell: "nvim --headless +PackerSync +qall"
+  args:
+    executable: /bin/bash

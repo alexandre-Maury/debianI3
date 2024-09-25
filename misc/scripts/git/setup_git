@@ -1,0 +1,114 @@
+#!/bin/bash
+
+set -uo pipefail
+IFS=$'\n\t'
+
+BASHRC="$HOME/.bashrc"
+ZSHRC="$HOME/.zshrc"
+EDITOR="vim"
+
+# Chemin vers le script SSH
+SCRIPT_PATH="/opt/ubuntu-gaps/misc/scripts/utils/generate_ssh-key"
+
+# Vérifier si le script existe
+if [ ! -f "$SCRIPT_PATH" ]; then
+    echo -e "\033[0;31m Le script $SCRIPT_PATH n'existe pas.\033[0m" # Rouge
+    exit 1
+fi
+
+echo -e "\033[0;33m Ce script a pour but de configurer vos identifiants GitHub/GitLab. \033[0m" # Jaune
+echo -e "\033[0;33m Tout au long de l'exécution, il vous sera demandé de saisir votre token GitHub/GitLab (en fonction de votre choix) pour les différentes requêtes API. \033[0m" # Jaune
+echo -e "\033[0;33m Pensez donc à vous munir de vos identifiants ainsi que de votre token. \033[0m" # Jaune
+echo -e "\033[0;33m GitHub : https://github.com/settings/ -> Developer Settings -> Personal access tokens (classic) \033[0m" # Jaune
+echo -e "\033[0;33m GitLab : https://gitlab.com/-/profile/personal_access_tokens \033[0m" # Jaune
+
+# Demande à l'utilisateur de choisir entre GitHub et GitLab
+echo -e "\033[0;33m Souhaitez-vous poursuivre l'exécution du script ? \033[0m" # Jaune
+echo -e "\033[0;33m 1) Oui \033[0m" # Jaune
+echo -e "\033[0;33m 2) Non \033[0m" # Jaune
+echo -e "\033[0;33m Entrez le numéro correspondant à votre choix (1 ou 2) : \033[0m" # Jaune
+read continuer
+
+if [ "$continuer" == "1" ]; then
+    echo -e "\033[0;33m GO ! \033[0m"
+elif [ "$continuer" == "2" ]; then
+    exit 0
+else
+    echo -e "\033[0;31m Choix invalide. Veuillez entrer 1 pour 'Oui' ou 2 pour 'Non'. \033[0m"
+    exit 1
+fi
+
+# Appeler le script avec source
+source "$SCRIPT_PATH"
+
+# Demande à l'utilisateur de choisir entre GitHub et GitLab
+echo -e "\033[0;33m Sur quelle API souhaitez-vous vous connecter ? \033[0m" # Jaune
+echo -e "\033[0;33m 1) GitHub \033[0m" # Jaune
+echo -e "\033[0;33m 2) GitLab \033[0m" # Jaune
+echo -e "\033[0;33m Entrez le numéro correspondant à votre choix (1 ou 2) : \033[0m" # Jaune
+read choice
+
+if [ "$choice" == "1" ]; then
+    service="GitHub"
+    help="Visiter https://github.com/settings/ -> Developer Settings/Personal access tokens (classic)"
+    token_var="GITHUB_TOKEN"
+    user_var="GITHUB_USER"
+
+elif [ "$choice" == "2" ]; then
+    service="GitLab"
+    help="Visiter https://gitlab.com/-/profile/personal_access_tokens"
+    token_var="GITLAB_TOKEN"
+    user_var="GITLAB_USER"
+    
+else
+    echo -e "\033[0;31m Choix invalide. Veuillez entrer 1 pour GitHub ou 2 pour GitLab. \033[0m"
+    exit 1
+fi
+
+# Configuration pour le service choisi
+echo "$help"
+
+echo -e "\033[0;33m Entrez votre token ${service} : \033[0m"
+read TOKEN
+
+echo -e "\033[0;33m Entrez votre nom d'utilisateur ${service} : \033[0m" 
+read USER
+
+echo -e "\033[0;33m Entrez votre adresse Email ${service} : \033[0m" 
+read EMAIL
+
+echo -e "\033[0;33m Ajout de la configuration pour ${service} au fichier de configuration. \033[0m"
+git config --global user.name "${USER}" || { echo -e "\033[0;31m Erreur lors de la configuration du nom d'utilisateur \033[0m"; exit 1; }
+git config --global user.email "${EMAIL}" || { echo -e "\033[0;31m Erreur lors de la configuration de l'email \033[0m"; exit 1; }
+git config --global core.editor "${EDITOR}" || { echo -e "\033[0;31m Erreur lors de la configuration de l'éditeur \033[0m"; exit 1; }
+git config --global color.ui always || { echo -e "\033[0;31m Erreur lors de la configuration de l'interface utilisateur \033[0m"; exit 1; }
+
+# Fonction pour ajouter une ligne à un fichier si elle n'existe pas déjà
+add_to_file() {
+  local file=$1
+  local line=$2
+
+  if ! grep -Fxq "$line" "$file"; then
+    echo "$line" >> "$file"
+  fi
+}
+
+# Fonction pour ajouter les variables d'environnement aux fichiers de configuration
+add_env_var() {
+  local var_name=$1
+  local var_value=$2
+
+  add_to_file "$BASHRC" "export ${var_name}=${var_value}"
+  add_to_file "$ZSHRC" "export ${var_name}=${var_value}"
+}
+
+# Ajout des variables d'environnement dans .bashrc et .zshrc
+add_env_var "$token_var" "$TOKEN"
+add_env_var "$user_var" "$USER"
+
+# Rechargement des fichiers de configuration
+echo -e "\033[0;33m Rechargement de .bashrc et .zshrc \033[0m"
+source "$BASHRC"
+source "$ZSHRC"
+
+echo -e "\033[0;32m Les variables d'environnement pour ${service} ont été configurées. \033[0m"

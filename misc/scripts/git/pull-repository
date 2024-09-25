@@ -1,0 +1,88 @@
+#!/bin/bash
+
+set -uo pipefail
+IFS=$'\n\t'
+
+OUTPUT_DIR="$HOME/projects"
+
+# Vérifie que les outils nécessaires sont installés
+for cmd in fzf bat jq; do
+    if ! command -v "$cmd" &> /dev/null; then
+        echo -e "\033[0;31m Erreur : $cmd n'est pas installé. Veuillez l'installer pour utiliser ce script. \033[0m"
+        exit 1
+    fi
+done
+
+# Fonction pour synchroniser les projets sélectionnés dans ~/projects avec Git
+pull_repositories() {
+
+    local base_dir=$OUTPUT_DIR  # Répertoire de destination pour les dépôts
+
+    # Vérifie si le répertoire de base existe
+    if [ ! -d "$base_dir" ]; then
+        echo -e "\033[0;31m Le répertoire de base '$base_dir' n'existe pas. \033[0m" # Rouge
+        exit 1
+    fi
+
+    # Change de répertoire
+    cd "$base_dir" || exit
+
+    # Liste les répertoires de dépôts avec fzf pour sélection
+    local repo
+    repo=$(find . -maxdepth 1 -type d ! -path . | sed 's/^\.\///' | fzf --height=40% --preview 'if [[ -d {} ]]; then echo "Répertoire"; else bat --style=header,grid --color=always --line-range=:200 {}; fi' --preview-window=up:30% --ansi)
+
+    # Vérifie si un dépôt a été sélectionné
+    if [ -z "$repo" ]; then
+        echo -e "\033[0;31m Aucun dépôt sélectionné. \033[0m" # Rouge
+        exit 0
+    fi
+
+    # Vérifie que le dépôt sélectionné est bien un répertoire
+    if [ ! -d "$repo" ]; then
+        echo -e "\033[0;31m Erreur : '$repo' n'est pas un répertoire valide. \033[0m" # Rouge
+        exit 1
+    fi
+
+    # Change dans le répertoire du dépôt sélectionné
+    cd "$repo" || exit
+
+    # Récupère les modifications depuis le dépôt distant sans fusionner
+    echo -e "\033[0;33m Récupération des mises à jour du dépôt distant... \033[0m" # Jaune
+    git fetch
+
+    # Affiche les différences entre la branche locale et distante
+    local branch
+    branch=$(git rev-parse --abbrev-ref HEAD)
+
+    # Vérifie s'il y a des différences pour la branche actuelle
+    if git diff --quiet "$branch" "origin/$branch"; then
+        echo -e "\033[0;33m Aucune modification à apporter. \033[0m" # Jaune
+        return
+
+    else
+        echo -e "\033[0;33m Modifications disponibles pour la branche '$branch' : \033[0m" # Jaune
+        git diff "$branch" "origin/$branch"
+
+        # Demande confirmation pour effectuer le git pull
+        echo -e "\033[0;33m Souhaitez-vous effectuer un git pull ? (y/n) \033[0m"  # Jaune
+        read choice
+
+        case "$choice" in
+            [Yy]* )
+                echo -e "\033[0;33m Synchronisation du dépôt '$repo'... \033[0m" # Jaune
+                git pull
+                echo -e "\033[0;32m Synchronisation terminée pour le dépôt '$repo'. \033[0m" # Vert
+                ;;
+            [Nn]* )
+                echo -e "\033[0;33m Aucune modification apportée. \033[0m"
+                ;;
+            * )
+                echo -e "\033[0;31m Choix non valide. Aucun action effectuée. \033[0m" # Rouge
+
+                ;;
+        esac
+    fi
+}
+
+# Appel de la fonction
+pull_repositories

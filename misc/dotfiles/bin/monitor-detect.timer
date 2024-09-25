@@ -1,0 +1,10 @@
+[Unit]
+Description=Timer for Detect Monitor Changes
+
+[Timer]
+OnBootSec=5min
+OnUnitActiveSec=5min
+Unit=monitor-detect.service
+
+[Install]
+WantedBy=timers.target

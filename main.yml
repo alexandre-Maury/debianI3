@@ -1,0 +1,18 @@
+---
+
+# Fichier principal main.yml
+
+- name: '{{ PROJECT }}'
+  hosts: localhost
+  connection: local
+  vars_files:
+    - vars/main.yml
+  roles:
+    - role: 'roles/startup'
+      tags: 'startup'
+    - role: 'roles/environnement'
+      tags: 'environnement'
+    - role: 'roles/cleanup'
+      tags: 'cleanup'
+      users:
+        - username: '{{ ansible_user_id }}'

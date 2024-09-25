@@ -1,0 +1,154 @@
+#!/bin/sh
+
+## Grimshot : un outil pour les captures d'écran dans sway
+## Exigences :
+##  - `grim` : utilitaire de capture d'écran pour ubuntu-gaps
+##  - `slurp` : pour sélectionner une zone
+##  - `swaymsg` : pour lire les propriétés de la fenêtre actuelle
+##  - `wl-copy` : utilitaire pour le presse-papiers
+##  - `jq` : utilitaire JSON pour analyser la sortie de swaymsg
+##  - `notify-send` : pour afficher des notifications
+## Ces outils doivent être installés. En cas de doute, exécutez `grimshot check`
+##
+## Voir `man 1 grimshot` ou `grimshot usage` pour plus de détails.
+
+getTargetDirectory() {
+  test -f ${XDG_CONFIG_HOME:-~/.config}/user-dirs.dirs && \
+    . ${XDG_CONFIG_HOME:-~/.config}/user-dirs.dirs
+
+  echo ${XDG_SCREENSHOTS_DIR:-${XDG_PICTURES_DIR:-$HOME}}
+}
+
+if [ "$1" = "--notify" ]; then
+  NOTIFY=yes
+  shift 1
+else
+  NOTIFY=no
+fi
+
+ACTION=${1:-usage}
+SUBJECT=${2:-screen}
+FILE=${3:-$(getTargetDirectory)/$(date +"%Y-%m-%d-%H:%M:%S").png}
+
+if [ "$ACTION" != "save" ] && [ "$ACTION" != "copy" ] && [ "$ACTION" != "check" ]; then
+  echo "Utilisation :"
+  echo "  grimshot [--notify] (copy|save) [active|screen|output|area|window] [FICHIER]"
+  echo "  grimshot check"
+  echo "  grimshot usage"
+  echo ""
+  echo "Commandes :"
+  echo "  copy : Copier les données de la capture d'écran dans le presse-papiers."
+  echo "  save : Sauvegarder la capture d'écran dans un fichier normal."
+  echo "  check : Vérifier si les outils requis sont installés et quitter."
+  echo "  usage : Afficher ce message et quitter."
+  echo ""
+  echo "Cibles :"
+  echo "  active : La fenêtre actuellement active."
+  echo "  screen : Tous les écrans visibles."
+  echo "  output : La sortie actuellement active."
+  echo "  area : Sélectionner manuellement une région."
+  echo "  window : Sélectionner manuellement une fenêtre."
+  exit
+fi
+
+notify() {
+  notify-send -t 3000 -a grimshot "$@"
+}
+notifyOk() {
+  [ "$NOTIFY" = "no" ] && return
+
+  TITLE=${2:-"Capture d'écran"}
+  MESSAGE=${1:-"OK"}
+  notify "$TITLE" "$MESSAGE"
+}
+notifyError() {
+  if [ $NOTIFY = "yes" ]; then
+    TITLE=${2:-"Capture d'écran"}
+    MESSAGE=${1:-"Erreur lors de la capture d'écran avec grim"}
+    notify -u critical "$TITLE" "$MESSAGE"
+  else
+    echo $1
+  fi
+}
+
+die() {
+  MSG=${1:-Au revoir}
+  notifyError "Erreur : $MSG"
+  exit 2
+}
+
+check() {
+  COMMAND=$1
+  if command -v "$COMMAND" > /dev/null 2>&1; then
+    RESULT="OK"
+  else
+    RESULT="NON TROUVÉ"
+  fi
+  echo "   $COMMAND : $RESULT"
+}
+
+takeScreenshot() {
+  FILE=$1
+  GEOM=$2
+  OUTPUT=$3
+  if [ ! -z "$OUTPUT" ]; then
+    grim -o "$OUTPUT" "$FILE" || die "Impossible d'invoquer grim"
+  elif [ -z "$GEOM" ]; then
+    grim "$FILE" || die "Impossible d'invoquer grim"
+  else
+    grim -g "$GEOM" "$FILE" || die "Impossible d'invoquer grim"
+  fi
+}
+
+if [ "$ACTION" = "check" ] ; then
+  echo "Vérification si les outils requis sont installés. Si quelque chose manque, installez-le sur votre système et assurez-vous qu'il est disponible dans le PATH..."
+  check grim
+  check slurp
+  check swaymsg
+  check wl-copy
+  check jq
+  check notify-send
+  exit
+elif [ "$SUBJECT" = "area" ] ; then
+  GEOM=$(slurp -d)
+  # Vérifier si l'utilisateur a quitté slurp sans sélectionner la zone
+  if [ -z "$GEOM" ]; then
+    exit
+  fi
+  WHAT="Zone"
+elif [ "$SUBJECT" = "active" ] ; then
+  FOCUSED=$(swaymsg -t get_tree | jq -r 'recurse(.nodes[]?, .floating_nodes[]?) | select(.focused)')
+  GEOM=$(echo "$FOCUSED" | jq -r '.rect | "\(.x),\(.y) \(.width)x\(.height)"')
+  APP_ID=$(echo "$FOCUSED" | jq -r '.app_id')
+  WHAT="$APP_ID fenêtre"
+elif [ "$SUBJECT" = "screen" ] ; then
+  GEOM=""
+  WHAT="Écran"
+elif [ "$SUBJECT" = "output" ] ; then
+  GEOM=""
+  OUTPUT=$(swaymsg -t get_outputs | jq -r '.[] | select(.focused)' | jq -r '.name')
+  WHAT="$OUTPUT"
+elif [ "$SUBJECT" = "window" ] ; then
+  GEOM=$(swaymsg -t get_tree | jq -r '.. | select(.pid? and .visible?) | .rect | "\(.x),\(.y) \(.width)x\(.height)"' | slurp)
+  # Vérifier si l'utilisateur a quitté slurp sans sélectionner la zone
+  if [ -z "$GEOM" ]; then
+   exit
+  fi
+  WHAT="Fenêtre"
+else
+  die "Sujet inconnu pour prendre une capture d'écran" "$SUBJECT"
+fi
+
+if [ "$ACTION" = "copy" ] ; then
+  takeScreenshot - "$GEOM" "$OUTPUT" | wl-copy --type image/png || die "Erreur de presse-papiers"
+  notifyOk "$WHAT copié dans le presse-papiers"
+else
+  if takeScreenshot "$FILE" "$GEOM" "$OUTPUT"; then
+    TITLE="Capture d'écran de $SUBJECT"
+    MESSAGE=$(basename "$FILE")
+    notifyOk "$MESSAGE" "$TITLE"
+    echo $FILE
+  else
+    notifyError "Erreur lors de la capture d'écran avec grim"
+  fi
+fi

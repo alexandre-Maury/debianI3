@@ -1,0 +1,8 @@
+#! /bin/sh
+
+# Capture d'écran du bureau et applique un flou gaussien pour créer
+# une image à utiliser comme écran de verrouillage.
+
+grim /tmp/_sway_lock_image.png
+ffmpeg -i /tmp/_sway_lock_image.png -filter_complex "gblur=sigma=50" /tmp/sway_lock_image.png -y
+

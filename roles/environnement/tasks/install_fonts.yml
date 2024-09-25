@@ -1,0 +1,55 @@
+# roles/environnement/task/install_fonts.yml
+
+---
+
+- name: Créer le répertoire temporaire fonts si nécessaire
+  ansible.builtin.file:
+    path: "/tmp/fonts"
+    state: directory
+
+- name: Télécharger et installer JetBrainsMono
+  ansible.builtin.get_url:
+    url: '{{ FONTS_REPO_JETBRAINSMONO }}'
+    dest: '/tmp/fonts/JetBrainsMono.zip'
+
+- name: Télécharger et installer Iosevka
+  ansible.builtin.get_url:
+    url: '{{ FONTS_REPO_IOSEVKA }}'
+    dest: '/tmp/fonts/Iosevka.zip'
+
+- name: Créer le répertoire de destination pour Fonts s'il n'existe pas
+  ansible.builtin.file:
+    path: "{{ ansible_env.HOME }}/.local/share/fonts"
+    state: directory
+    mode: '0755'
+
+- name: Décompresser Nerd Font
+  ansible.builtin.unarchive:
+    src: '/tmp/fonts/JetBrainsMono.zip'
+    dest: "{{ ansible_env.HOME }}/.local/share/fonts"
+    remote_src: yes
+
+- name: Décompresser Iosevka
+  ansible.builtin.unarchive:
+    src: '/tmp/fonts/Iosevka.zip'
+    dest: "{{ ansible_env.HOME }}/.local/share/fonts"
+    remote_src: yes
+
+
+- name: Copier d'autres fonts
+  ansible.builtin.copy:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+  with_items:
+    - {src: '{{ SOURCE_DIR }}/misc/dotfiles/fonts/CaskaydiaCove/CaskaydiaRegular.otf', dest: '$HOME/.local/share/fonts'}
+    - {src: '{{ SOURCE_DIR }}/misc/dotfiles/fonts/CaskaydiaCove/CaskaydiaSemiBold.otf', dest: '$HOME/.local/share/fonts'}
+    - {src: '{{ SOURCE_DIR }}/misc/dotfiles/fonts/MaterialIcon/materialdesignicons-webfont.eot', dest: '$HOME/.local/share/fonts'}
+    - {src: '{{ SOURCE_DIR }}/misc/dotfiles/fonts/MaterialIcon/materialdesignicons-webfont.ttf', dest: '$HOME/.local/share/fonts'}
+    - {src: '{{ SOURCE_DIR }}/misc/dotfiles/fonts/MaterialIcon/materialdesignicons-webfont.woff', dest: '$HOME/.local/share/fonts'}
+    - {src: '{{ SOURCE_DIR }}/misc/dotfiles/fonts/MaterialIcon/materialdesignicons-webfont.woff2', dest: '$HOME/.local/share/fonts'}
+
+
+- name: Rafraîchir le cache des polices
+  ansible.builtin.command:
+    cmd: fc-cache -fv
+  become: true

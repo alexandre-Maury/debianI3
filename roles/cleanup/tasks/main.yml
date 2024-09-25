@@ -1,0 +1,19 @@
+---
+
+# roles/cleanup/task/main.yml
+
+
+
+
+- name: Recharger le shell .bashrc
+  shell: source {{ ansible_env.HOME }}/.bashrc
+  args:
+    executable: /bin/bash
+  ignore_errors: yes
+
+- name: Recharger le shell .zshrc
+  shell: source {{ ansible_env.HOME }}/.zshrc
+  args:
+    executable: /bin/zsh
+  ignore_errors: yes
+

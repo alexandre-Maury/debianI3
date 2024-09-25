@@ -1,0 +1,36 @@
+---
+
+# roles/common/mise/task/main.yml
+
+- name: Installation de https://mise.jdx.dev
+  ansible.builtin.stat:
+    path: '{{ ansible_env.HOME }}/.local/bin/mise'
+  register: mise_installed
+
+- name: Création du répertoire /etc/apt/keyrings pour https://mise.jdx.dev
+  ansible.builtin.file:
+    path: '/etc/apt/keyrings'
+    state: directory
+    mode: '0755'
+  when: not mise_installed.stat.exists
+
+- name: Téléchargement du script d'installation de https://mise.jdx.dev
+  ansible.builtin.get_url:
+    url: https://mise.jdx.dev/install.sh
+    dest: '/tmp/install.sh'
+    mode: '0755'
+
+- name: Executer le script d'installation de https://mise.jdx.dev
+  ansible.builtin.shell: '/tmp/install.sh'
+
+- name: Installer https://mise.jdx.dev usage-cli pour l'aide en ligne de commande (CLI) et la complétion automatique 
+  ansible.builtin.shell: bash -c 'mise use -g usage'
+
+- name: Ajuste les paramètres pour le support Python de https://mise.jdx.dev 
+  ansible.builtin.shell: bash -c 'mise settings set python_compile 1'
+
+- name: Installer la liste d'outils avec https://mise.jdx.dev 
+  ansible.builtin.shell: >
+    bash -c 'mise install {{ item.name }}@{{ item.version }} -y && mise use -g {{ item.name }}@{{ item.version }} || true'
+  loop: "{{ mise_install }}"
+

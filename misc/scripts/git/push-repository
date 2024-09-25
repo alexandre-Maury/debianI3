@@ -1,0 +1,79 @@
+#!/bin/bash
+
+set -uo pipefail
+IFS=$'\n\t'
+
+OUTPUT_DIR="$HOME/projects"
+
+# Vérifie que les outils nécessaires sont installés
+for cmd in fzf bat jq; do
+    if ! command -v "$cmd" &> /dev/null; then
+        echo -e "\033[0;31m Erreur : $cmd n'est pas installé. Veuillez l'installer pour utiliser ce script. \033[0m"
+        exit 1
+    fi
+done
+
+# Fonction pour pousser les projets sélectionnés dans ~/projects avec Git
+push_repositories() {
+
+    local base_dir=$OUTPUT_DIR  # Répertoire de destination pour les dépôts
+
+    # Vérifie si le répertoire de base existe
+    if [ ! -d "$base_dir" ]; then
+        echo -e "\033[0;31m Le répertoire de base '$base_dir' n'existe pas. \033[0m" # Rouge
+        exit 1
+    fi
+
+    # Change de répertoire
+    cd "$base_dir" || exit
+
+    # Liste les répertoires de dépôts avec fzf pour sélection
+    local repo
+    repo=$(find . -maxdepth 1 -type d ! -path . | sed 's/^\.\///' | fzf --height=40% --preview 'if [[ -d {} ]]; then echo "Répertoire"; else bat --style=header,grid --color=always --line-range=:200 {}; fi' --preview-window=up:30% --ansi)
+
+    # Vérifie si un dépôt a été sélectionné
+    if [ -z "$repo" ]; then
+        echo -e "\033[0;31m Aucun dépôt sélectionné. \033[0m" # Rouge
+        exit 0
+    fi
+
+    # Vérifie que le dépôt sélectionné est bien un répertoire
+    if [ ! -d "$repo" ]; then
+        echo -e "\033[0;31m Erreur : '$repo' n'est pas un répertoire valide. \033[0m" # Rouge
+        exit 1
+    fi
+
+    # Change dans le répertoire du dépôt sélectionné
+    cd "$repo" || exit
+
+    # Demande le message de commit
+    echo -e "\033[0;33m Entrez le message de commit : \033[0m" # Jaune
+    read commit_message
+
+    # Vérifie si des fichiers ont été modifiés
+    if [ -n "$(git status -s)" ]; then
+        echo -e "\033[0;33m Préparation des changements pour le commit... \033[0m" # Jaune
+        git add .
+        git commit -m "$commit_message"
+        
+        # Pousse les changements vers le dépôt distant
+        echo -e "\033[0;33m Poussée des modifications vers le dépôt distant... \033[0m" # Jaune
+        git push
+        
+        # Vérifie le succès du push
+        if [ $? -eq 0 ]; then
+            echo -e "\033[0;32m Modifications poussées avec succès vers le dépôt distant. \033[0m" # Vert
+        else
+            echo -e "\033[0;31m Erreur lors du push des modifications. \033[0m" # Rouge
+            exit 1
+        fi
+    else
+        echo -e "\033[0;33m Aucun fichier modifié à pousser. \033[0m" # Jaune
+    fi
+}
+
+# Appel de la fonction
+push_repositories
+
+
+

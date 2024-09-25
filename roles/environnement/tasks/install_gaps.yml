@@ -1,0 +1,57 @@
+# roles/environnement/task/main.yml
+
+---
+
+## https://github.com/Airblader/i3/wiki/Building-from-source
+## The most important, first step is to read the section above.
+## i3-gaps, like i3, uses the meson build system, and can be built as documented there. This boils down to
+# cd /path/where/you/want/the/repository
+## clone the repository
+# git clone https://www.github.com/Airblader/i3 i3-gaps
+# cd i3-gaps
+## compile
+# mkdir -p build && cd build
+# meson ..
+# ninja
+
+
+- name: Installer les dépendances requises pour i3-gaps
+  ansible.builtin.package:
+    name: "{{ item }}"
+    state: present
+    install_recommends: no
+  loop: '{{ i3_gaps_dependencies }}'
+  become: true
+
+- name: Cloner, mettre à jour et basculer sur la version spécifique du dépôt i3-gaps
+  ansible.builtin.git:
+    repo: "{{ item.repo }}"
+    dest: "{{ item.dest }}"
+    # version: "{{ item.app_version }}"  # Branche, tag ou commit spécifique
+    update: yes # Clonage ou mise à jour
+  loop: "{{ I3GAPS_REPO }}"
+  # Commande Git associée :
+  # git clone {{ item.repo }} {{ item.dest }} --branch {{ item.app_version }} --single-branch
+  # git pull origin {{ item.app_version }}  # Effectué automatiquement si `dest` existe déjà
+
+
+- name: Reconfiguration et compilation avec Meson et Ninja i3-gaps
+  ansible.builtin.shell: |
+    cd {{ item.dest }} && meson setup build 
+    cd {{ item.dest }}/build && ninja && sudo ninja install
+  loop: "{{ I3GAPS_REPO }}"
+  become: true
+
+- name: S'assurer que le dossier de destination pour la configuration d'i3 existe
+  ansible.builtin.file:
+    path: $HOME/.config/i3
+    state: directory
+
+- name: Copier la configuration de i3-gaps.
+  ansible.builtin.copy:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+  with_items:
+    - {src: '{{ SOURCE_DIR }}/misc/dotfiles/i3/config', dest: '$HOME/.config/i3'}
+    - {src: '{{ SOURCE_DIR }}/misc/dotfiles/i3/keybindings', dest: '$HOME/.config/i3'}
+    - {src: '{{ SOURCE_DIR }}/misc/dotfiles/i3/keyhint-2', dest: '$HOME/.config/i3'}

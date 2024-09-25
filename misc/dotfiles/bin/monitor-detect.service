@@ -1,0 +1,12 @@
+[Unit]
+Description=Detect Monitor Changes
+After=graphical.target
+
+[Service]
+EnvironmentFile=/etc/default/whoami
+ExecStart=/usr/local/bin/detect_monitor_changes.sh
+Restart=on-failure
+User=${USER} 
+
+[Install]
+WantedBy=multi-user.target

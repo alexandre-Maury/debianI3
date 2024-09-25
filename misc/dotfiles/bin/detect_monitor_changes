@@ -1,0 +1,45 @@
+#!/bin/bash
+
+# Nom du fichier de configuration Sway
+CONFIG_FILE="$HOME/.config/sway/config"
+
+# Fonction pour obtenir les informations des sorties avec xrandr
+get_outputs() {
+    xrandr --listmonitors | awk 'NR>1 {print $6}'
+}
+
+# Fonction pour créer la configuration pour Sway
+generate_sway_config() {
+    local outputs=($(get_outputs))
+    local output_config=""
+
+    # Réinitialiser les configurations d'écran
+    output_config+="\n# Configuration générée automatiquement\n"
+
+    # Configurer les sorties d'affichage
+    local x=0
+    for output in "${outputs[@]}"; do
+        output_config+="output $output resolution 1920x1080 position ${x},0\n"
+        x=$((x + 1920))
+    done
+
+    # Définir le premier écran comme principal
+    if [ ${#outputs[@]} -gt 0 ]; then
+        output_config+="output ${outputs[0]} primary\n"
+    fi
+
+    # Ajouter la configuration dans le fichier
+    if [ -f "$CONFIG_FILE" ]; then
+        grep -v '^# Configuration générée automatiquement' "$CONFIG_FILE" > "$CONFIG_FILE.tmp"
+        mv "$CONFIG_FILE.tmp" "$CONFIG_FILE"
+        echo -e "$output_config" >> "$CONFIG_FILE"
+    else
+        echo -e "$output_config" > "$CONFIG_FILE"
+    fi
+
+    # Recharger la configuration Sway
+    swaymsg reload
+}
+
+# Exécuter la génération de configuration
+generate_sway_config

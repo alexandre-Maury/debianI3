@@ -1,0 +1,35 @@
+#!/bin/bash
+set -uo pipefail
+IFS=$'\n\t'
+
+# Optionnel : Définir MISE_TRACE pour le débogage
+# export MISE_TRACE=1
+
+# Sélectionner la version Python
+version="$(mise list python | grep -F python | awk '{ print $2 }' | fzf)"
+if [ -z "${version}" ]; then
+  echo "Aucune version sélectionnée. Abandon."
+  exit 1
+fi
+
+# Sélectionner le dossier dans le répertoire personnel de l'utilisateur
+echo "Sélectionnez le dossier dans lequel créer l'environnement virtuel..."
+selected_dir=$(find "$HOME" -type d -not -path '*/.*' | fzf --prompt="Choisissez un dossier : ")
+if [ -z "${selected_dir}" ]; then
+  echo "Aucun dossier sélectionné. Abandon."
+  exit 1
+fi
+
+cd $selected_dir
+
+# Utiliser la version sélectionnée
+echo "Activation de la version Python ${version}..."
+mise use python@"${version}" || { echo "Échec de l'activation de la version Python."; exit 1; }
+
+# Faire confiance à la configuration
+echo "Confiance accordée à la configuration..."
+mise trust || { echo "Échec de l'autorisation de la configuration."; exit 1; }
+
+# Afficher le fichier .mise.toml
+echo "Contenu du fichier .mise.toml :"
+bat -P .mise.toml

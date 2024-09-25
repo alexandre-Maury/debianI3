@@ -1,0 +1,67 @@
+# roles/startup/task/main.yml
+
+---
+
+- name: roles/startup - Mettre à jour le Cache
+  ansible.builtin.apt:
+    update_cache: true
+    cache_valid_time: 3600
+    force_apt_get: true
+  environment:
+    DEBIAN_FRONTEND: noninteractive
+  become: true
+
+- name: roles/startup - Mettre à jour tous les packages
+  ansible.builtin.apt:
+    upgrade: yes
+    force_apt_get: yes
+  environment:
+    DEBIAN_FRONTEND: noninteractive
+  become: true
+
+- name: roles/startup - Installer les dépendances APT de base
+  ansible.builtin.package:
+    name: "{{ item }}"
+    state: present
+    install_recommends: no
+  loop: '{{ base_cli_deps }}'
+  environment:
+    DEBIAN_FRONTEND: noninteractive
+  become: true
+
+
+- name: roles/startup - Installer les dépendances PIPX de base
+  community.general.pipx:
+    name: '{{ item }}'
+  loop: '{{ base_cli_pipx }}'
+  environment:
+    PIPX_BIN_DIR: "{{ ansible_env.HOME }}/.local/bin"
+
+
+# - name: roles/startup - Copier les fichiers de configuration
+#   ansible.builtin.copy:
+#     src: "{{ item.src }}"
+#     dest: "{{ item.dest }}"
+#   with_items:
+#     - {src: '{{ SOURCE_DIR }}/misc/dotfiles/profile/bashrc', dest: '{{ ansible_env.HOME }}/.bashrc'}
+#     - {src: '{{ SOURCE_DIR }}/misc/dotfiles/profile/gtkrc-2.0', dest: '{{ ansible_env.HOME }}/.gtkrc-2.0'}
+#     - {src: '{{ SOURCE_DIR }}/misc/dotfiles/profile/Xresources', dest: '{{ ansible_env.HOME }}/.Xresources'}
+#     - {src: '{{ SOURCE_DIR }}/misc/dotfiles/profile/pythonrc.py', dest: '{{ ansible_env.HOME }}/.pythonrc.py'}
+#     - {src: '{{ SOURCE_DIR }}/misc/dotfiles/scripts', dest: '{{ ansible_env.HOME }}'}
+#     - {src: '{{ SOURCE_DIR }}/misc/dotfiles/rofi', dest: '{{ ansible_env.HOME }}/.config'}
+#     - {src: '{{ SOURCE_DIR }}/misc/dotfiles/dunst', dest: '{{ ansible_env.HOME }}/.config'}
+#     - {src: '{{ SOURCE_DIR }}/misc/dotfiles/gtk-3.0', dest: '{{ ansible_env.HOME }}/.config'}
+#     - {src: '{{ SOURCE_DIR }}/misc/dotfiles/picom', dest: '{{ ansible_env.HOME }}/.config'}
+#     - {src: '{{ SOURCE_DIR }}/misc/dotfiles/wallpapers', dest: '{{ ansible_env.HOME }}/Pictures'}
+
+# - name: roles/startup - Créer le dossier Captures
+#   ansible.builtin.file:
+#     path: "{{ ansible_env.HOME }}/Pictures/Captures"  # Chemin du dossier à créer
+#     state: directory  # Spécifie que c'est un répertoire
+#     mode: '0755'  # Permissions du dossier
+
+
+
+
+
+

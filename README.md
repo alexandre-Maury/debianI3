@@ -10,14 +10,16 @@ Il utilise principalement Ansible pour l'automatisation, avec des rôles et des 
 À venir
 
 ## Installation
-1. `sudo apt install git`
-2. `git clone https://github.com/alexandre-Maury/debianI3.git`
-3. `sudo mv debianI3 /opt/debianI3`
-4. `cd /opt/debianI3 && bash -x pre-install.sh`
+1. `su -`
+2. `apt install git`
+3. `git clone https://github.com/alexandre-Maury/debianI3.git`
+4. `mv debianI3 /opt/debianI3`
+5. `cd /opt/debianI3 && bash -x pre-install.sh`
 
 ## Feuille de route
-1. `Mise en place d'un labo de developpement` [En Cours]
-2. `Mise en place d'un labo de pentesting` [A Venir]
+1. `Mise en place du systeme` [En Cours]
+2. `Mise en place d'un labo de developpement` [A Venir]
+3. `Mise en place d'un labo de pentesting` [A Venir]
 
 ## Auteurs
 `Alexandre MAURY`

@@ -1,0 +1,23 @@
+# roles/gestionnaire/task/main.yml
+
+---
+
+- include_tasks: install_gaps.yml
+- include_tasks: install_polybar.yml
+- include_tasks: install_fonts.yml
+- include_tasks: install_mise.yml
+- include_tasks: install_cargo.yml
+- include_tasks: install_vim.yml
+- include_tasks: install_zsh.yml
+- include_tasks: install_lazyvim.yml
+
+
+
+
+
+
+
+
+
+
+

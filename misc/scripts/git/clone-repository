@@ -1,0 +1,141 @@
+#!/bin/bash
+
+set -uo pipefail
+IFS=$'\n\t'
+
+output_dir="$HOME/projects"
+
+# Créer le dossier de destination si nécessaire
+mkdir -p "$output_dir"
+cd "$output_dir"
+
+# Vérifie que les outils nécessaires sont installés
+for cmd in fzf bat jq; do
+    if ! command -v "$cmd" &> /dev/null; then
+        echo -e "\033[0;31m Erreur : $cmd n'est pas installé. Veuillez l'installer pour utiliser ce script. \033[0m"
+        exit 1
+    fi
+done
+
+# Demande à l'utilisateur de choisir entre GitHub et GitLab
+echo -e "\033[0;33m Sur quelle API souhaitez-vous vous connecter ? \033[0m" # Jaune
+echo -e "\033[0;33m 1) GitHub \033[0m" # Jaune
+echo -e "\033[0;33m 2) GitLab \033[0m" # Jaune
+echo -e "\033[0;33m Entrez le numéro correspondant à votre choix (1 ou 2) : \033[0m" # Jaune
+read choice
+
+if [ "$choice" == "1" ]; then
+    service="GitHub"
+    API_URL="https://api.github.com"
+    TOKEN=${GITHUB_TOKEN}
+    USER=${GITHUB_USER}
+
+    if [ -z "$TOKEN" ] || [ -z "$USER" ]; then
+        echo -e "\033[0;31m Les variables d'environnement GITHUB_USER et GITHUB_TOKEN doivent être définies. \033[0m" # Rouge
+        echo -e "\033[0;33m 1) Run -> alias setupgit \033[0m" # Jaune
+        exit 1
+    fi
+
+elif [ "$choice" == "2" ]; then
+    service="GitLab"
+    API_URL="https://gitlab.com/api/v4"
+    TOKEN=${GITLAB_TOKEN}
+    USER=${GITLAB_USER}
+
+    if [ -z "$TOKEN" ] || [ -z "$USER" ]; then
+        echo -e "\033[0;31m Les variables d'environnement GITLAB_USER et GITLAB_TOKEN doivent être définies. \033[0m" # Rouge
+        echo -e "\033[0;33m 1) Run -> alias setupgit \033[0m" # Jaune
+        exit 1
+    fi
+
+else
+    echo -e "\033[0;31m Choix invalide. Veuillez entrer 1 pour GitHub ou 2 pour GitLab. \033[0m" # Rouge
+    exit 1
+fi
+
+# Fonction pour afficher les repositories avec fzf et télécharger via SSH
+clone_repositories() {
+
+    # Vérifie si le répertoire de base existe
+    if [ ! -d "$output_dir" ]; then
+        echo -e "\033[0;31m Le répertoire de base '$output_dir' n'existe pas. \033[0m" # Rouge
+        exit 1
+    fi
+
+    # Récupère la liste des projets depuis l'API GitHub ou GitLab
+    if [ "$service" == "GitHub" ]; then
+        response=$(curl -s -u "${USER}:${TOKEN}" "$API_URL/user/repos?per_page=100")
+    else
+        response=$(curl -s --header "PRIVATE-TOKEN: ${TOKEN}" --url "$API_URL/projects?membership=true&per_page=100")
+    fi
+
+    # Vérifie la réussite de la commande curl
+    if [ $? -ne 0 ]; then
+        echo -e "\033[0;31m Erreur lors de la récupération des projets depuis $service. \033[0m" # Rouge
+        exit 1
+    fi
+
+    # Extrait et formate les informations des projets pour la sélection
+    if [ "$service" == "GitHub" ]; then
+        formatted_repos=$(echo "$response" | jq -r '.[] | "\(.name) \(.ssh_url) \(.created_at)"')
+    else
+        formatted_repos=$(echo "$response" | jq -r '.[] | "\(.id) \(.name) \(.ssh_url_to_repo)"')
+    fi
+
+    # Sélectionne un projet avec fzf
+    selected_repo=$(echo "$formatted_repos" | fzf --height=40% --preview 'echo {}' --ansi)
+
+    # Vérifie si un projet a été sélectionné
+    if [ -z "$selected_repo" ]; then
+        echo -e "\033[0;31m Aucun projet sélectionné. \033[0m" # Rouge
+        exit 0
+    fi
+
+    # Récupère la liste des branches pour le projet sélectionné
+    if [ "$service" == "GitHub" ]; then
+
+        # Extraire le nom et l'URL SSH du projet sélectionné
+        repo_name=$(echo "$selected_repo" | awk '{print $1}')
+        repo_url=$(echo "$selected_repo" | awk '{print $2}')
+
+        branches_response=$(curl -s -u "${USER}:${TOKEN}" "$API_URL/repos/${USER}/${repo_name}/branches")
+    else
+
+        # Extraire le nom et l'URL SSH du projet sélectionné
+        repo_id=$(echo "$selected_repo" | awk '{print $1}')
+        repo_name=$(echo "$selected_repo" | awk '{print $2}')
+        repo_url=$(echo "$selected_repo" | awk '{print $3}')
+
+        branches_response=$(curl -s --header "PRIVATE-TOKEN: ${TOKEN}" --url "$API_URL/projects/$(echo ${repo_id} | sed 's/\//%2F/g')/repository/branches")
+    fi
+
+    # Vérifie la réussite de la commande curl pour les branches
+    if [ $? -ne 0 ]; then
+        echo -e "\033[0;31m Erreur lors de la récupération des branches pour le projet $repo_name. \033[0m" # Rouge
+        exit 1
+    fi
+
+    # Liste des branches disponibles avec fzf pour sélection
+    repo_branch=$(echo "$branches_response" | jq -r '.[].name' | fzf --prompt="Sélectionnez une branche : " --height=10)
+
+    # Vérifie si une branche a été sélectionnée
+    if [ -z "$repo_branch" ]; then
+        echo -e "\033[0;31m Aucune branche sélectionnée. \033[0m" # Rouge
+        exit 0
+    fi
+
+    # Cloner le projet via SSH en utilisant la branche sélectionnée
+    echo -e "\033[0;33m Téléchargement du projet $repo_name depuis $repo_url (branche: $repo_branch)... \033[0m" # Jaune
+    git clone --branch "$repo_branch" "$repo_url"
+
+    # Vérifier le succès du clone
+    if [ $? -eq 0 ]; then
+        echo -e "\033[0;32m Projet $repo_name (branche: $repo_branch) cloné avec succès dans le répertoire $output_dir. \033[0m" # Vert
+    else
+        echo -e "\033[0;31m Erreur lors du clonage du projet. \033[0m" # Rouge
+        exit 1
+    fi
+}
+
+# Appeler la fonction pour afficher les projets
+clone_repositories

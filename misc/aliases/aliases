@@ -1,0 +1,316 @@
+YELLOW='\033[1;33m'  # Couleur jaune pour les commentaires
+GREEN='\033[1;32m'   # Couleur verte pour les commandes
+NC='\033[0m'         # Pas de couleur (reset)
+
+mkdir -p $HOME/serveur
+mkdir -p $HOME/projects
+
+utils_help() {
+
+    # Fonction pour mettre à jour le système
+    update_system() {
+        echo -e "${YELLOW}Mise à jour du système...${NC}"
+        sudo apt update && sudo apt upgrade -y && sudo apt autoremove -y && sudo apt autoclean -y && sudo apt autopurge -y
+        bash -x /opt/ubuntu-gaps/misc/scripts/utils/update.sh
+        echo -e "${GREEN}Mise à jour et nettoyage terminés.${NC}"
+    }
+
+    echo -e "${YELLOW}# update_system -> Exécuter la mise à jour du système ${NC}"
+    echo
+
+    # Fonction pour enregistrer l'écran
+    record_screen() {
+        # Vérifie si un nom de fichier a été fourni
+        if [ -z "$1" ]; then
+            echo -e "${YELLOW}Utilisation : record_screen <nom_du_fichier>${NC}"
+            echo -e "${YELLOW}Enregistre l'écran et sauvegarde dans le dossier ~/Videos.${NC}"
+            echo -e "${YELLOW}Exemple : record_screen ma_video${NC}"
+            return 1  # Sort du script avec un code d'erreur
+        fi
+
+        # Définit le fichier de sortie
+        output_file="$HOME/Videos/$1.mkv"
+
+        # Enregistre l'écran avec ffmpeg
+        ffmpeg -video_size 1920x1080 -framerate 30 -f x11grab -i :0.0 -c:v libx264 -crf 0 -preset ultrafast "$output_file"
+    }
+
+    echo -e "${YELLOW}# record_screen <nom_du_fichier> -> Enregistrer l'écran ${NC}"
+    echo   
+}
+
+sec_help() {
+
+    echo -e "${YELLOW}# alias http-server -> En Python démarre un serveur HTTP simple pour le développement local${NC}"
+    alias http-server='python3 -m http.server 8080'
+    echo -e "${YELLOW}# alias genpasswd -> Génère un mot de passe aléatoire de 16 caractères${NC}"
+    alias genpasswd='openssl rand -base64 16'
+    echo -e "${YELLOW}# alias uuidgen -> Génère un UUID${NC}"
+    alias uuidgen='uuidgen'
+    echo -e "${YELLOW}# alias showports -> Affiche tous les ports d'écoute${NC}"
+    alias showports='netstat -tuln'
+    echo -e "${YELLOW}# alias back-n -> Convertit les sauts de ligne échappés en sauts de ligne réels${NC}"
+    alias back-n='sed "s/\\\n/\n/g"'
+    echo -e "${YELLOW}# alias cgrep -> grep avec mise en évidence colorée des résultats${NC}"
+    alias cgrep='grep --color=always'
+    echo -e "${YELLOW}# alias clean-swap -> Désactive et réactive le swap${NC}"
+    alias clean-swap='sudo swapoff -a && sudo swapon -a'
+    echo -e "${YELLOW}# alias clean-crash -> Supprime les fichiers de crash système${NC}"
+    alias clean-crash='sudo rm -rf /var/crash/*'
+    echo -e "${YELLOW}# alias nocolor -> Supprimer les codes de couleurs des fichiers log${NC}"
+    alias nocolor='sed "s/\x1B\[[0-9;]\+[A-Za-z]//g"'
+    echo -e "${YELLOW}# alias vgrep -> Recherche avec aperçu interactif${NC}"
+    alias vgrep='f(){ grep -rnH "$1" "$2" | fzf --preview="bat --pager never --color always -H {2} -r {2}: -p {1}" --delimiter=: ; unset -f f; }; f'
+    echo -e "${YELLOW}# treedir <profondeur> [répertoire] -> Affiche la structure des répertoires jusqu'à une profondeur spécifiée${NC}"
+    
+    treedir() {
+        if [ -z "$1" ]; then
+            echo "Usage: treedir <profondeur> [répertoire]"
+            return 1
+        fi
+        exa -Tll -L "$1" --group-directories-first "${2:-.}"
+    }
+
+    # Encodage et décodage base64
+    echo -e "${YELLOW}# alias b64d -> Décode base64${NC}"
+    alias b64d='base64 -d'
+    echo -e "${YELLOW}# alias b64e -> Encode en base64 sans sauts de ligne${NC}"
+    alias b64e='base64 -w 0'
+
+    # Changer le serveur DNS
+    set_dns() {
+        if [ -z "$1" ]; then
+            echo "Usage: set_dns <adresse_dns>"
+            return 1
+        fi
+        echo "nameserver $1" | sudo tee /etc/resolv.conf > /dev/null
+    }
+
+    echo -e "${YELLOW}# alias dns-1 -> Utiliser Cloudflare comme DNS${NC}"
+    alias dns-1='set_dns 1.1.1.1'
+    echo -e "${YELLOW}# alias dns-127 -> Utiliser le DNS local${NC}"
+    alias dns-127='set_dns 127.0.0.1'
+    echo -e "${YELLOW}# alias dns-8 -> Utiliser Google comme DNS${NC}"
+    alias dns-8='set_dns 8.8.8.8'
+    echo -e "${YELLOW}# alias dns-9 -> Utiliser Quad9 comme DNS${NC}"
+    alias dns-9='set_dns 9.9.9.9'
+
+    # Surveillance du système
+    disable_ipv6() {
+        sudo sysctl -w net.ipv6.conf.all.disable_ipv6=1
+        sudo sysctl -w net.ipv6.conf.default.disable_ipv6=1
+        sudo sysctl -w net.ipv6.conf.lo.disable_ipv6=1
+    }
+    alias show-disk-io='watch -cd -- iostat -h'
+    alias show-open-ports='sudo ss -latepun | grep -i listen'
+
+    echo -e "${YELLOW}# net_tool {disable-ipv6|show-ports|show-disk-io} -> Outils pour diverses tâches réseau${NC}"
+    net_tool() {
+        case "$1" in
+            disable-ipv6) disable_ipv6 ;;  # Désactiver IPv6
+            show-ports) show-open-ports ;;  # Afficher les ports ouverts
+            show-disk-io) show-disk-io ;;  # Afficher l'utilisation du disque en temps réel
+            *) echo "Usage: net_tool {disable-ipv6|show-ports|show-disk-io}" ;;
+        esac
+    }
+
+    # Informations publiques et météo
+    echo -e "${YELLOW}# alias get-ip -> Obtenir l'adresse IP publique${NC}"
+    alias get-ip='curl -sS ipinfo.io'
+
+    # Vérification des URLs
+    echo -e "${YELLOW}# probe_urls <fichier_urls> -> Vérifie l'état des URLs dans un fichier${NC}"
+    probe_urls() {
+        if [ -z "$1" ]; then
+            echo "Usage: probe_urls <fichier_urls>"
+            return 1
+        fi
+        while read -r url; do
+            curl -sk "$url" -o /dev/null -w "%{http_code}:%{size_download}:%{url_effective}\n"
+        done < "$1"
+    }
+
+    # Serveur HTTP simple avec répertoire spécifié
+    echo -e "${YELLOW}# alias pserv -> Démarre un serveur HTTP en python 3 '$HOME/serveur' ${NC}"
+    alias pserv='python3 -m http.server -d $HOME/serveur'
+
+    # Encodage et décodage des URLs
+    echo -e "${YELLOW}# alias urldecode -> Décoder une URL${NC}"
+    alias urldecode='python3 -c "import sys; from urllib.parse import unquote; print(unquote(sys.argv[1]))"'
+    echo -e "${YELLOW}# alias urlencode -> Encoder une URL${NC}"
+    alias urlencode='python3 -c "import sys; from urllib.parse import quote; print(quote(sys.argv[1], safe=''''))"'
+    echo -e "${YELLOW}# alias urlencode-deep -> Encodage avancé d'une URL${NC}"
+    alias urlencode-deep='f(){ echo -n "$1" | xxd -p | tr -d "\n" | sed "s#..#%&#g"; unset -f f; }; f'
+
+    # Outils pour le hacking
+    echo -e "${YELLOW}# alias get-pass-exploits -> Rechercher des exploits de mots de passe${NC}"
+    alias get-pass-exploits='f(){ xdg-open "https://www.exploitalert.com/search-results.html?search=$@" ; unset -f f; }; f'
+    echo -e "${YELLOW}# alias get-pass-info -> Obtenir des informations sur les mots de passe${NC}"
+    alias get-pass-info='f(){ xdg-open "https://cirt.net/passwords?criteria=$@" ; unset -f f; }; f'
+    echo -e "${YELLOW}# alias get-exploitalert -> Rechercher des alertes de sécurité${NC}"
+    alias get-exploitalert='f(){ xdg-open "https://www.exploitalert.com/search-results.html?search=$@" ; unset -f f; }; f'
+    echo -e "${YELLOW}# alias get-port-info -> Obtenir des informations sur les ports${NC}"
+    alias get-port-info='f(){ xdg-open "https://www.speedguide.net/port.php?port=$@" ; unset -f f; }; f'
+    echo -e "${YELLOW}# alias get-bookhacktricks -> Rechercher dans le livre HackTricks${NC}"
+    alias get-bookhacktricks='f(){ xdg-open "https://book.hacktricks.xyz/?q=$@" ; unset -f f; }; f'
+    echo -e "${YELLOW}# alias recon-certspotter -> Reconnaissance CertSpotter${NC}"
+    alias recon-certspotter='f(){ xdg-open "https://api.certspotter.com/v1/issuances?domain=$1&include_subdomains=true&expand=dns_names&expand=issuer&expand=cert" ; unset -f f; }; f'
+    echo -e "${YELLOW}# alias recon-virustotal -> Reconnaissance VirusTotal${NC}"
+    alias recon-virustotal='f(){ xdg-open "https://www.virustotal.com/gui/domain/$1" ; unset -f f; }; f'
+    echo -e "${YELLOW}# alias recon-crtsh -> Reconnaissance CRT.SH${NC}"
+    alias recon-crtsh='f(){ curl -sk "https://crt.sh/?output=json&q=$1" | jq . ; unset -f f; }; f'
+    echo -e "${YELLOW}# alias recon-wayback -> Reconnaissance Wayback Machine${NC}"
+    alias recon-wayback='f(){ curl -sk "https://web.archive.org/cdx/search/cdx?fl=original&collapse=urlkey&url=*.$1" ; unset -f f; }; f'
+    echo -e "${YELLOW}# alias capture-http -> Capturer le trafic HTTP${NC}"
+    alias capture-http='f(){ sudo unbuffer tcpdump -A -s 0 "tcp port $@ and (((ip[2:2] - ((ip[0]&0xf)<<2)) - ((tcp[12]&0xf0)>>2)) != 0)" | tr "\\n" "\n" ; unset -f f; }; f'
+    echo -e "${YELLOW}# alias capture-creds -> Capturer les identifiants${NC}"
+    alias capture-creds="sudo tcpdump -i enp0s31f6 port http or port ftp or port smtp or port imap or port pop3 or port telnet -l -A | grep -iEB5 --line-buffered 'pass=|pwd=|log=|login=|user=|username=|pw=|passw=|passwd=|password=|pass:|user:|username:|password:|login:|pass |user |authorization:|token'"
+    echo -e "${YELLOW}# alias nmap-html -> Nmap avec XSL${NC}"
+    alias nmap-html='nmap --stylesheet https://raw.githubusercontent.com/honze-net/nmap-bootstrap-xsl/master/nmap-bootstrap.xsl'
+    echo -e "${YELLOW}# alias arm-vm -> Démarrer une VM ARM${NC}"
+    alias arm-vm='source /opt/arm_now/.py3/bin/activate && arm_now start --redir tcp:1234:1234 --clean --sync armv7-eabihf'
+    echo -e "${YELLOW}# alias bb-results -> Analyser les résultats Nuclei${NC}"
+    alias bb-results='find . -iname "nuclei-*" -exec cat {} \; | cut -d " " -f 3- | sort -uV | grep -vE "http-missing-security-headers|can-i-take-over-dns-fingerprint"; cfu-clean $(find . -name "fu-*.json")'
+    echo -e "${YELLOW}# alias binwalk -> Utiliser binwalk avec extraction${NC}"
+    alias binwalk="/usr/bin/binwalk --dd='.*'"
+    echo -e "${YELLOW}# alias cfu-clean-url -> Nettoyer les URLs CFU${NC}"
+    alias cfu-clean-url='f(){ cfu-clean $@ | cut -d"|" -f4- ; unset -f f; }; f'
+    echo -e "${YELLOW}# alias cfu-clean -> Nettoyer les résultats CFU${NC}"
+    alias cfu-clean='f(){ cfu $@ | cut -d "|" -f1,3- | awk -F/ "!_[\$1]++" | sort -u -t: -k1,1 ; unset -f f; }; f'
+    echo -e "${YELLOW}# alias cfu -> Afficher les résultats CFU${NC}"
+    alias cfu='f(){ jq -r ".results[] | [(.status|tostring), (.length|tostring), (.lines|tostring), (.words|tostring), .url] | join(\"|\")" $@ | sort -uV; unset -f f; }; f'
+    echo -e "${YELLOW}#  alias crl -> Requête CURL avec User-Agent${NC}"
+    alias crl='curl -sS --path-as-is -gk -H "User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) snap Chromium/83.0.4103.106 Chrome/83.0.4103.106 Safari/537.36"'
+    echo -e "${YELLOW}# alias crli -> Requête CURL avec User-Agent et entêtes${NC}"
+    alias crli='curl -sS --path-as-is -gk -D /dev/stderr -H "User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) snap Chromium/83.0.4103.106 Chrome/83.0.4103.106 Safari/537.36"'
+    echo -e "${YELLOW}# alias dirmon -> Surveiller les modifications de répertoires${NC}"
+    alias dirmon='inotifywait -rm -e create -e moved_to -e modify -e access -e attrib -e close_write -e moved_from'
+    echo -e "${YELLOW}# alias killit -> Forcer l'arrêt des processus${NC}"
+    alias killit='sudo kill -KILL'
+    echo -e "${YELLOW}# alias favhash -> Obtenir le hash du favicon${NC}"
+    alias favhash="python3 -c 'from mmh3 import hash as h; from codecs import encode as e; from sys import argv; favicon = e(open(argv[1], \"rb\").read(), \"base64\"); print(f\"https://www.shodan.io/search?query=http.favicon.hash%3A{h(favicon)}\")'"
+    echo -e "${YELLOW}# alias fu -> Utiliser ffuf pour le fuzzing${NC}"
+    alias fu='ffuf -mc all -t 2 -H "User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36"'
+    echo -e "${YELLOW}# alias exegol -> Lance le Framework Exegol avec prévilége Sudo ${NC}"
+    alias exegol="sudo -E $(which exegol)"
+
+    # Gestion des ressources Docker spécifiques
+    echo -e "${YELLOW}# docker_clean {all|images|networks|containers|volumes} -> Supprimer toutes les ressources Docker inutilisées${NC}"
+    docker_clean() {
+        local cmd="$1"
+        case "$cmd" in
+            all)
+                docker system prune -a -f --volumes  # Supprimer toutes les ressources Docker inutilisées
+                ;;
+            images)
+                docker rmi -f $(docker images -q)  # Supprimer toutes les images Docker
+                ;;
+            networks)
+                docker network rm $(docker network ls -q)  # Supprimer tous les réseaux Docker
+                ;;
+            containers)
+                docker rm -f $(docker ps -a -q)  # Supprimer tous les conteneurs Docker
+                ;;
+            volumes)
+                docker volume rm $(docker volume ls -q)  # Supprimer tous les volumes Docker
+                ;;
+            *)
+                echo "Usage: docker_clean {all|images|networks|containers|volumes}"  # Afficher l'aide de la fonction
+                ;;
+        esac
+    }
+
+    echo -e "${YELLOW}# docker_exec <command> -> Exécuter une commande dans un conteneur Docker sélectionné avec fzf${NC}"
+    docker_exec() {
+        local container_id=$(docker ps | grep -vF "CONTAINER ID" | fzf | awk '{print $1}')
+        if [ -n "$container_id" ]; then
+            docker exec -it "$container_id" "${@:2}"  # Exécuter la commande dans le conteneur sélectionné
+        else
+            echo "No container selected"
+        fi
+    }
+
+    echo -e "${YELLOW}# docker_run -> Exécuter un conteneur Docker suivant une liste des images Docker disponibles sur le poste ${NC}"
+    docker_run() {
+        # Afficher la liste des images Docker disponibles
+        echo -e "${YELLOW}# Liste des images Docker disponibles :${NC}"
+        docker images --format "{{.Repository}}:{{.Tag}}"  # Affiche le nom et le tag des images Docker
+
+        # Choisir une image Docker
+        local image=$(docker images --format "{{.Repository}}:{{.Tag}}" | fzf --prompt "Choisissez une image Docker : ")
+        
+        # Vérifier si une image a été choisie
+        if [ -n "$image" ]; then
+            # Exécuter le conteneur avec l'image choisie
+            echo -e "${YELLOW}# Exécuter le conteneur Docker avec l'image : $image${NC}"
+            docker run --rm -it -v "$PWD":/host -w /host --net=host "$image" "${@:2}"
+        else
+            echo "Aucune image sélectionnée"
+        fi
+    }
+
+
+    # Docker Tool
+
+    echo -e "\033[1;33m alias recon-amass -> Amass pour la reconnaissance\033[0m"
+    alias recon-amass='dockit caffix/amass'
+    echo -e "\033[1;33m alias recon-findomain -> Findomain pour l'énumération de sous-domaines\033[0m"
+    alias recon-findomain='dockit edu4rdshl/findomain:latest findomain'
+    echo -e "\033[1;33m alias recon-gcert -> gcert pour la recherche de certificats\033[0m"
+    alias recon-gcert='dockit hessman/gcert'
+    echo -e "\033[1;33m alias recon-witnessme -> WitnessMe pour des captures d'écran\033[0m"
+    alias recon-witnessme='dockit -w /host byt3bl33d3r/witnessme --threads 5 screenshot'
+    echo -e "\033[1;33m alias recon-wappa -> Wappalyzer pour l'analyse des technologies web\033[0m"
+    alias recon-wappa='dockit wappalyzer/cli -r -D 2 -P -a "User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) snap Chromium/83.0.4103.106 Chrome/83.0.4103.106 Safari/537.36" $@'
+    echo -e "\033[1;33m alias supptruder -> Suptruder pour le fuzzing\033[0m"
+    alias supptruder="dockit elsicarius/supptruder"
+    echo -e "\033[1;33m alias secator -> Secator pour le fuzzing de sécurité\033[0m"
+    alias secator="docker run -it --rm --net=host -v ~/.secator:/root/.secator freelabz/secator"
+    echo -e "\033[1;33m alias acunetix -> Acunetix pour le scan de vulnérabilités web\033[0m"
+    alias acunetix='docker run --rm -it -p 3443:3443 -d ogranc/awvs_scanner:14.6.211220100; echo "Remember to run /home/acunetix/.acunetix/change_credentials.sh"'
+    echo -e "\033[1;33m alias htcap-crawl -> HTCAP pour le crawling\033[0m"
+    alias htcap-crawl='f(){ OUT=$(echo "$1" | tr "/" "_"); dockit htcap htcap crawl -m aggressive -s domain -U "User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) snap Chromium/83.0.4103.106 Chrome/83.0.4103.106 Safari/537.36" "$1" "/host/$OUT.db" ; dockit htcap htcap scan native "/host/$OUT.db"; dockit htcap htcap util report "/host/$OUT.db" "/host/$OUT.html" ; unset -f f; }; f'
+    echo -e "\033[1;33m alias rustscan -> Rustscan pour le scan de ports\033[0m"
+    alias rustscan='dockit rustscan/rustscan'
+    echo -e "\033[1;33m alias oneforall -> OneForAll pour l'énumération de sous-domaines\033[0m"
+    alias oneforall='dockit tardis07/oneforall'
+    echo -e "\033[1;33m alias getfuzz -> Exemple de fuzzing\033[0m"
+    alias getfuzz='f(){ echo "<fuzz1>\"fuzz2'"'"'fuzz3\`%}})fuzz4\${{fuzz5\\";  unset -f f; }; f'
+    echo -e "\033[1;33m alias ssh-audit -> Audit de sécurité SSH\033[0m"
+    alias ssh-audit="dockit positronsecurity/ssh-audit"
+    echo -e "\033[1;33m alias ssh-scan -> Scan de configuration SSH\033[0m"
+    alias ssh-scan="dockit mozilla/ssh_scan /app/bin/ssh_scan"
+    echo -e "\033[1;33m alias ssl-scan -> Scan SSL\033[0m"
+    alias ssl-scan="dockit zeitgeist/docker-sslscan"
+    echo -e "\033[1;33m alias ssl-test -> Test des configurations SSL\033[0m"
+    alias ssl-test='dockit drwetter/testssl.sh'
+    echo -e "\033[1;33m alias john -> John the Ripper pour le cracking de mots de passe\033[0m"
+    alias john='dockit phocean/john_the_ripper_jumbo'
+    echo -e "\033[1;33m alias hashcat -> Hashcat pour le cracking de mots de passe\033[0m"
+    alias hashcat='dockit -w /host dizcza/docker-hashcat:intel-cpu hashcat'
+    echo -e "\033[1;33m alias metasploit -> Metasploit Framework pour l'exploitation\033[0m"
+    alias metasploit='dockit -v /tmp/msf:/tmp/msf -e MSF_UID=0 -e MSF_GID=0 metasploitframework/metasploit-framework:latest /bin/bash'
+    echo -e "\033[1;33m alias wpscan -> WPScan pour la sécurité WordPress\033[0m"
+    alias wpscan="dockit wpscanteam/wpscan"
+    echo -e "\033[1;33m alias drupwn -> DruPwn pour l'exploitation de Drupal\033[0m"
+    alias drupwn="dockit immunit/drupwn"
+    echo -e "\033[1;33m alias retdec -> RetDec pour la décompilation\033[0m"
+    alias retdec='dockit blacktop/retdec'
+    echo -e "\033[1;33m alias bettercap-wifi -> Bettercap pour le pentesting réseau\033[0m"
+    alias bettercap-wifi="bettercap -iface wlp0s20f3 -eval \"wifi.recon on;set wifi.show.sort clients desc;set ticker.commands 'clear; wifi.show';ticker on\""
+    echo -e "\033[1;33m alias sysdig -> Sysdig pour l'analyse et la surveillance du système\033[0m"
+    alias sysdig='docker run --rm -it --privileged --net=host -v /var/run/docker.sock:/host/var/run/docker.sock -v /dev:/host/dev -v /proc:/host/proc:ro -v /boot:/host/boot:ro -v /src:/src -v /lib/modules:/host/lib/modules:ro -v /usr:/host/usr:ro -v /etc:/host/etc:ro -d --name sysdig docker.io/sysdig/sysdig'
+    echo -e "\033[1;33m alias quick-ssh-srv -> Serveur SSH rapide\033[0m"
+    alias quick-ssh-srv='dockit -d thelaluka/welcome:quick-ssh'
+    echo -e "\033[1;33m alias swagger-editor -> Swagger Editor pour la documentation d'API\033[0m"
+    alias swagger-editor='dockit swaggerapi/swagger-editor'
+    echo -e "\033[1;33m alias crypt-pad -> CryptPad pour la collaboration sécurisée\033[0m"
+    alias crypt-pad='mkdir datastore; docker run --rm -it -p 3000:3000 -v "$PWD/datastore:/cryptpad/datastore" arno0x0x/docker-cryptpad'
+
+
+
+}
+
+
+
+

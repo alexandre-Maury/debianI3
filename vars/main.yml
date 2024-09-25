@@ -1,0 +1,50 @@
+---
+
+# roles/vars/main.yml
+PROJECT: 'ubuntuI3-Gaps'
+REQUIRED_UBUNTU_CODENAME: 'noble'
+REBOOT_REQUIRED: true
+SWAY_INSTALL: true
+BUILD_DIR: '{{ ansible_env.HOME }}/.config/git'
+SOURCE_DIR: '/opt/ubuntu-gaps'
+
+# https://launchpad.net/~regolith-linux/+archive/ubuntu/release
+# sudo add-apt-repository ppa:regolith-linux/release
+# sudo apt update
+# sudo apt install i3-gaps-wm 
+APT_REPOSITORY:
+  - 'ppa:regolith-linux/release'
+
+
+I3GAPS_REPO:
+  - { repo: "https://www.github.com/Airblader/i3", dest: "{{ BUILD_DIR }}/i3-gaps" }
+
+POLYBAR_REPO:
+  - { repo: "https://github.com/polybar/polybar.git", dest: "{{ BUILD_DIR }}/polybar" }
+
+POLYBAR_TIMER_REPO:
+  - { repo: "https://github.com/jbirnick/polybar-timer.git", dest: "{{ BUILD_DIR }}/polybar/timer" }
+
+LAZYVIM_REPO: "https://github.com/LazyVim/starter"
+
+FONTS_REPO_JETBRAINSMONO: "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/JetBrainsMono.tar.xz"
+FONTS_REPO_IOSEVKA: "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/Iosevka.tar.xz"
+
+
+PACKER_REPO: "https://github.com/wbthomason/packer.nvim"
+
+OHMYZSH_REPO: 'https://github.com/robbyrussell/oh-my-zsh.git'
+FZF_REPO: 'https://github.com/junegunn/fzf.git'
+POWERLEVEL10K_REPO: "https://github.com/romkatv/powerlevel10k.git"
+
+OHMYZSH_PLUGINS_REPO:
+  - { name: "zsh-syntax-highlighting", repo: "https://github.com/zsh-users/zsh-syntax-highlighting.git" }
+  - { name: "zsh-autosuggestions", repo: "https://github.com/zsh-users/zsh-autosuggestions.git" }
+  - { name: "fast-syntax-highlighting", repo: "https://github.com/zdharma-continuum/fast-syntax-highlighting.git" }
+  - { name: "zsh-autocomplete", repo: "https://github.com/marlonrichert/zsh-autocomplete.git" }
+
+  
+
+
+
+

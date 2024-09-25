@@ -1,0 +1,84 @@
+# roles/environnement/task/install_zsh.yml
+
+---
+
+- name: Installation de zsh - tmux
+  ansible.builtin.apt:
+    name:
+      - zsh
+      - tmux
+    state: present
+  become: true
+
+- name: Changer le shell par défaut pour Zsh
+  ansible.builtin.user:
+    name: "{{ ansible_user_id }}"
+    shell: /bin/zsh
+  become: true
+
+- name: Vérifier si Oh-My-Zsh est déjà installé
+  ansible.builtin.stat:
+    path: "{{ ansible_env.HOME }}/.oh-my-zsh"
+  register: oh_my_zsh_installed
+
+- name: Installer Oh-My-Zsh s'il n'est pas déjà installé
+  ansible.builtin.git:
+    repo: '{{ OHMYZSH_REPO }}'
+    dest: '{{ ansible_env.HOME }}/.oh-my-zsh'
+    force: yes
+    update: yes
+  become_user: '{{ ansible_user_id }}'
+  when: not oh_my_zsh_installed.stat.exists
+
+- name: Vérifier si ~/.zshrc existe
+  ansible.builtin.stat:
+    path: '{{ ansible_env.HOME }}/.zshrc'
+  register: zshrc_stat
+
+- name: Copier la configuration de zshrc
+  ansible.builtin.copy:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+  with_items:
+    - {src: '{{ SOURCE_DIR }}/misc/dotfiles/profile/zshrc', dest: '{{ ansible_env.HOME }}/.zshrc'}
+  when: not zshrc_stat.stat.exists
+
+- name: Cloner le theme powerlevel10k 
+  ansible.builtin.git:
+    repo: "{{ POWERLEVEL10K_REPO }}"
+    dest: "{{ ansible_env.HOME }}/.oh-my-zsh/custom/themes/powerlevel10k"
+    update: yes
+
+- name: Définir le thème de zsh
+  ansible.builtin.replace:
+    path: '{{ ansible_env.HOME }}/.zshrc'
+    regexp: '^ZSH_THEME=.*$'
+    replace: 'ZSH_THEME="powerlevel10k/powerlevel10k"'
+
+- name: Cloner le dépôt fzf
+  ansible.builtin.git:
+    repo: '{{ FZF_REPO }}'
+    dest: '{{ ansible_env.HOME }}/.fzf'
+    depth: 1
+
+- name: Exécuter le script d'installation de fzf
+  ansible.builtin.shell: "zsh -c '{{ ansible_env.HOME }}/.fzf/install --all'"
+
+- name: Cloner les plugins Oh-My-Zsh
+  ansible.builtin.git:
+    repo: "{{ item.repo }}"
+    dest: "{{ ansible_env.HOME }}/.oh-my-zsh/custom/plugins/{{ item.name }}"
+    update: yes
+  loop: "{{ OHMYZSH_PLUGINS_REPO }}"
+
+- name: Activer les plugins dans .zshrc
+  ansible.builtin.lineinfile:
+    path: '{{ ansible_env.HOME }}/.zshrc'
+    regexp: '^plugins=\(.*\)'
+    line: 'plugins=({{ ohmyzsh_plugins_install | join(" ") }})'
+
+- name: Désactiver les plugins Zsh
+  ansible.builtin.shell:
+    cmd: "zsh -c 'source {{ ansible_env.HOME }}/.zshrc && omz plugin disable {{ item }} || true'"
+    executable: /bin/zsh
+  loop: '{{ ohmyzsh_plugins_remove }}'

@@ -1,0 +1,136 @@
+# roles/environnement/default/main.yml
+
+---
+
+i3_gaps_dependencies:
+  - libxcb1-dev 
+  - libxcb-keysyms1-dev 
+  - libpango1.0-dev 
+  - libxcb-util0-dev 
+  - libxcb-icccm4-dev 
+  - libyajl-dev 
+  - libstartup-notification0-dev 
+  - libxcb-randr0-dev 
+  - libev-dev 
+  - libxcb-cursor-dev 
+  - libxcb-xinerama0-dev 
+  - libxcb-xkb-dev 
+  - libxkbcommon-dev 
+  - libxkbcommon-x11-dev 
+  - autoconf 
+  - libxcb-xrm0 
+  - libxcb-xrm-dev 
+  - automake 
+  - libxcb-shape0-dev
+
+polybar_dependencies:
+  - cmake 
+  - cmake-data 
+  - pkg-config 
+  - python3-sphinx 
+  - python3-packaging 
+  - libuv1-dev 
+  - libcairo2-dev 
+  - libxcb1-dev 
+  - libxcb-util0-dev 
+  - libxcb-randr0-dev 
+  - libxcb-composite0-dev 
+  - python3-xcbgen 
+  - xcb-proto 
+  - libxcb-image0-dev 
+  - libxcb-ewmh-dev 
+  - libxcb-icccm4-dev
+
+polybar_dependencies_optional:
+  - libxcb-xkb-dev 
+  - libxcb-xrm-dev 
+  - libxcb-cursor-dev 
+  - libasound2-dev 
+  - libpulse-dev 
+  - i3-wm 
+  - libjsoncpp-dev 
+  - libmpdclient-dev 
+  - libcurl4-openssl-dev 
+  - libnl-genl-3-dev
+
+ohmyzsh_plugins_remove:
+  - rtx                       
+  - ssh-agent  
+
+mise_install:
+  - { name: "awscli", version: "latest" }
+  - { name: "bat", version: "latest" }
+  - { name: "direnv", version: "latest" }
+  - { name: "duf", version: "latest" }
+  - { name: "golang", version: "latest" }
+  - { name: "helm", version: "latest" }
+  - { name: "java", version: "latest" }
+  - { name: "jless", version: "latest" }
+  - { name: "k9s", version: "latest" }
+  - { name: "kubectl", version: "latest" }
+  - { name: "kubectx", version: "latest" }
+  - { name: "maven", version: "latest" }
+  - { name: "minikube", version: "latest" }
+  - { name: "nodejs", version: "latest" }
+  - { name: "pdm", version: "latest" }
+  - { name: "python", version: "2" } 
+  - { name: "python", version: "latest" } 
+  - { name: "php", version: "latest" }  
+  - { name: "rust", version: "latest" }
+  - { name: "terraform", version: "latest" }
+  - { name: "websocat", version: "latest" }
+
+cargo_install:
+  - { name: "bottom", version: "" }
+  - { name: "du-dust", version: "" }
+  - { name: "exa", version: "" }
+  - { name: "git-delta", version: "" }
+  - { name: "htmlq", version: "" }
+  - { name: "spacer", version: "" }
+  - { name: "viu", version: "" }
+  - { name: "xsv", version: "" }
+  - { name: "--locked --git https://github.com/asciinema/asciinema", version: "" }
+
+treesitter_languages: 
+  - json
+  - javascript
+  - typescript
+  - tsx
+  - yaml
+  - html
+  - css
+  - prisma
+  - markdown
+  - markdown_inline
+  - svelte
+  - graphql
+  - bash
+  - lua
+  - vim
+  - dockerfile
+  - gitignore
+  - query
+  - python
+  - c
+  - cpp
+
+ohmyzsh_plugins_install:
+  - aws
+  - helm
+  - kubectl
+  - kubectx
+  - minikube
+  - terraform
+  - colored-man-pages          
+  - docker                      
+  - extract                     
+  - mise                       
+  - tmux                       
+  - zsh-autosuggestions                  
+  - zsh-syntax-highlighting
+  - fast-syntax-highlighting
+  - git
+  - direnv
+  - fzf
+  - vscode
+  - zsh-autocomplete 
