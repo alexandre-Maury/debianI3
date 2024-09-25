@@ -28,4 +28,4 @@ else
 fi
 
 
-status_message "Lancer bash -x install.sh -> Avec votre utilisateur"
+status_message "Run : bash -x install.sh -> Ce script ne doit pas être exécuté en tant qu'utilisateur root."

@@ -17,6 +17,8 @@ if [ "$(whoami)" == "root" ]; then
     exit 1  # Quitte le script avec un code d'erreur
 fi
 
+export PATH="$HOME/.local/bin:$PATH"
+
 # Vérification si Ansible est déjà installé
 if ! command -v ansible &> /dev/null
 then
