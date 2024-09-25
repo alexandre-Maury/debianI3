@@ -2,7 +2,7 @@
 
 # roles/vars/main.yml
 PROJECT: 'debianI3-Gaps'
-BUILD_DIR: '/home/{{ user_env }}/.config/git'
+BUILD_DIR: '{{ ansible_env.HOME }}/.config/git'
 SOURCE_DIR: '/opt/{{ PROJECT }}'
 
 

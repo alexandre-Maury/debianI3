@@ -15,6 +15,7 @@ Il utilise principalement Ansible pour l'automatisation, avec des rôles et des 
 3. `git clone https://github.com/alexandre-Maury/debianI3.git`
 4. `mv debianI3 /opt/debianI3`
 5. `cd /opt/debianI3 && bash -x pre-install.sh`
+6. `cd /opt/debianI3 && bash -x install.sh`
 
 ## Feuille de route
 1. `Mise en place du systeme` [En Cours]

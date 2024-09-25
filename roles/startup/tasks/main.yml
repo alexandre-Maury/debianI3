@@ -34,8 +34,8 @@
   community.general.pipx:
     name: '{{ item }}'
   loop: '{{ base_cli_pipx }}'
-  # environment:
-  #   PIPX_BIN_DIR: "{{ ansible_env.HOME }}/.local/bin"
+  environment:
+    PIPX_BIN_DIR: "{{ ansible_env.HOME }}/.local/bin"
 
 
 # - name: roles/startup - Copier les fichiers de configuration

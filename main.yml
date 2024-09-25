@@ -15,4 +15,4 @@
     # - role: 'roles/cleanup'
     #   tags: 'cleanup'
       users:
-        - username: '{{ user_env }}'
+        - username: '{{ ansible_user_id }}'
