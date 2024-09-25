@@ -6,37 +6,27 @@ set -euo pipefail
 # Définir l'IFS (Internal Field Separator) pour gérer correctement les espaces blancs
 IFS=$'\n\t'
 
-# Obtenir l'utilisateur courant
-USER_TO_ADD=$(whoami)
-
-# Vérifier si l'utilisateur est déjà dans le groupe sudo
-if groups "$USER_TO_ADD" | grep -q "\bsudo\b"; then
-    echo "$USER_TO_ADD est déjà dans le groupe sudo."
-else
-    echo "$USER_TO_ADD n'est pas dans le groupe sudo. Ajout en cours..."
-    sudo ansible-playbook ~/add_user_to_sudo.yml -e "user_to_add=$USER_TO_ADD"
-fi
-
-# Ajouter le chemin où pipx installe les binaires au PATH
-# export PATH="~/.local/bin:$PATH"
-export PATH="$HOME/.local/bin:$PATH"
-
 # Fonction pour afficher les messages de statut
 status_message() {
     echo "[*] $1"
 }  
 
+# Obtenir l'utilisateur courant
+read -p "[*] Veuillez entrer votre nom d'utilisateur pour la suite du script : " USER_TO_ADD
 
-# Vérification des fichiers nécessaires
-if [[ ! -f inventory.ini ]]; then
-    echo "[ERREUR] Le fichier inventory.ini est manquant. Veuillez le créer avant d'exécuter le script."
-    exit 1
+
+# Vérifier si l'utilisateur est déjà dans le groupe sudo
+if groups "$USER_TO_ADD" | grep -q "\bsudo\b"; then
+    echo "$USER_TO_ADD est déjà dans le groupe sudo."
+
+else
+    echo "$USER_TO_ADD n'est pas dans le groupe sudo. Ajout en cours..."
+    #ansible-playbook ~/add_user_to_sudo.yml -e "user_to_add=$USER_TO_ADD"
+
+    usermod -aG sudo $USER_TO_ADD
+    printf "%s \\n" "[Succès] Votre compte : ${USER_TO_ADD} est à présent membre du groupe sudo"
 fi
 
-if [[ ! -f main.yml ]]; then
-    echo "[ERREUR] Le fichier main.yml est manquant. Veuillez le créer avant d'exécuter le script."
-    exit 1
-fi
 
 # Vérification si Ansible est déjà installé
 if ! command -v ansible &> /dev/null
@@ -46,22 +36,14 @@ then
     status_message "Ansible n'est pas installé. Installation en cours..."
     
     status_message "Configuration du DNS pour utiliser le serveur DNS de Quad9"
-    echo "nameserver 9.9.9.9" | sudo tee /etc/resolv.conf
+    echo "nameserver 9.9.9.9" | tee /etc/resolv.conf
 
     # Nettoyer le cache des paquets, mettre à jour la liste et les paquets
     # sudo rm -v /var/cache/apt/archives/lock
-    sudo DEBIAN_FRONTEND=noninteractive apt clean
-    sudo DEBIAN_FRONTEND=noninteractive apt update
-    sudo DEBIAN_FRONTEND=noninteractive apt upgrade -y
-    sudo DEBIAN_FRONTEND=noninteractive apt autoremove -y
-
-    sudo apt install pipx -y
-
-    # Assurer que le chemin où pipx installe les binaires est ajouté au PATH
-    pipx ensurepath --force 
-
-    # Installer Ansible-core avec pipx
-    pipx install ansible-core --force
+    DEBIAN_FRONTEND=noninteractive apt clean
+    DEBIAN_FRONTEND=noninteractive apt update
+    DEBIAN_FRONTEND=noninteractive apt upgrade -y
+    DEBIAN_FRONTEND=noninteractive apt autoremove -y
 
     # Installer la collection Ansible 'community.general'
     ansible-galaxy collection install community.general
@@ -73,7 +55,17 @@ else
     
 fi
 
-ansible-playbook -vvv -i inventory.ini --ask-become main.yml
+apt install pipx -y
+
+export PIPX_HOME="/home/$USER_TO_ADD/.local/pipx"
+export PIPX_BIN_DIR="/home/$USER_TO_ADD/.local/bin"
+pipx ensurepath --force 
+
+# Installer Ansible-core avec pipx
+pipx install ansible-core --force
+
+ansible-playbook -vvv -i inventory.ini --ask-become main.yml -e "user_env=$USER_TO_ADD"
+
 
 clear
 

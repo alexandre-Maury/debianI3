@@ -1,19 +1,9 @@
 ---
 
 # roles/vars/main.yml
-PROJECT: 'ubuntuI3-Gaps'
-REQUIRED_UBUNTU_CODENAME: 'noble'
-REBOOT_REQUIRED: true
-SWAY_INSTALL: true
-BUILD_DIR: '{{ ansible_env.HOME }}/.config/git'
-SOURCE_DIR: '/opt/ubuntu-gaps'
-
-# https://launchpad.net/~regolith-linux/+archive/ubuntu/release
-# sudo add-apt-repository ppa:regolith-linux/release
-# sudo apt update
-# sudo apt install i3-gaps-wm 
-APT_REPOSITORY:
-  - 'ppa:regolith-linux/release'
+PROJECT: 'debianI3-Gaps'
+BUILD_DIR: '/home/{{ user_env }}/.config/git'
+SOURCE_DIR: '/opt/{{ PROJECT }}'
 
 
 I3GAPS_REPO:
