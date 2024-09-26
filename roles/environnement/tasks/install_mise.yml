@@ -26,6 +26,10 @@
 - name: Executer le script d'installation de https://mise.jdx.dev
   ansible.builtin.shell: '/tmp/install.sh'
 
+- name: Intégrez mise dans votre shell
+  ansible.builtin.shell: > 
+    echo 'eval "$(~/.local/bin/mise activate bash)"' >> ~/.bashrc
+
 - name: Installer la liste d'outils avec https://mise.jdx.dev 
   ansible.builtin.shell: >
     bash -c 'mise use -g {{ item.name }} || true'
