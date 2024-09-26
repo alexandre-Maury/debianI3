@@ -2,12 +2,24 @@
 
 ---
 
-- name: roles/startup - Ajouter le dépôt contrib non-free-firmware
-  ansible.builtin.command: echo | sudo apt-add-repository contrib non-free-firmware 
+# - name: roles/startup - Ajouter le dépôt contrib non-free-firmware
+#   ansible.builtin.command: echo | sudo apt-add-repository contrib non-free-firmware 
+#   become: true
+
+# - name: roles/startup - Ajouter le dépôt contrib non-free
+#   ansible.builtin.command: echo | sudo apt-add-repository contrib non-free
+#   become: true
+
+- name: Ajouter le dépôt contrib non-free-firmware
+  ansible.builtin.apt_repository:
+    repo: "deb http://deb.debian.org/debian $(lsb_release -sc) contrib non-free-firmware"
+    state: present
   become: true
 
-- name: roles/startup - Ajouter le dépôt contrib non-free
-  ansible.builtin.command: echo | sudo apt-add-repository contrib non-free
+- name: Ajouter le dépôt contrib non-free
+  ansible.builtin.apt_repository:
+    repo: "deb http://deb.debian.org/debian $(lsb_release -sc) contrib non-free"
+    state: present
   become: true
 
 - name: roles/startup - Mettre à jour la liste des paquets
