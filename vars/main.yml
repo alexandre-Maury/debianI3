@@ -18,6 +18,9 @@ POLYBAR_TIMER_REPO:
 
 LAZYVIM_REPO: "https://github.com/LazyVim/starter"
 
+ASDF_REPO: 
+  - { repo: "https://github.com/asdf-vm/asdf.git", dest: "{{ ansible_env.HOME }}/.asdf" }
+
 FONTS_REPO_JETBRAINSMONO: "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/JetBrainsMono.tar.xz"
 FONTS_REPO_IOSEVKA: "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/Iosevka.tar.xz"
 

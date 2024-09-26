@@ -1,0 +1,46 @@
+# roles/environnement/taskS/install_asdf.yml
+
+---
+
+# https://asdf-vm.com/guide/getting-started.html
+
+- name: Installer les dépendances requises pour asdf
+  ansible.builtin.apt:
+    name:
+      - dirmngr 
+      - gpg 
+      - curl 
+      - gawk
+      - git
+    state: present
+  become: true
+
+- name: Cloner, mettre à jour et basculer sur la version spécifique du dépôt asdf
+  ansible.builtin.git:
+    repo: "{{ item.repo }}"
+    dest: "{{ item.dest }}"
+    # version: "{{ item.app_version }}"  # Branche, tag ou commit spécifique
+    update: yes # Clonage ou mise à jour
+  loop: "{{ ASDF_REPO }}"
+  # Commande Git associée :
+  # git clone {{ item.repo }} {{ item.dest }} --branch {{ item.app_version }} --single-branch
+  # git pull origin {{ item.app_version }}  # Effectué automatiquement si `dest` existe déjà
+
+- name: Ajouter la configuration asdf dans .bashrc 
+  ansible.builtin.lineinfile:
+    path: "{{ ansible_env.HOME }}/.bashrc"
+    line: '. "$HOME/.asdf/asdf.sh"'
+    state: present
+
+- name: Ajouter la complétion asdf dans .bashrc 
+  lineinfile:
+    path: "{{ ansible_env.HOME }}/.bashrc"
+    line: '. "$HOME/.asdf/completions/asdf.bash"'
+    state: present
+
+
+- name: Recharger .bashrc pour prendre en compte les changements
+  shell: source ~/.bashrc
+  args:
+    executable: /bin/bash
+  ignore_errors: true

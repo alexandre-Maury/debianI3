@@ -109,16 +109,10 @@ treesitter_languages:
   - cpp
 
 ohmyzsh_plugins_install:
-  - aws
-  - helm
-  - kubectl
-  - kubectx
-  - minikube
-  - terraform
   - colored-man-pages          
   - docker                      
-  - extract                     
-  - mise                       
+  - extract 
+  - asdf                                        
   - tmux                       
   - zsh-autosuggestions                  
   - zsh-syntax-highlighting
