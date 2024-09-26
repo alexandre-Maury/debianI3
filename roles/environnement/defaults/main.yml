@@ -60,34 +60,26 @@ ohmyzsh_plugins_remove:
   - ssh-agent  
 
 mise_install:
-  - { name: "awscli", version: "latest" }
-  - { name: "bat", version: "latest" }
-  - { name: "direnv", version: "latest" }
-  - { name: "duf", version: "latest" }
-  - { name: "golang", version: "latest" }
-  - { name: "helm", version: "latest" }
-  - { name: "java", version: "latest" }
-  - { name: "jless", version: "latest" }
-  - { name: "k9s", version: "latest" }
-  - { name: "kubectl", version: "latest" }
-  - { name: "kubectx", version: "latest" }
-  - { name: "maven", version: "latest" }
-  - { name: "minikube", version: "latest" }
-  - { name: "nodejs", version: "latest" }
-  - { name: "pdm", version: "latest" }
-  - { name: "python", version: "2" } 
-  - { name: "python", version: "latest" } 
-  - { name: "php", version: "latest" }  
-  - { name: "rust", version: "latest" }
-  - { name: "terraform", version: "latest" }
-  - { name: "websocat", version: "latest" }
+  - { name: "usage" }
+  - { name: "bat" }
+  - { name: "direnv" }
+  - { name: "duf" }
+  - { name: "golang" }
+  - { name: "java" } 
+  - { name: "jless" }
+  - { name: "maven" }
+  - { name: "nodejs" }
+  - { name: "pdm" }
+  - { name: "python" } 
+  - { name: "php" }  
+  - { name: "rust" }
+
 
 mise_cargo_install:
   - { name: "bottom", version: "" }
   - { name: "du-dust", version: "" }
   - { name: "exa", version: "" }
   - { name: "git-delta", version: "" }
-  - { name: "htmlq", version: "" }
   - { name: "spacer", version: "" }
   - { name: "viu", version: "" }
   - { name: "xsv", version: "" }

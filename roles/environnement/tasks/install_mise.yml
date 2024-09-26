@@ -2,6 +2,9 @@
 
 # roles/common/mise/task/main.yml
 
+# mise ls -> tool installer sur systeme
+# mise ls-remote -> tool disponible a l'installation
+
 - name: Installation de https://mise.jdx.dev
   ansible.builtin.stat:
     path: '{{ ansible_env.HOME }}/.local/bin/mise'
@@ -23,15 +26,9 @@
 - name: Executer le script d'installation de https://mise.jdx.dev
   ansible.builtin.shell: '/tmp/install.sh'
 
-- name: Installer https://mise.jdx.dev usage-cli pour l'aide en ligne de commande (CLI) et la complétion automatique 
-  ansible.builtin.shell: bash -c 'mise use -g usage'
-
-- name: Ajuste les paramètres pour le support Python de https://mise.jdx.dev 
-  ansible.builtin.shell: bash -c 'mise settings set python_compile 1'
-
 - name: Installer la liste d'outils avec https://mise.jdx.dev 
   ansible.builtin.shell: >
-    bash -c 'mise install {{ item.name }}@{{ item.version }} -y && mise use -g {{ item.name }}@{{ item.version }} || true'
+    bash -c 'mise use -g {{ item.name }}@{{ item.version }} || true'
   loop: "{{ mise_install }}"
 
 # No bash -i as it allows cargo to run jobs in the background in a weird way that breaks ansible
