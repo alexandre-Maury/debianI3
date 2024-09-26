@@ -12,13 +12,13 @@
 
 - name: Ajouter le dépôt contrib non-free-firmware
   ansible.builtin.apt_repository:
-    repo: "deb http://deb.debian.org/debian $(lsb_release -sc) contrib non-free-firmware"
+    repo: "deb http://deb.debian.org/debian {{ CODENAME }} contrib non-free-firmware"
     state: present
   become: true
 
 - name: Ajouter le dépôt contrib non-free
   ansible.builtin.apt_repository:
-    repo: "deb http://deb.debian.org/debian $(lsb_release -sc) contrib non-free"
+    repo: "deb http://deb.debian.org/debian {{ CODENAME }} contrib non-free"
     state: present
   become: true
 

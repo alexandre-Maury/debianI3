@@ -4,6 +4,7 @@
 PROJECT: 'debianI3'
 BUILD_DIR: '{{ ansible_env.HOME }}/.config/git'
 SOURCE_DIR: '/opt/{{ PROJECT }}'
+CODENAME: "{{ ansible_distribution_release }}"  # Récupère le nom de la version (bookworm, buster, etc.)
 
 
 I3GAPS_REPO:

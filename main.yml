@@ -2,7 +2,7 @@
 
 # Fichier principal main.yml
 
-- name: '{{ PROJECT }}'
+- name: '{{ PROJECT }} - {{ CODENAME }}'
   hosts: localhost
   connection: local
   vars_files:
