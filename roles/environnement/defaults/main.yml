@@ -76,14 +76,14 @@ mise_install:
 
 
 mise_cargo_install:
-  - { name: "bottom", version: "" }
-  - { name: "du-dust", version: "" }
-  - { name: "exa", version: "" }
-  - { name: "git-delta", version: "" }
-  - { name: "spacer", version: "" }
-  - { name: "viu", version: "" }
-  - { name: "xsv", version: "" }
-  - { name: "--locked --git https://github.com/asciinema/asciinema", version: "" }
+  - { name: "bottom" }
+  - { name: "du-dust" }
+  - { name: "exa" }
+  - { name: "git-delta" }
+  - { name: "spacer" }
+  - { name: "viu" }
+  - { name: "xsv" }
+  - { name: "--locked --git https://github.com/asciinema/asciinema" }
 
 treesitter_languages: 
   - json

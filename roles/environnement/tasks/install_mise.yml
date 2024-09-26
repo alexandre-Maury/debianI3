@@ -28,7 +28,7 @@
 
 - name: Installer la liste d'outils avec https://mise.jdx.dev 
   ansible.builtin.shell: >
-    bash -c 'mise use -g {{ item.name }}@{{ item.version }} || true'
+    bash -c 'mise use -g {{ item.name }} || true'
   loop: "{{ mise_install }}"
 
 # No bash -i as it allows cargo to run jobs in the background in a weird way that breaks ansible
