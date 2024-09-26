@@ -44,4 +44,3 @@ fi
 
 
 status_message_system "Run : bash -x install.sh"
-status_message_error "Ce script ne doit pas être exécuté en tant qu'utilisateur root."

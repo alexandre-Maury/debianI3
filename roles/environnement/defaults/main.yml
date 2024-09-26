@@ -82,7 +82,7 @@ mise_install:
   - { name: "terraform", version: "latest" }
   - { name: "websocat", version: "latest" }
 
-cargo_install:
+mise_cargo_install:
   - { name: "bottom", version: "" }
   - { name: "du-dust", version: "" }
   - { name: "exa", version: "" }
