@@ -87,21 +87,21 @@ fi
 # colored GCC warnings and errors
 #export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
 
-source /opt/ubuntu-gaps/misc/aliases/aliases
+source /opt/debianI3/misc/aliases/aliases
 
-alias setupgit='bash -x /opt/ubuntu-gaps/misc/scripts/git/setup_git'
-alias clone='bash -x /opt/ubuntu-gaps/misc/scripts/git/clone-repository'
-alias pull='bash -x /opt/ubuntu-gaps/misc/scripts/git/pull-repository'
-alias push='bash -x /opt/ubuntu-gaps/misc/scripts/git/push-repository'
+alias setupgit='bash -x /opt/debianI3/misc/scripts/git/setup_git'
+alias clone='bash -x /opt/debianI3/misc/scripts/git/clone-repository'
+alias pull='bash -x /opt/debianI3/misc/scripts/git/pull-repository'
+alias push='bash -x /opt/debianI3/misc/scripts/git/push-repository'
 
 alias projets='cd ~/projects'
-alias pyenv='bash -x /opt/ubuntu-gaps/misc/scripts/dev/python_env'
+alias pyenv='bash -x /opt/debianI3/misc/scripts/dev/python_env'
 alias py2='virtualenv -p python2 .py2 && source .py2/bin/activate'
 alias py3='virtualenv -p python3 .py3 && source .py3/bin/activate'
 alias pyreq='pip install -r requirements.txt'
 alias act="source .py*/bin/activate"
 
-alias ssh-key='bash -x /opt/ubuntu-gaps/misc/scripts/utils/generate_ssh-key'
+alias ssh-key='bash -x /opt/debianI3/misc/scripts/utils/generate_ssh-key'
 alias dpkgi='sudo dpkg -i ./*.deb'
 alias yt-dlp='pipx run yt-dlp'
 alias yt-dl-likes='yt-dlp --cookies www.youtube.com_cookies.txt -x --audio-format mp3 :ytfav' 
@@ -143,12 +143,10 @@ if ! shopt -oq posix; then
   fi
 fi
 
-export PYTHONSTARTUP=~/.pythonrc.py
+eval "$(~/.local/bin/mise activate bash)"
+
 export EDITOR=nvim VISUAL=vim
 export MYVIMRC="$HOME/.vimrc"
-
-
-# add .local/bin to path
 export PATH="${HOME}/.local/bin:${PATH}"
 # export PATH="$PATH:~/.local/bin"
 
@@ -167,3 +165,6 @@ fi
 if [[ ! "$SSH_AUTH_SOCK" ]]; then
     source "$XDG_RUNTIME_DIR/ssh-agent.env" >/dev/null
 fi
+
+
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash

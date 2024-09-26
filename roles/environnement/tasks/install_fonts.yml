@@ -47,8 +47,6 @@
     - {src: '{{ SOURCE_DIR }}/misc/dotfiles/fonts/MaterialIcon/materialdesignicons-webfont.woff', dest: '{{ ansible_env.HOME }}/.local/share/fonts'}
     - {src: '{{ SOURCE_DIR }}/misc/dotfiles/fonts/MaterialIcon/materialdesignicons-webfont.woff2', dest: '{{ ansible_env.HOME }}/.local/share/fonts'}
 
-
-
 - name: Cloner le dépôt candy-icons
   ansible.builtin.git:
     repo: "{{ ICONS_REPO_CANDY }}"

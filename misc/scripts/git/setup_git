@@ -8,7 +8,7 @@ ZSHRC="$HOME/.zshrc"
 EDITOR="vim"
 
 # Chemin vers le script SSH
-SCRIPT_PATH="/opt/ubuntu-gaps/misc/scripts/utils/generate_ssh-key"
+SCRIPT_PATH="/opt/debianI3/misc/scripts/utils/generate_ssh-key"
 
 # Vérifier si le script existe
 if [ ! -f "$SCRIPT_PATH" ]; then

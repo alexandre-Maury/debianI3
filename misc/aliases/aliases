@@ -11,7 +11,7 @@ utils_help() {
     update_system() {
         echo -e "${YELLOW}Mise à jour du système...${NC}"
         sudo apt update && sudo apt upgrade -y && sudo apt autoremove -y && sudo apt autoclean -y && sudo apt autopurge -y
-        bash -x /opt/ubuntu-gaps/misc/scripts/utils/update.sh
+        bash -x /opt/debianI3/misc/scripts/utils/update.sh
         echo -e "${GREEN}Mise à jour et nettoyage terminés.${NC}"
     }
 

@@ -2,7 +2,7 @@
 
 ## Grimshot : un outil pour les captures d'écran dans sway
 ## Exigences :
-##  - `grim` : utilitaire de capture d'écran pour ubuntu-gaps
+##  - `grim` : utilitaire de capture d'écran pour debianI3
 ##  - `slurp` : pour sélectionner une zone
 ##  - `swaymsg` : pour lire les propriétés de la fenêtre actuelle
 ##  - `wl-copy` : utilitaire pour le presse-papiers

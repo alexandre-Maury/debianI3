@@ -125,7 +125,7 @@ source $ZSH/oh-my-zsh.sh
     alias egrep='egrep --color=auto'
 fi
 
-source /opt/ubuntu-gaps/misc/aliases/aliases
+source /opt/debianI3/misc/aliases/aliases
 
 alias setupgit='bash -x /opt/wayland/misc/scripts/git/setup_git'
 alias clone='bash -x /opt/wayland/misc/scripts/git/clone-repository'
@@ -165,13 +165,11 @@ alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo
 # Ajouter l'activation de mise dans .zshrc
 eval "$(~/.local/bin/mise activate zsh)"
 
-# [ -f ~/.fzf.bash ] && source ~/.fzf.bash
 
 export EDITOR=vim VISUAL=vim
-export PYTHONSTARTUP=~/.pythonrc.py
+export MYVIMRC="$HOME/.vimrc"
 export PATH="${HOME}/.local/bin:${PATH}"
 # export PATH="$PATH:~/.local/bin"
-export MYVIMRC="$HOME/.vimrc"
 
 
 # Ajouter ssh-agent et réutiliser celui qui a été créé

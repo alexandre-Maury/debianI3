@@ -6,7 +6,7 @@ IFS=$'\n\t'
 # Plus d'informations : http://redsymbol.net/articles/unofficial-bash-strict-mode/
 
 # Naviguer dans le répertoire du dépôt
-cd /opt/ubuntu-gaps || { echo "Erreur : impossible de se rendre dans le répertoire /opt/ubuntu-gaps"; exit 1; }
+cd /opt/debianI3 || { echo "Erreur : impossible de se rendre dans le répertoire /opt/debianI3"; exit 1; }
 
 # Vérifier les mises à jour du dépôt distant
 git fetch
@@ -45,4 +45,4 @@ fi
 #   tasks:
 #     - name: Copier et fusionner les fichiers avec rsync
 #       ansible.builtin.command:
-#         cmd: rsync -av --delete /opt/ubuntu-gaps/misc/dotfiles/config/ {{ ansible_env.HOME }}/.config/
+#         cmd: rsync -av --delete /opt/debianI3/misc/dotfiles/config/ {{ ansible_env.HOME }}/.config/
