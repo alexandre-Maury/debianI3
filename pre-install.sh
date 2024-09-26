@@ -17,6 +17,7 @@ read -p "[*] Veuillez entrer votre nom d'utilisateur pour la suite du script : "
 
 # Vérifier si l'utilisateur est déjà dans le groupe sudo
 if groups "$USER_TO_ADD" | grep -q "\bsudo\b"; then
+    clear
     echo "$USER_TO_ADD est déjà dans le groupe sudo."
 
 else
@@ -24,6 +25,8 @@ else
     #ansible-playbook ~/add_user_to_sudo.yml -e "user_to_add=$USER_TO_ADD"
 
     usermod -aG sudo $USER_TO_ADD
+
+    clear
     printf "%s \\n" "[Succès] Votre compte : ${USER_TO_ADD} est à présent membre du groupe sudo"
 fi
 
