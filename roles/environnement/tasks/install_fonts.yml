@@ -54,6 +54,7 @@
     repo: "{{ ICONS_REPO_CANDY }}"
     dest: "/usr/share/icons/candy-icons"
     update: yes  # Met à jour le dépôt s'il existe déjà
+  become: true
 
 - name: Créer le fichier index.theme
   ansible.builtin.copy:
