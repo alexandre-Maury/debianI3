@@ -4,8 +4,6 @@
 
 - name: roles/startup - Ajouter le dépôt contrib non-free-firmware
   ansible.builtin.command: echo | sudo apt-add-repository contrib non-free-firmware
-  args:
-    warn: false  # Ignore les avertissements si le dépôt existe déjà
   become: true
 
 - name: roles/startup - Mettre à jour la liste des paquets
@@ -35,8 +33,6 @@
 
 - name: roles/startup - Configurer le refresh schedule pour le paquet Snap "core"
   ansible.builtin.command: sudo snap set core refresh.schedule=02:00-04:00
-  args:
-    warn: false  # Ignore les avertissements sur l'utilisation de sudo dans la commande
   become: true
 
 - name: roles/startup - Installer les dépendances PIPX de base
