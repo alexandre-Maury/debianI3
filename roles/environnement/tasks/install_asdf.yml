@@ -19,12 +19,8 @@
   ansible.builtin.git:
     repo: "{{ item.repo }}"
     dest: "{{ item.dest }}"
-    # version: "{{ item.app_version }}"  # Branche, tag ou commit spécifique
-    update: yes # Clonage ou mise à jour
+    version: "{{ item.version }}"  
   loop: "{{ ASDF_REPO }}"
-  # Commande Git associée :
-  # git clone {{ item.repo }} {{ item.dest }} --branch {{ item.app_version }} --single-branch
-  # git pull origin {{ item.app_version }}  # Effectué automatiquement si `dest` existe déjà
 
 - name: Ajouter la configuration asdf dans .bashrc 
   ansible.builtin.lineinfile:
@@ -44,3 +40,21 @@
   args:
     executable: /bin/bash
   ignore_errors: true
+
+- name: Installer les plugins asdf
+  command: asdf plugin-add {{ item.name }}
+  loop: "{{ asdf_install }}"
+  environment:
+    ASDF_DIR: "{{ ansible_env.HOME }}/.asdf"
+
+- name: Installer les versions des paquets asdf
+  command: asdf install {{ item.name }} latest
+  loop: "{{ asdf_install }}"
+  environment:
+    ASDF_DIR: "{{ ansible_env.HOME }}/.asdf"
+
+- name: Définir la version globale pour chaque paquet
+  command: asdf global {{ item.name }} latest
+  loop: "{{ asdf_install }}"
+  environment:
+    ASDF_DIR: "{{ ansible_env.HOME }}/.asdf"

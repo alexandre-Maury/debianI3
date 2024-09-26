@@ -59,7 +59,7 @@ ohmyzsh_plugins_remove:
   - rtx                       
   - ssh-agent  
 
-mise_install:
+asdf_install:
   - { name: "usage" }
   - { name: "bat" }
   - { name: "direnv" }
@@ -70,7 +70,6 @@ mise_install:
   - { name: "maven" }
   - { name: "nodejs" }
   - { name: "pdm" }
-  - { name: "python" } 
   - { name: "php" }  
   - { name: "rust" }
 
