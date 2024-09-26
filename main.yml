@@ -10,8 +10,8 @@
   roles:
     - role: 'roles/startup'
       tags: 'startup'
-    - role: 'roles/environnement'
-      tags: 'environnement'
+    # - role: 'roles/environnement'
+    #   tags: 'environnement'
     # - role: 'roles/software'
     #   tags: 'software'
     # - role: 'roles/cleanup'
