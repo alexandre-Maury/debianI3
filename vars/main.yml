@@ -1,7 +1,7 @@
 ---
 
 # roles/vars/main.yml
-PROJECT: 'debianI3-Gaps'
+PROJECT: 'debianI3'
 BUILD_DIR: '{{ ansible_env.HOME }}/.config/git'
 SOURCE_DIR: '/opt/{{ PROJECT }}'
 
@@ -21,7 +21,6 @@ FONTS_REPO_JETBRAINSMONO: "https://github.com/ryanoasis/nerd-fonts/releases/late
 FONTS_REPO_IOSEVKA: "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/Iosevka.tar.xz"
 
 ICONS_REPO_CANDY: "https://github.com/EliverLara/candy-icons"
-
 
 
 PACKER_REPO: "https://github.com/wbthomason/packer.nvim"
