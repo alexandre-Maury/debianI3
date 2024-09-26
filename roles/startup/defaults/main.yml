@@ -2,22 +2,6 @@
 
 ---
 
-  # mkdir ~/.local/share/applications/
-  # sudo systemctl enable avahi-daemon
-  # sudo systemctl enable acpid
-  # sudo systemctl enable bluetooth
-  # sudo cp /var/lib/snapd/desktop/applications/pinta_pinta.desktop ~/.local/share/applications/
-  # sudo cp /var/lib/snapd/desktop/applications/authpass_authpass.desktop ~/.local/share/applications/
-  # xdg-user-dirs-update
-  # git clone https://github.com/EliverLara/candy-icons
-  # echo 'user ALL=(ALL) NOPASSWD: /usr/sbin/ufw status' | sudo tee /etc/sudoers.d/ufw-status
-  # sudo chmod 0440 /etc/sudoers.d/ufw-status
-  # sudo systemctl enable lightdm
-  # sudo apt-get update && sudo apt-get upgrade -y
-  # sudo apt-get auto-remove -y
-
-
-
 base_cli_pipx:
   - pywal
 
@@ -121,9 +105,9 @@ base_cli_deps:
   - python3-dev
   - meson
   - ninja-build
-  - i3 # window manager
-  - i3blocks # window manager
-  - acpi-support # window manager
+  # - i3 # window manager
+  # - i3blocks # window manager
+  # - acpi-support # window manager
 
 
 

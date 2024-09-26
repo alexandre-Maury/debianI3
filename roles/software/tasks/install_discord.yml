@@ -1,0 +1,22 @@
+---
+
+# roles/gui/discord/task/main.yml
+
+- name: Vérifier si Discord est déjà installé
+  ansible.builtin.stat:
+    path: '/usr/bin/discord'
+  register: discord_installed
+  become: true
+
+- name: Télécharger Discord
+  ansible.builtin.get_url:
+    url: '{{ discord_url }}'
+    dest: '{{ build_dir }}/discord/discord-setup.deb'
+  when: not discord_installed.stat.exists
+
+- name: Installer Discord
+  ansible.builtin.apt:
+    deb: '{{ build_dir }}/discord/discord-setup.deb'
+    state: present
+  become: true
+  when: not discord_installed.stat.exists

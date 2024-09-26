@@ -1,0 +1,24 @@
+---
+
+# roles/gui/dragon/task/main.yml
+
+- name: Cloner le dépôt Dragon depuis GitHub
+  ansible.builtin.git:
+    repo: '{{ dragon_repo }}'
+    dest: '{{ build_dir }}/dragon'
+    version: master
+
+- name: Compiler Dragon
+  ansible.builtin.command:
+    cmd: make
+    chdir: '{{ build_dir }}/dragon'
+  environment:
+    PREFIX: '{{ ansible_env.HOME }}/.local'
+
+- name: Installer Dragon dans ~/.local/bin
+  ansible.builtin.command:
+    cmd: make install
+    chdir: '{{ build_dir }}/dragon'
+  environment:
+    PREFIX: '{{ ansible_env.HOME }}/.local'
+

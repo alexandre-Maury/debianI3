@@ -22,6 +22,8 @@ i3_gaps_dependencies:
   - libxcb-xrm-dev 
   - automake 
   - libxcb-shape0-dev
+  - i3blocks # window manager
+  - acpi-support # window manager
 
 polybar_dependencies:
   - cmake 

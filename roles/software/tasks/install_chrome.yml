@@ -1,0 +1,23 @@
+---
+
+# roles/gui/chrome/task/main.yml
+
+    - name: Vérifier si Google Chrome est déjà installé
+      ansible.builtin.stat:
+        path: /usr/bin/google-chrome
+      register: chrome_installed
+      become: true
+
+    - name: Télécharger le package Google Chrome
+      ansible.builtin.get_url:
+        url: '{{ chrome_url  }}'
+        dest: '{{ build_dir }}/chrome/google-chrome-stable_current_amd64.deb'
+      when: not chrome_installed.stat.exists
+      become: true
+
+    - name: Installer Google Chrome
+      ansible.builtin.apt:
+        deb: '{{ build_dir }}/chrome/google-chrome-stable_current_amd64.deb'
+        state: present
+      when: not chrome_installed.stat.exists
+      become: true

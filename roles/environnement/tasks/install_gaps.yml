@@ -3,17 +3,6 @@
 ---
 
 ## https://github.com/Airblader/i3/wiki/Building-from-source
-## The most important, first step is to read the section above.
-## i3-gaps, like i3, uses the meson build system, and can be built as documented there. This boils down to
-# cd /path/where/you/want/the/repository
-## clone the repository
-# git clone https://www.github.com/Airblader/i3 i3-gaps
-# cd i3-gaps
-## compile
-# mkdir -p build && cd build
-# meson ..
-# ninja
-
 
 - name: Installer les dépendances requises pour i3-gaps
   ansible.builtin.package:
@@ -42,16 +31,26 @@
   loop: "{{ I3GAPS_REPO }}"
   become: true
 
-- name: S'assurer que le dossier de destination pour la configuration d'i3 existe
-  ansible.builtin.file:
-    path: $HOME/.config/i3
-    state: directory
-
 - name: Copier la configuration de i3-gaps.
   ansible.builtin.copy:
     src: "{{ item.src }}"
     dest: "{{ item.dest }}"
   with_items:
-    - {src: '{{ SOURCE_DIR }}/misc/dotfiles/i3/config', dest: '$HOME/.config/i3'}
-    - {src: '{{ SOURCE_DIR }}/misc/dotfiles/i3/keybindings', dest: '$HOME/.config/i3'}
-    - {src: '{{ SOURCE_DIR }}/misc/dotfiles/i3/keyhint-2', dest: '$HOME/.config/i3'}
+    - {src: '{{ SOURCE_DIR }}/misc/dotfiles/config/i3', dest: '$HOME/.config'}
+    - {src: '{{ SOURCE_DIR }}/misc/dotfiles/config/i3blocks', dest: '$HOME/.config'}
+  become: true  # Utilisation des privilèges sudo
+
+- name: Rendre les scripts exécutables
+  ansible.builtin.file:
+    path: "{{ item }}"
+    mode: '0755'
+  loop:
+    - ~/.config/i3/autostart.sh
+    - ~/.config/i3blocks/cpu/cpu_info.sh
+    - ~/.config/i3blocks/battery/battery_info.sh
+    - ~/.config/i3blocks/weather/weather.sh
+    - ~/.config/i3blocks/weather/weather.py
+  become: true  # Utilisation des privilèges sudo
+
+
+

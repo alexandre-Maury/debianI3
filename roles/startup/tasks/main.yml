@@ -47,13 +47,7 @@
     PIPX_BIN_DIR: "{{ ansible_env.HOME }}/.local/bin"
 
 
-# - name: roles/startup - Copier les fichiers de configuration
-#   ansible.builtin.copy:
-#     src: "{{ item.src }}"
-#     dest: "{{ item.dest }}"
-#   with_items:
-#     - {src: '{{ SOURCE_DIR }}/misc/dotfiles/profile/bashrc', dest: '{{ ansible_env.HOME }}/.bashrc'}
-#     - {src: '{{ SOURCE_DIR }}/misc/dotfiles/wallpapers', dest: '{{ ansible_env.HOME }}/Pictures'}
+
 
 
 

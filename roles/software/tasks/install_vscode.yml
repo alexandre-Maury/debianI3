@@ -1,0 +1,21 @@
+---
+
+# roles/gui/vscode/task/main.yml
+
+- name: Vérifier si vscode est déjà installé
+  ansible.builtin.stat:
+    path: '/usr/bin/code'
+  register: vscode_installed
+
+- name: Download VsCode
+  ansible.builtin.get_url:
+    url: '{{ vscode_url }}'
+    dest: '{{ build_dir }}/vscode/vscode-setup.deb'
+  when: not vscode_installed.stat.exists
+
+- name: Install VsCode
+  ansible.builtin.apt:
+    deb: '{{ build_dir }}/vscode/vscode-setup.deb'
+    state: present
+  become: true
+  when: not vscode_installed.stat.exists

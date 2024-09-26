@@ -1,0 +1,23 @@
+---
+
+# roles/gui/nomachine/task/main.yml
+
+- name: Vérifier si NoMachine est déjà installé
+  ansible.builtin.stat:
+    path: /usr/NX/bin/nxplayer
+  register: nomachine_installed
+  become: true
+
+- name: Télécharger NoMachine .deb si nécessaire
+  ansible.builtin.get_url:
+    url: "{{ nomachine_url }}"
+    dest: "{{ build_dir }}/nomachine/nomachine_8.13.1_1_amd64.deb"
+  when: not nomachine_installed.stat.exists
+  become: true
+
+- name: Installer NoMachine
+  ansible.builtin.apt:
+    deb: "{{ build_dir }}/nomachine/nomachine_8.13.1_1_amd64.deb"
+    state: present
+  when: not nomachine_installed.stat.exists
+  become: true

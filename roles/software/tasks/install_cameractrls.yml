@@ -1,0 +1,32 @@
+---
+
+# roles/gui/cameractrls/task/main.yml
+
+- name: Vérifier si cameractrls est déjà installé
+  ansible.builtin.stat:
+    path: '{{ ansible_env.HOME }}/.local/share/applications/hu.irl.cameractrls.desktop.noexist' # Force reinstall to fix previous broken path, rm .noexist in early April 2024
+  register: cameractrls_installed
+  become: true
+
+- name: Installer CameraCtrls
+  when: not cameractrls_installed.stat.exists
+  block:
+    - name: Installer les paquets nécessaires pour cameractrls
+      ansible.builtin.apt:
+        name: '{{ item }}'
+        state: present
+      loop: '{{ cameractrls_dependencies }}'
+      become: true
+
+    - name: Cloner le dépôt cameractrls
+      ansible.builtin.git:
+        repo: '{{ cameractrls_repo }}'
+        dest: '{{ build_dir_cameractrls }}'
+        force: yes
+      become: true
+
+    - name: Exécuter le programme d'installation de cameractrls
+      ansible.builtin.command: 'desktop-file-install --dir="{{ ansible_env.HOME }}/.local/share/applications" --set-key=Exec --set-value="{{ build_dir_cameractrls }}/cameractrlsgtk4.py" --set-key=Path --set-value="{{ build_dir_cameractrls }}" --set-key=Icon --set-value="{{ build_dir_cameractrls }}/pkg/hu.irl.cameractrls.svg" pkg/hu.irl.cameractrls.desktop'
+      args:
+        chdir: '{{ build_dir_cameractrls }}'
+      become: true
