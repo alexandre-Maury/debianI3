@@ -8,22 +8,22 @@ IFS=$'\n\t'
 
 # Fonction pour afficher les messages de statut jaune
 status_message_system() {
-    echo "\033[0;33m [*] $1 \033[0m"
+    echo -e "\033[0;33m [*] $1 \033[0m"
 }  
 
 # Fonction pour afficher les messages d'erreur rouge
 status_message_error() {
-    echo "\033[0;31m [*] $1 \033[0m"
+    echo -e "\033[0;31m [-] $1 \033[0m"
 }
 
 # Fonction pour afficher les messages de succés vert
 status_message_succes() {
-    echo "\033[0;32m [*] $1 \033[0m"
+    echo -e "\033[0;32m [+] $1 \033[0m"
 }
 
 
 # Obtenir l'utilisateur courant
-echo -e "[*] Veuillez entrer votre nom d'utilisateur pour la suite du script : " 
+echo -e "\033[0;33m [*] Veuillez entrer votre nom d'utilisateur pour la suite du script : \033[0m" 
 read USER_TO_ADD
 
 
