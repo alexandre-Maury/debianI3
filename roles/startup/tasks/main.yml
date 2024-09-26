@@ -13,6 +13,7 @@
 - name: roles/startup - Mettre à jour la liste des paquets
   ansible.builtin.apt:
     update_cache: yes  # Met à jour le cache des paquets
+    cache_valid_time: 3600
   become: true
 
 - name: roles/startup - Mettre à niveau les paquets installés
