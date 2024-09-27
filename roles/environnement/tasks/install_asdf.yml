@@ -35,28 +35,24 @@
     state: present
 
 
-- name: Recharger le shell .bashrc
-  shell: source {{ ansible_env.HOME }}/.bashrc
-  args:
-    executable: /bin/bash
-  ignore_errors: true
-  become: true  # Utilisation des privilèges sudo
-
-
+# Charger asdf.sh dans l'environnement actuel d'Ansible
 - name: Installer les plugins asdf
-  ansible.builtin.command: asdf plugin-add {{ item.name }}
+  ansible.builtin.shell: . $HOME/.asdf/asdf.sh && asdf plugin-add {{ item.name }}
   loop: "{{ asdf_install }}"
   environment:
     ASDF_DIR: "{{ ansible_env.HOME }}/.asdf"
+
+
 
 - name: Installer les versions des paquets asdf
-  ansible.builtin.command: asdf install {{ item.name }} latest
+  ansible.builtin.shell: . $HOME/.asdf/asdf.sh && asdf install {{ item.name }} latest
   loop: "{{ asdf_install }}"
   environment:
     ASDF_DIR: "{{ ansible_env.HOME }}/.asdf"
 
+
 - name: Définir la version globale pour chaque paquet
-  ansible.builtin.command: asdf global {{ item.name }} latest
+  ansible.builtin.shell: . $HOME/.asdf/asdf.sh && asdf global {{ item.name }} latest
   loop: "{{ asdf_install }}"
   environment:
     ASDF_DIR: "{{ ansible_env.HOME }}/.asdf"
