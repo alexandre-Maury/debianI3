@@ -37,9 +37,6 @@
 
 - name: Recharger .bashrc pour prendre en compte les changements
   shell: source ~/.bashrc
-  args:
-    executable: /bin/bash
-  ignore_errors: true
 
 - name: Installer les plugins asdf
   command: asdf plugin-add {{ item.name }}
