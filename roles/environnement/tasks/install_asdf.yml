@@ -34,25 +34,44 @@
     line: '. "$HOME/.asdf/completions/asdf.bash"'
     state: present
 
-
-# Charger asdf.sh dans l'environnement actuel d'Ansible
-- name: Installer les plugins asdf
+- name: Installer les plugins asdf pour les langages
   ansible.builtin.shell: . $HOME/.asdf/asdf.sh && asdf plugin-add {{ item.name }}
-  loop: "{{ asdf_install }}"
+  loop: "{{ asdf_install_langages }}"
   environment:
     ASDF_DIR: "{{ ansible_env.HOME }}/.asdf"
 
-
-
-- name: Installer les versions des paquets asdf
+- name: Installer les versions des langages asdf
   ansible.builtin.shell: . $HOME/.asdf/asdf.sh && asdf install {{ item.name }} latest
-  loop: "{{ asdf_install }}"
+  loop: "{{ asdf_install_langages }}"
   environment:
     ASDF_DIR: "{{ ansible_env.HOME }}/.asdf"
 
+- name: Installer les plugins asdf pour les outils/utilitaires
+  ansible.builtin.shell: . $HOME/.asdf/asdf.sh && asdf plugin-add {{ item.name }}
+  loop: "{{ asdf_install_utilitaires }}"
+  environment:
+    ASDF_DIR: "{{ ansible_env.HOME }}/.asdf"
 
-- name: Définir la version globale pour chaque paquet
+- name: Installer les versions des outils/utilitaires asdf
+  ansible.builtin.shell: . $HOME/.asdf/asdf.sh && asdf install {{ item.name }} latest
+  loop: "{{ asdf_install_utilitaires }}"
+  environment:
+    ASDF_DIR: "{{ ansible_env.HOME }}/.asdf"
+
+- name: Définir les versions globales des langages asdf
   ansible.builtin.shell: . $HOME/.asdf/asdf.sh && asdf global {{ item.name }} latest
-  loop: "{{ asdf_install }}"
+  loop: "{{ asdf_install_langages }}"
   environment:
     ASDF_DIR: "{{ ansible_env.HOME }}/.asdf"
+
+- name: Définir les versions globales des outils/utilitaires asdf
+  ansible.builtin.shell: . $HOME/.asdf/asdf.sh && asdf global {{ item.name }} latest
+  loop: "{{ asdf_install_utilitaires }}"
+  environment:
+    ASDF_DIR: "{{ ansible_env.HOME }}/.asdf"
+
+- name: Recharger le shell .bashrc
+  ansible.builtin.shell: source {{ ansible_env.HOME }}/.bashrc
+  args:
+    executable: /bin/bash
+  ignore_errors: true

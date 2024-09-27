@@ -59,22 +59,24 @@ ohmyzsh_plugins_remove:
   - rtx                       
   - ssh-agent  
 
-asdf_install:
-  - { name: "usage" }
+asdf_install_langages :
+  - { name: "golang" }
+  - { name: "java" }
+  - { name: "nodejs" }
+  - { name: "php" }
+  - { name: "python" }
+  - { name: "rust" }
+
+asdf_install_utilitaires :
   - { name: "bat" }
   - { name: "direnv" }
   - { name: "duf" }
-  - { name: "golang" }
-  - { name: "java" } 
   - { name: "jless" }
   - { name: "maven" }
-  - { name: "nodejs" }
   - { name: "pdm" }
-  - { name: "php" }  
-  - { name: "rust" }
 
 
-mise_cargo_install:
+asdf_cargo_install:
   - { name: "bottom" }
   - { name: "du-dust" }
   - { name: "exa" }
