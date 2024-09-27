@@ -39,8 +39,8 @@
   ansible.builtin.shell: |
     . $HOME/.asdf/asdf.sh
     asdf plugin-add {{ item.name }} || true
-    asdf install {{ item.name }} latest
-    asdf global {{ item.name }} latest
+    # asdf install {{ item.name }} latest
+    # asdf global {{ item.name }} latest
   loop: "{{ asdf_packages }}"
   environment:
     ASDF_DIR: "{{ ansible_env.HOME }}/.asdf"

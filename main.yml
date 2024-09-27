@@ -14,6 +14,10 @@
       tags: 'environnement'
     # - role: 'roles/software'
     #   tags: 'software'
+    # - role: 'roles/dev'
+    #   tags: 'dev'
+    # - role: 'roles/pentest'
+    #   tags: 'pentest'
     # - role: 'roles/cleanup'
     #   tags: 'cleanup'
       users:

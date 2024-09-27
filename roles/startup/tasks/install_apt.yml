@@ -1,0 +1,35 @@
+# roles/startup/task/install_apt.yml
+
+---
+
+- name: roles/startup - Installer les dépendances APT de base
+  ansible.builtin.package:
+    name: "{{ item }}"
+    state: present
+    install_recommends: no
+  loop: '{{ base_cli_deps }}'
+  become: true
+
+- name: Activer le service avahi-daemon
+  ansible.builtin.systemd:
+    name: avahi-daemon
+    enabled: true
+  become: true  # Utilisation des privilèges sudo
+
+- name: Activer le service acpid
+  ansible.builtin.systemd:
+    name: acpid
+    enabled: true
+  become: true  # Utilisation des privilèges sudo
+
+- name: Activer le service bluetooth
+  ansible.builtin.systemd:
+    name: bluetooth
+    enabled: true
+  become: true  # Utilisation des privilèges sudo
+
+- name: Activer le service lightdm
+  ansible.builtin.systemd:
+    name: lightdm
+    enabled: true
+  become: true  # Utilisation des privilèges sudo

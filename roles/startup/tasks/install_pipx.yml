@@ -1,0 +1,10 @@
+# roles/startup/task/install_pipx.yml
+
+---
+
+- name: roles/startup - Installer les dépendances PIPX de base
+  community.general.pipx:
+    name: '{{ item }}'
+  loop: '{{ base_cli_pipx }}'
+  environment:
+    PIPX_BIN_DIR: "{{ ansible_env.HOME }}/.local/bin"

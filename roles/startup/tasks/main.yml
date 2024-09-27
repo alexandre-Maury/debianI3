@@ -25,37 +25,10 @@
     upgrade: dist  # Met à niveau tous les paquets installés
   become: true
 
-- name: roles/startup - Installer les dépendances APT de base
-  ansible.builtin.package:
-    name: "{{ item }}"
-    state: present
-    install_recommends: no
-  loop: '{{ base_cli_deps }}'
-  become: true
 
-- name: roles/startup - Installer le paquet Snap core
-  ansible.builtin.snap:
-    name: "{{ item }}"
-    state: present
-  loop: '{{ base_cli_snaps }}'
-  become: true
-
-- name: roles/startup - Configurer le refresh schedule pour le paquet Snap "core"
-  ansible.builtin.command: sudo snap set core refresh.schedule=02:00-04:00
-  become: true
-
-- name: roles/startup - Installer les dépendances PIPX de base
-  community.general.pipx:
-    name: '{{ item }}'
-  loop: '{{ base_cli_pipx }}'
-  environment:
-    PIPX_BIN_DIR: "{{ ansible_env.HOME }}/.local/bin"
-
-
-
-
-
-
+- include_tasks: install_apt.yml
+- include_tasks: install_snap.yml
+- include_tasks: install_pipx.yml
 
 
 

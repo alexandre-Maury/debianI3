@@ -1,0 +1,17 @@
+# roles/gestionnaire/task/main.yml
+
+---
+
+- include_tasks: install_asdf.yml
+
+
+
+
+
+
+
+
+
+
+
+

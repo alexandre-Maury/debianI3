@@ -2,63 +2,10 @@
 
 ---
 
-
-- name: Recharger le shell .bashrc
-  shell: source {{ ansible_env.HOME }}/.bashrc
-  args:
-    executable: /bin/bash
-  ignore_errors: true
-  become: true  # Utilisation des privilèges sudo
-
-- name: Recharger le shell .zshrc
-  shell: source {{ ansible_env.HOME }}/.zshrc
-  args:
-    executable: /bin/zsh
-  ignore_errors: yes
-  become: true  # Utilisation des privilèges sudo
-
-- name: Créer le répertoire applications local
-  ansible.builtin.file:
-    path: ~/.local/share/applications/
-    state: directory
-    mode: '0755'
-  become: true  # Utilisation des privilèges sudo
-
-- name: Activer le service avahi-daemon
-  ansible.builtin.systemd:
-    name: avahi-daemon
-    enabled: true
-  become: true  # Utilisation des privilèges sudo
-
-- name: Activer le service acpid
-  ansible.builtin.systemd:
-    name: acpid
-    enabled: true
-  become: true  # Utilisation des privilèges sudo
-
-- name: Activer le service bluetooth
-  ansible.builtin.systemd:
-    name: bluetooth
-    enabled: true
-  become: true  # Utilisation des privilèges sudo
-
-- name: Copier le fichier pinta.desktop
-  ansible.builtin.copy:
-    src: /var/lib/snapd/desktop/applications/pinta_pinta.desktop
-    dest: ~/.local/share/applications/
-    remote_src: yes
-  become: true  # Utilisation des privilèges sudo
-
-- name: Copier le fichier authpass.desktop
-  ansible.builtin.copy:
-    src: /var/lib/snapd/desktop/applications/authpass_authpass.desktop
-    dest: ~/.local/share/applications/
-    remote_src: yes
-  become: true  # Utilisation des privilèges sudo
-
 - name: Mettre à jour les répertoires utilisateur
   ansible.builtin.command: xdg-user-dirs-update
   become: true  # Utilisation des privilèges sudo
+
 
 - name: Ajouter NOPASSWD pour UFW dans sudoers.d
   ansible.builtin.copy:
@@ -67,17 +14,6 @@
     mode: '0440'
   become: true  # Utilisation des privilèges sudo
 
-- name: Activer le service lightdm
-  ansible.builtin.systemd:
-    name: lightdm
-    enabled: true
-  become: true  # Utilisation des privilèges sudo
-
-- name: Mettre à jour les paquets APT
-  ansible.builtin.apt:
-    update_cache: yes
-    upgrade: dist
-  become: true  # Utilisation des privilèges sudo
 
 - name: Supprimer les paquets inutilisés
   ansible.builtin.apt:
@@ -90,7 +26,7 @@
     src: "{{ item.src }}"
     dest: "{{ item.dest }}"
   with_items:
-    - {src: '{{ SOURCE_DIR }}/misc/dotfiles/scripts', dest: '$HOME'}
+    - {src: '{{ SOURCE_DIR }}/misc/dotfiles/scripts', dest: '{{ ansible_env.HOME }}'}
   become: true  # Utilisation des privilèges sudo
 
 - name: Rendre les scripts exécutables
@@ -98,29 +34,9 @@
     path: "{{ item }}"
     mode: '0755'
   loop:
-    - ~/scripts/*.sh
+    - '{{ ansible_env.HOME }}/scripts/*.sh'
   become: true  # Utilisation des privilèges sudo
-  
-# - name: Copier la configuration de i3-gaps.
-#   ansible.builtin.copy:
-#     src: "{{ item.src }}"
-#     dest: "{{ item.dest }}"
-#   with_items:
-#     - {src: '{{ SOURCE_DIR }}/misc/dotfiles/config/i3', dest: '$HOME/.config'}
-#     - {src: '{{ SOURCE_DIR }}/misc/dotfiles/config/i3blocks', dest: '$HOME/.config'}
-#   become: true  # Utilisation des privilèges sudo
 
-# - name: Rendre les scripts I3 exécutables
-#   ansible.builtin.file:
-#     path: "{{ item }}"
-#     mode: '0755'
-#   loop:
-#     - ~/.config/i3/autostart.sh
-#     - ~/.config/i3blocks/cpu/cpu_info.sh
-#     - ~/.config/i3blocks/battery/battery_info.sh
-#     - ~/.config/i3blocks/weather/weather.sh
-#     - ~/.config/i3blocks/weather/weather.py
-#   become: true  # Utilisation des privilèges sudo
 
   
 - name: Copier les fichiers de configuration de Mozilla

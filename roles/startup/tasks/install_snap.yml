@@ -1,0 +1,35 @@
+# roles/startup/task/install_snap.yml
+
+---
+
+- name: roles/startup - Installer les paquet Snap 
+  ansible.builtin.snap:
+    name: "{{ item }}"
+    state: present
+  loop: '{{ base_cli_snaps }}'
+  become: true
+
+- name: roles/startup - Configurer le refresh schedule pour le paquet Snap "core"
+  ansible.builtin.command: sudo snap set core refresh.schedule=02:00-04:00
+  become: true
+
+- name: Créer le répertoire applications local
+  ansible.builtin.file:
+    path: ~/.local/share/applications/
+    state: directory
+    mode: '0755'
+  become: true  # Utilisation des privilèges sudo
+
+- name: Copier le fichier pinta.desktop
+  ansible.builtin.copy:
+    src: /var/lib/snapd/desktop/applications/pinta_pinta.desktop
+    dest: ~/.local/share/applications/
+    remote_src: yes
+  become: true  # Utilisation des privilèges sudo
+
+- name: Copier le fichier authpass.desktop
+  ansible.builtin.copy:
+    src: /var/lib/snapd/desktop/applications/authpass_authpass.desktop
+    dest: ~/.local/share/applications/
+    remote_src: yes
+  become: true  # Utilisation des privilèges sudo
