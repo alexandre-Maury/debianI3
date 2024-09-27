@@ -35,11 +35,13 @@
     state: present
 
 
-- name: Recharger .bashrc pour prendre en compte les changements
-  ansible.builtin.shell: |
-    source ~/.bashrc
-  environment: 
-    HOME: "{{ ansible_env.HOME }}"
+- name: Recharger le shell .bashrc
+  shell: source {{ ansible_env.HOME }}/.bashrc
+  args:
+    executable: /bin/bash
+  ignore_errors: true
+  become: true  # Utilisation des privilèges sudo
+
 
 - name: Installer les plugins asdf
   ansible.builtin.command: asdf plugin-add {{ item.name }}

@@ -7,7 +7,7 @@
   shell: source {{ ansible_env.HOME }}/.bashrc
   args:
     executable: /bin/bash
-  ignore_errors: yes
+  ignore_errors: true
   become: true  # Utilisation des privilèges sudo
 
 - name: Recharger le shell .zshrc
