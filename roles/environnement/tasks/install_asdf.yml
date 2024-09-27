@@ -29,29 +29,32 @@
     state: present
 
 - name: Ajouter la complétion asdf dans .bashrc 
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: "{{ ansible_env.HOME }}/.bashrc"
     line: '. "$HOME/.asdf/completions/asdf.bash"'
     state: present
 
 
 - name: Recharger .bashrc pour prendre en compte les changements
-  shell: source ~/.bashrc
+  ansible.builtin.shell: |
+    source ~/.bashrc
+  environment: 
+    HOME: "{{ ansible_env.HOME }}"
 
 - name: Installer les plugins asdf
-  command: asdf plugin-add {{ item.name }}
+  ansible.builtin.command: asdf plugin-add {{ item.name }}
   loop: "{{ asdf_install }}"
   environment:
     ASDF_DIR: "{{ ansible_env.HOME }}/.asdf"
 
 - name: Installer les versions des paquets asdf
-  command: asdf install {{ item.name }} latest
+  ansible.builtin.command: asdf install {{ item.name }} latest
   loop: "{{ asdf_install }}"
   environment:
     ASDF_DIR: "{{ ansible_env.HOME }}/.asdf"
 
 - name: Définir la version globale pour chaque paquet
-  command: asdf global {{ item.name }} latest
+  ansible.builtin.command: asdf global {{ item.name }} latest
   loop: "{{ asdf_install }}"
   environment:
     ASDF_DIR: "{{ ansible_env.HOME }}/.asdf"
