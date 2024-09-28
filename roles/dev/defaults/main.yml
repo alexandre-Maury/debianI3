@@ -22,7 +22,6 @@ asdf_packages:
 asdf_cargo_install:
   - { name: "bottom" }
   - { name: "du-dust" }
-  - { name: "exa" }
   - { name: "git-delta" }
   - { name: "spacer" }
   - { name: "viu" }

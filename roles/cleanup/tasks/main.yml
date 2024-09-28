@@ -7,14 +7,6 @@
   become: true  # Utilisation des privilèges sudo
 
 
-- name: Ajouter NOPASSWD pour UFW dans sudoers.d
-  ansible.builtin.copy:
-    dest: /etc/sudoers.d/ufw-status
-    content: 'user ALL=(ALL) NOPASSWD: /usr/sbin/ufw status'
-    mode: '0440'
-  become: true  # Utilisation des privilèges sudo
-
-
 - name: Supprimer les paquets inutilisés
   ansible.builtin.apt:
     autoremove: yes

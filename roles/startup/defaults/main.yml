@@ -13,8 +13,8 @@ base_cli_snaps:
 
 base_cli_deps:
   - git
+  - bat
   - network-manager-gnome # network manager
-  - ufw # firewall -> sudo ufw enable
   - lxappearance # appearance managers
   - picom # appearance managers
   - thunar # file managers - krusader, nautilus
