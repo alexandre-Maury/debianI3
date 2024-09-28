@@ -1,0 +1,69 @@
+---
+
+# roles/gui/vscode/task/main.yml
+
+- name: Vérifier si vscode est déjà installé
+  ansible.builtin.stat:
+    path: '/usr/bin/code'
+  register: vscode_installed
+
+- name: Download VsCode
+  ansible.builtin.get_url:
+    url: '{{ vscode_url }}'
+    dest: '{{ build_dir }}/vscode/vscode-setup.deb'
+  when: not vscode_installed.stat.exists
+
+- name: Install VsCode
+  ansible.builtin.apt:
+    deb: '{{ build_dir }}/vscode/vscode-setup.deb'
+    state: present
+  become: true
+  when: not vscode_installed.stat.exists
+
+
+- name: Install Vscode extensions ( takes time, please wait )
+  ansible.builtin.shell: |
+    # AI-assisted development etension
+    code --install-extension visualstudioexptteam.vscodeintellicode
+
+    # Code formatter
+    code --install-extension esbenp.prettier-vscode
+
+    # Python extension
+    code --install-extension ms-python.python
+
+    # Ansible extensions
+    code --install-extension redhat.vscode-xml
+    code --install-extension redhat.vscode-yaml
+
+    # Docker extension
+    code --install-extension ms-azuretools.vscode-docker
+
+    # Git extension
+    code --install-extension eamodio.gitlens
+
+    # Bookmarks extension
+    code --install-extension alefragnani.Bookmarks
+
+    # Terraform extension
+    code --install-extension hashicorp.terraform
+
+    # Vim Script language extension
+    code --install-extension xadillax.viml
+
+    # Highlight web colors extension
+    code --install-extension naumovs.color-highlight
+
+    # Support for .desktop files extension
+    code --install-extension nico-castell.linux-desktop-file
+
+    # Rofi theme language support extension
+    code --install-extension dlasagno.rasi
+
+    # Syntax definition for the i3wm configuration file extension
+    code --install-extension dcasella.i3
+
+    # Themes
+    code --install-extension sainnhe.gruvbox-material
+    code --install-extension jonathanharty.gruvbox-material-icon-theme
+  changed_when: true

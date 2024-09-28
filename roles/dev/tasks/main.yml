@@ -3,6 +3,7 @@
 ---
 
 - include_tasks: install_asdf.yml
+- include_tasks: install_vscode.yml
 
 
 

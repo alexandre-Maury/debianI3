@@ -1,0 +1,73 @@
+#############################################################################################################
+# Virtualization
+#############################################################################################################
+
+# Installation de VirtualBox
+- name: Installer VirtualBox
+  become: true
+  block:
+    - name: Installer VirtualBox et l'ISO des additions invitées
+      ansible.builtin.apt:
+        name:
+          - virtualbox
+          - virtualbox-guest-additions-iso
+        update_cache: yes  # Met à jour le cache des paquets avant l'installation
+
+    - name: Accepter la licence du pack d'extensions VirtualBox
+      ansible.builtin.debconf:
+        name: virtualbox-ext-pack
+        question: virtualbox-ext-pack/license
+        value: 'true'
+        vtype: select
+
+    - name: Installer le pack d'extensions VirtualBox
+      ansible.builtin.apt:
+        name:
+          - virtualbox-ext-pack
+
+    - name: Enregistrer la liste des réseaux NAT de VirtualBox
+      ansible.builtin.shell: VBoxManage natnetwork list
+      changed_when: false
+      register: virtualbox_natnetwork
+
+    - name: Ajouter un réseau NAT à VirtualBox
+      ansible.builtin.shell: VBoxManage natnetwork add --netname NatNetwork --network "10.0.2.0/24" --enable
+      changed_when: virtualbox_natnetwork.stdout | regex_search('0 networks found')
+
+    - name: Enregistrer la liste des interfaces host-only de VirtualBox
+      ansible.builtin.shell: VBoxManage list hostonlyifs
+      changed_when: false
+      register: virtualbox_host_only_network
+
+    - name: Ajouter un réseau host-only à VirtualBox
+      ansible.builtin.shell: VBoxManage hostonlyif create
+      changed_when: virtualbox_host_only_network.stdout | length == 0
+
+# Installation de KVM
+- name: Installer KVM
+  become: true
+  block:
+    - name: Installer les dépendances de virtualisation KVM
+      ansible.builtin.apt:
+        name:
+          - qemu-kvm
+          - libvirt-daemon-system
+          - virtinst
+          - libvirt-clients
+          - bridge-utils
+          - virt-manager
+        update_cache: yes  # Met à jour le cache des paquets avant l'installation
+
+    - name: Activer et démarrer le service libvirtd
+      ansible.builtin.systemd:
+        name: libvirtd
+        enabled: true
+        state: started
+
+    - name: Ajouter l'utilisateur au groupe KVM et Libvirt
+      ansible.builtin.user:
+        name: '{{ ansible_user_id }}'
+        append: true
+        groups:
+          - kvm
+          - libvirt

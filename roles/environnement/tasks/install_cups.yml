@@ -1,0 +1,71 @@
+# Cups - printing system
+
+- name: Cups - printing system
+  become: true
+  block:
+
+    - name: Install Cups - printing system and printer drivers
+      ansible.builtin.apt:
+        pkg:
+          - cups
+          - foomatic-db
+
+    - name: Adjust cups listening port configuration
+      ansible.builtin.lineinfile:
+        backup: true
+        path: /etc/cups/cupsd.conf
+        regexp: "{{ item.regexp }}"
+        line: "{{ item.line }}"
+      loop:
+        - {regexp: 'Browsing No', line: 'Browsing On'}
+        - {regexp: 'Listen localhost:631', line: 'Port 631'}
+
+    - name: Adjust cups to listen to all interfaces.
+      ansible.builtin.blockinfile:
+        path: /etc/cups/cupsd.conf
+        marker: "{mark}"
+        marker_begin: "# Restrict access to the server..."
+        marker_end: "# Restrict access to the admin pages..."
+        block: |
+
+          <Location />
+            Order allow,deny
+            Allow @LOCAL
+          </Location>
+          #
+        state: present
+
+    - name: Adjust cups administration panel configuration
+      ansible.builtin.blockinfile:
+        path: /etc/cups/cupsd.conf
+        marker: "{mark}"
+        marker_begin: "# Restrict access to the admin pages..."
+        marker_end: "# Restrict access to configuration files..."
+        block: |
+
+          <Location /admin>
+            AuthType Default
+            Require valid-user
+            Order allow,deny
+            Allow @LOCAL
+          </Location>
+          #
+        state: present
+
+    - name: Add user to lpadmin group for cups administration
+      ansible.builtin.user:
+        name: '{{ ansible_user_id }}'
+        append: true
+        groups:
+          - lpadmin
+
+    - name: Enabling printing system
+      ansible.builtin.systemd:
+        name: cups
+        state: started
+        enabled: true
+
+    - name: Install system config printer app to add printer from GUI
+      ansible.builtin.apt:
+        pkg:
+          - system-config-printer

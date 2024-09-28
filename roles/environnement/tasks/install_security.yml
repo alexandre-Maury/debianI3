@@ -1,0 +1,84 @@
+- name: Installer l'antivirus ClamAV
+  become: true
+  block:
+    # Paramètres de ClamAV uniquement pour le PC hôte, analyse automatique, mais nécessite au moins 1 Go de RAM (les bases de données sont toujours en RAM)
+    # La VM peut analyser le système avec ClamTK manuellement
+
+    - name: Installer ClamAV - boîte à outils antivirus open-source et gratuite
+      ansible.builtin.apt:
+        name: clamav-daemon
+        state: present
+        update_cache: yes
+
+    - name: Activer le service clamav-daemon qui charge les définitions de base de données de virus en mémoire et gère l'analyse des fichiers
+      ansible.builtin.systemd:
+        name: clamav-daemon
+        enabled: true
+        state: started
+
+    - name: Créer des dossiers pour la quarantaine
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        owner: root
+        group: root
+        mode: '0755'
+      with_items:
+        - /root/.clamav/quarantine
+        - /root/.clamav/logs
+
+    - name: Créer une nouvelle tâche cron pour analyser le système tous les 20 jours du mois à 21h00
+      ansible.builtin.cron:
+        name: "Analyse du système ClamAV"
+        minute: "0"
+        hour: "21"
+        day: "20"
+        month: "*"
+        weekday: "0"
+        user: "root"
+        job: "/usr/bin/clamdscan --fdpass --log=/root/.clamav/logs/scan-$(date +'%d-%m-%Y-%T').log --move=/root/.clamav/quarantine /"
+
+    - name: Ajouter des chemins à exclure dans le fichier de configuration de clamav
+      ansible.builtin.blockinfile:
+        path: /etc/clamav/clamd.conf
+        block: |
+          # Exclure de l'analyse
+          ExcludePath ^/proc
+          ExcludePath ^/sys
+          ExcludePath ^/run
+          ExcludePath ^/dev
+          ExcludePath ^/var/lib/lxcfs/cgroup
+          ExcludePath ^/root/clamav/quarantine
+
+    - name: Redémarrer le service clamav-daemon après les modifications dans le fichier de configuration
+      ansible.builtin.systemd:
+        name: clamav-daemon
+        state: restarted
+
+
+- name: Installer le pare-feu
+  become: true
+  block:
+
+    - name: Définir la politique d'entrée sur le PC hôte à refuser
+      community.general.ufw:
+        direction: incoming
+        policy: deny
+
+    - name: Autoriser les connexions sortantes
+      community.general.ufw:
+        direction: outgoing
+        policy: allow
+
+    - name: Activer UFW
+      community.general.ufw:
+        state: enabled
+
+    - name: Vérifier le statut de UFW
+      community.general.ufw:
+        state: status
+      register: ufw_status
+
+    - name: Afficher le statut du pare-feu
+      debug:
+        msg: "Le statut de UFW est : {{ ufw_status }}"

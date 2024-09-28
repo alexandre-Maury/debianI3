@@ -8,6 +8,8 @@
 - include_tasks: install_vim.yml
 - include_tasks: install_zsh.yml
 - include_tasks: install_lazyvim.yml
+- include_tasks: install_cups.yml
+- include_tasks: install_security.yml
 
 
 
