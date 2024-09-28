@@ -60,6 +60,12 @@
   become: true
   block:
 
+    - name: Installer ClamAV - boîte à outils antivirus open-source et gratuite
+      ansible.builtin.apt:
+        name: ufw
+        state: present
+        update_cache: yes
+
     - name: Définir la politique d'entrée sur le PC hôte à refuser
       community.general.ufw:
         direction: incoming

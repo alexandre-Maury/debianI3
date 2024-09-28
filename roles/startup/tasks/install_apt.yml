@@ -10,6 +10,23 @@
   loop: '{{ base_cli_deps }}'
   become: true
 
+- name: Créer un dossier pour bat
+  ansible.builtin.file:
+    path: "/home/{{ ansible_user_id }}/.local/bin"  # Chemin dynamique vers le dossier de l'utilisateur
+    state: directory
+    mode: '0755'  # Permissions pour exécution
+
+- name: Ajouter un lien symbolique pour bat
+  ansible.builtin.file:
+    src: /usr/bin/batcat
+    dest: "/home/{{ ansible_user_id }}/.local/bin/bat"  # Lien symbolique vers bat
+    state: link
+
+- name: Détecter les capteurs - lm-sensors
+  ansible.builtin.shell: |
+    yes | sensors-detect
+  changed_when: true
+
 - name: Activer le service avahi-daemon
   ansible.builtin.systemd:
     name: avahi-daemon

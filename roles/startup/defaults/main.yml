@@ -14,6 +14,9 @@ base_cli_snaps:
 base_cli_deps:
   - git
   - bat
+  - ripgrep
+  - most
+  - btop
   - network-manager-gnome # network manager
   - lxappearance # appearance managers
   - picom # appearance managers
