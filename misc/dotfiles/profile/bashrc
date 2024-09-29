@@ -143,8 +143,6 @@ if ! shopt -oq posix; then
   fi
 fi
 
-eval "$(~/.local/bin/mise activate bash)"
-
 export EDITOR=nvim VISUAL=vim
 export MYVIMRC="$HOME/.vimrc"
 export PATH="${HOME}/.local/bin:${PATH}"
