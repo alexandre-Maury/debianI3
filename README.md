@@ -23,10 +23,10 @@ Il utilise principalement Ansible pour l'automatisation, avec des rôles et des 
 3. `Mise en place d'un labo de pentesting` [A Venir]
 
 ## Auteurs
-`Alexandre MAURY`
+`- Alexandre MAURY`
 
 ## Contribution
-`Alexandre MAURY`
+`- Alexandre MAURY`
 
 ## Licence
 
