@@ -5,7 +5,7 @@ PROJECT: 'debianI3'
 BUILD_DIR: '{{ ansible_env.HOME }}/.config/git'
 SOURCE_DIR: '/opt/{{ PROJECT }}'
 CODENAME: "{{ ansible_distribution_release }}"  # Récupère le nom de la version (bookworm, buster, etc.)
-
+FIREWALL: nftables  # Ou 'ufw' selon vos besoins
 
 I3GAPS_REPO:
   - { repo: "https://www.github.com/Airblader/i3", dest: "{{ BUILD_DIR }}/i3-gaps" }

@@ -57,7 +57,7 @@
 
 
 # https://docs.ansible.com/ansible/latest/collections/community/general/ufw_module.html
-- name: Installer le pare-feu
+- name: Installer le pare-feu - ufw
   become: true
   block:
 
@@ -101,3 +101,71 @@
     - name: Configurer la journalisation UFW à un niveau élevé
       community.general.ufw:
         logging: 'high'
+
+  when: FIREWALL == 'ufw'
+
+
+  ##################################""
+
+- name: Installer le pare-feu - nftables
+  become: true
+  block:
+
+    - name: Installer nftables
+      ansible.builtin.apt:
+        name: nftables
+        state: present
+        update_cache: yes
+
+    - name: Activer le service nftables
+      ansible.builtin.systemd:
+        name: nftables
+        enabled: true
+        state: started
+
+    - name: Créer une table nftables
+      command: nft add table ip filter
+      ignore_errors: true  # Ignorer les erreurs si la table existe déjà
+
+    - name: Créer une chaîne pour les connexions entrantes
+      command: nft add chain ip filter input { type filter hook input priority 0; }
+      ignore_errors: true  # Ignorer les erreurs si la chaîne existe déjà
+
+    - name: Créer une chaîne pour les connexions sortantes
+      command: nft add chain ip filter output { type filter hook output priority 0; }
+      ignore_errors: true  # Ignorer les erreurs si la chaîne existe déjà
+
+    - name: Définir la politique d'entrée sur le PC hôte à refuser
+      command: nft add rule ip filter input reject
+
+    - name: Définir la politique de sortie sur le PC hôte à autoriser
+      command: nft add rule ip filter output accept
+
+    - name: Accepter les connexions établies
+      command: nft add rule ip filter input ct state established,related accept
+
+    # - name: Accepter les requêtes ICMP
+    #   command: nft add rule ip filter input icmp type echo-request accept
+
+    # - name: Accepter les connexions SSH
+    #   command: nft add rule ip filter input tcp dport 22 accept
+
+    # Note: nftables ne prend pas en charge la journalisation de la même manière qu'UFW
+    # mais vous pouvez activer le logging avec une règle comme suit :
+    # sudo tail -f /var/log/syslog | grep "nftables denied"
+    # sudo tail -f /var/log/syslog
+    # sudo tail -f /var/log/messages
+    # sudo journalctl -f
+
+    - name: Journaliser les connexions refusées
+      command: nft add rule ip filter input log prefix "nftables denied: " level debug
+
+    - name: Vérifier les règles nftables
+      command: nft list ruleset
+      register: nft_ruleset
+
+    - name: Afficher les règles nftables
+      debug:
+        msg: "{{ nft_ruleset.stdout }}"
+
+  when: FIREWALL == 'nftables'
