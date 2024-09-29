@@ -30,6 +30,16 @@
   become: true  # Utilisation des privilèges sudo
 
 
+- name: Rendre tous les scripts d'un dossier exécutables
+  ansible.builtin.file:
+    path: "{{ item }}"
+    mode: '0755'  # Définit les permissions pour rendre le fichier exécutable
+  with_fileglob:
+    - "{{ ansible_env.HOME }}/scripts/*.sh"  # Remplacez par le chemin de votre dossier
+  become: true
+
+
+
   
 - name: Copier les fichiers de configuration de Mozilla
   ansible.builtin.copy:
