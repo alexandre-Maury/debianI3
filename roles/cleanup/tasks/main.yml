@@ -30,20 +30,20 @@
     - "{{ ansible_env.HOME }}/scripts/*.sh"  # Remplacez par le chemin de votre dossier
   become: true
   
-- name: Copier les fichiers de configuration de Mozilla
-  ansible.builtin.copy:
-    src: '{{ SOURCE_DIR }}/misc/dotfiles/.mozilla'
-    dest: ~/
-    remote_src: yes
-  become: true  # Utilisation des privilèges sudo
+# - name: Copier les fichiers de configuration de Mozilla
+#   ansible.builtin.copy:
+#     src: '{{ SOURCE_DIR }}/misc/dotfiles/.mozilla'
+#     dest: ~/
+#     remote_src: yes
+#   become: true  # Utilisation des privilèges sudo
 
   
-- name: Copier les configurations du terminal Konsole
-  ansible.builtin.copy:
-    src: '{{ SOURCE_DIR }}/misc/dotfiles/config/konsole'
-    dest: ~/.local/share/
-    remote_src: yes
-  become: true  # Utilisation des privilèges sudo
+# - name: Copier les configurations du terminal Konsole
+#   ansible.builtin.copy:
+#     src: '{{ SOURCE_DIR }}/misc/dotfiles/config/konsole'
+#     dest: ~/.local/share/
+#     remote_src: yes
+#   become: true  # Utilisation des privilèges sudo
 
 - name: Copier le thème Sweet-Dark-v40 vers les thèmes système
   ansible.builtin.copy:
@@ -61,17 +61,15 @@
     - {src: '{{ SOURCE_DIR }}/misc/dotfiles/profile/bashrc', dest: '{{ ansible_env.HOME }}/.bashrc'}
     - {src: '{{ SOURCE_DIR }}/misc/dotfiles/config/dunst', dest: '{{ ansible_env.HOME }}/.config'}
     - {src: '{{ SOURCE_DIR }}/misc/dotfiles/config/rofi', dest: '{{ ansible_env.HOME }}/.config'}
-    - {src: '{{ SOURCE_DIR }}/misc/dotfiles/config/chromium', dest: '{{ ansible_env.HOME }}/.config'}
-    - {src: '{{ SOURCE_DIR }}/misc/dotfiles/config/Brave-Browse', dest: '{{ ansible_env.HOME }}/.config'}
-    - {src: '{{ SOURCE_DIR }}/misc/dotfiles/config/terminator', dest: '{{ ansible_env.HOME }}/.config'}
-    - {src: '{{ SOURCE_DIR }}/misc/dotfiles/config/konsolerc', dest: '{{ ansible_env.HOME }}/.config'}
-    - {src: '{{ SOURCE_DIR }}/misc/dotfiles/config/xfce4', dest: '{{ ansible_env.HOME }}/.config'}
-    - {src: '{{ SOURCE_DIR }}/misc/dotfiles/config/gtk-3.0', dest: '{{ ansible_env.HOME }}/.config'}
-    - {src: '{{ SOURCE_DIR }}/misc/dotfiles/config/gtk-4.0', dest: '{{ ansible_env.HOME }}/.config'}
-    - {src: '{{ SOURCE_DIR }}/misc/dotfiles/config/QtProject.conf', dest: '{{ ansible_env.HOME }}/.config'}
-    - {src: '{{ SOURCE_DIR }}/misc/dotfiles/config/copyq', dest: '{{ ansible_env.HOME }}/.config'}
-    - {src: '{{ SOURCE_DIR }}/misc/dotfiles/config/galculator', dest: '{{ ansible_env.HOME }}/.config'}
-    - {src: '{{ SOURCE_DIR }}/misc/dotfiles/config/kcalcrc', dest: '{{ ansible_env.HOME }}/.config'}
+    # - {src: '{{ SOURCE_DIR }}/misc/dotfiles/config/terminator', dest: '{{ ansible_env.HOME }}/.config'}
+    # - {src: '{{ SOURCE_DIR }}/misc/dotfiles/config/konsolerc', dest: '{{ ansible_env.HOME }}/.config'}
+    # - {src: '{{ SOURCE_DIR }}/misc/dotfiles/config/xfce4', dest: '{{ ansible_env.HOME }}/.config'}
+    # - {src: '{{ SOURCE_DIR }}/misc/dotfiles/config/gtk-3.0', dest: '{{ ansible_env.HOME }}/.config'}
+    # - {src: '{{ SOURCE_DIR }}/misc/dotfiles/config/gtk-4.0', dest: '{{ ansible_env.HOME }}/.config'}
+    # - {src: '{{ SOURCE_DIR }}/misc/dotfiles/config/QtProject.conf', dest: '{{ ansible_env.HOME }}/.config'}
+    # - {src: '{{ SOURCE_DIR }}/misc/dotfiles/config/copyq', dest: '{{ ansible_env.HOME }}/.config'}
+    # - {src: '{{ SOURCE_DIR }}/misc/dotfiles/config/galculator', dest: '{{ ansible_env.HOME }}/.config'}
+    # - {src: '{{ SOURCE_DIR }}/misc/dotfiles/config/kcalcrc', dest: '{{ ansible_env.HOME }}/.config'}
     - {src: '{{ SOURCE_DIR }}/misc/dotfiles/config/backgrounds', dest: '{{ ansible_env.HOME }}/.config'}
     # - {src: '{{ SOURCE_DIR }}/misc/dotfiles/config/sublime-text', dest: '$HOME/.config'}
     # - {src: '{{ SOURCE_DIR }}/misc/dotfiles/config/Brackets', dest: '$HOME/.config'}
