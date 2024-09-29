@@ -4,18 +4,24 @@
     # Paramètres de ClamAV uniquement pour le PC hôte, analyse automatique, mais nécessite au moins 1 Go de RAM (les bases de données sont toujours en RAM)
     # La VM peut analyser le système avec ClamTK manuellement
 
+    # Installer ClamAV, clamav-daemon, et clamtk
     - name: Installer ClamAV 
       ansible.builtin.apt:
-        name: clamav-daemon
+        name: 
+          - clamav 
+          - clamav-daemon
+          - clamtk
         state: present
         update_cache: yes
 
-    - name: Activer le service clamav-daemon qui charge les définitions de base de données de virus en mémoire et gère l'analyse des fichiers
+    # Activer et démarrer le service clamav-daemon
+    - name: Activer le service clamav-daemon
       ansible.builtin.systemd:
         name: clamav-daemon
         enabled: true
         state: started
 
+    # Créer des dossiers pour la quarantaine et les logs
     - name: Créer des dossiers pour la quarantaine
       ansible.builtin.file:
         path: "{{ item }}"
@@ -27,6 +33,7 @@
         - /root/.clamav/quarantine
         - /root/.clamav/logs
 
+    # Créer une tâche cron pour analyser le système
     - name: Créer une nouvelle tâche cron pour analyser le système tous les 20 jours du mois à 21h00
       ansible.builtin.cron:
         name: "Analyse du système ClamAV"
@@ -38,6 +45,7 @@
         user: "root"
         job: "/usr/bin/clamdscan --fdpass --log=/root/.clamav/logs/scan-$(date +'%d-%m-%Y-%T').log --move=/root/.clamav/quarantine /"
 
+    # Ajouter des chemins à exclure dans le fichier de configuration de clamav
     - name: Ajouter des chemins à exclure dans le fichier de configuration de clamav
       ansible.builtin.blockinfile:
         path: /etc/clamav/clamd.conf
@@ -50,7 +58,8 @@
           ExcludePath ^/var/lib/lxcfs/cgroup
           ExcludePath ^/root/clamav/quarantine
 
-    - name: Redémarrer le service clamav-daemon après les modifications dans le fichier de configuration
+    # Redémarrer le service clamav-daemon après modification
+    - name: Redémarrer le service clamav-daemon
       ansible.builtin.systemd:
         name: clamav-daemon
         state: restarted
