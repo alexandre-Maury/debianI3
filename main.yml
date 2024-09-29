@@ -18,7 +18,7 @@
     #   tags: 'dev'
     # - role: 'roles/pentest'
     #   tags: 'pentest'
-    # - role: 'roles/cleanup'
-    #   tags: 'cleanup'
+    - role: 'roles/cleanup'
+      tags: 'cleanup'
       users:
         - username: '{{ ansible_user_id }}'

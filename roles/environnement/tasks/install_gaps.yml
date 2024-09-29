@@ -36,8 +36,8 @@
     src: "{{ item.src }}"
     dest: "{{ item.dest }}"
   with_items:
-    - {src: '{{ SOURCE_DIR }}/misc/dotfiles/config/i3', dest: '$HOME/.config'}
-    - {src: '{{ SOURCE_DIR }}/misc/dotfiles/config/i3blocks', dest: '$HOME/.config'}
+    - {src: '{{ SOURCE_DIR }}/misc/dotfiles/config/i3', dest: '{{ ansible_env.HOME }}/.config'}
+    - {src: '{{ SOURCE_DIR }}/misc/dotfiles/config/i3blocks', dest: '{{ ansible_env.HOME }}/.config'}
   become: true  # Utilisation des privilèges sudo
 
 - name: Rendre les scripts exécutables
@@ -45,12 +45,25 @@
     path: "{{ item }}"
     mode: '0755'
   loop:
-    - ~/.config/i3/autostart.sh
-    - ~/.config/i3blocks/cpu/cpu_info.sh
-    - ~/.config/i3blocks/battery/battery_info.sh
-    - ~/.config/i3blocks/weather/weather.sh
-    - ~/.config/i3blocks/weather/weather.py
+    - '{{ ansible_env.HOME }}/.config/i3/autostart.sh'
+    - '{{ ansible_env.HOME }}/.config/i3blocks/cpu/cpu_info.sh'
+    - '{{ ansible_env.HOME }}/.config/i3blocks/battery/battery_info.sh'
+    - '{{ ansible_env.HOME }}/.config/i3blocks/weather/weather.sh'
+    - '{{ ansible_env.HOME }}/.config/i3blocks/weather/weather.py'
   become: true  # Utilisation des privilèges sudo
 
-
-
+- name: Créer une entrée de session pour i3
+  ansible.builtin.copy:
+    dest: /usr/share/xsessions/i3.desktop
+    content: |
+      [Desktop Entry]
+      Name=i3
+      Comment=Tiling window manager
+      Exec=i3
+      TryExec=i3
+      Type=Application
+      X-LightDM-DesktopName=i3
+      DesktopNames=i3
+      Keywords=tiling;wm;windowmanager;
+      StartupNotify=false
+  mode: '0644'
