@@ -56,70 +56,27 @@
         state: restarted
 
 
-# https://docs.ansible.com/ansible/latest/collections/community/general/ufw_module.html
-- name: Installer le pare-feu - ufw
-  become: true
-  block:
-
-    - name: Installer ufw 
-      ansible.builtin.apt:
-        name: ufw
-        state: present
-        update_cache: yes
-
-    - name: Définir la politique d'entrée sur le PC hôte à refuser
-      community.general.ufw:
-        direction: incoming
-        policy: deny
-
-    - name: Autoriser les connexions sortantes
-      community.general.ufw:
-        direction: outgoing
-        policy: allow
-
-    - name: Activer UFW
-      community.general.ufw:
-        state: enabled
-
-# Les niveaux de journalisation UFW
-
-# UFW propose plusieurs niveaux de journalisation. Chaque niveau ajuste la quantité d'informations collectées :
-
-#     off : Désactive la journalisation.
-#     low : Journalise les événements de base, principalement les connexions rejetées ou bloquées.
-#     medium : Journalise les connexions rejetées et autorisées, mais de manière succincte.
-#     high : Journalise davantage de détails, y compris les informations sur le trafic autorisé.
-#     full : Journalise tout, y compris les informations complètes sur les paquets et connexions.
-
-# Où trouver les logs :
-# sudo tail -f /var/log/ufw.log
-
-    - name: Activer la journalisation UFW
-      community.general.ufw:
-        logging: 'on'
-
-    - name: Configurer la journalisation UFW à un niveau élevé
-      community.general.ufw:
-        logging: 'high'
-
-  when: FIREWALL == 'ufw'
-
-
-  ##################################""
-
 - name: Installer le pare-feu - nftables
   become: true
   block:
 
     - name: Installer nftables
       ansible.builtin.apt:
-        name: nftables
+        name: 
+          - nftables
+          - rsyslog
         state: present
         update_cache: yes
 
     - name: Activer le service nftables
       ansible.builtin.systemd:
         name: nftables
+        enabled: true
+        state: started
+
+    - name: Activer le service rsyslog 
+      ansible.builtin.systemd:
+        name: rsyslog
         enabled: true
         state: started
 
@@ -150,22 +107,42 @@
     # - name: Accepter les connexions SSH
     #   command: nft add rule ip filter input tcp dport 22 accept
 
-    # Note: nftables ne prend pas en charge la journalisation de la même manière qu'UFW
-    # mais vous pouvez activer le logging avec une règle comme suit :
-    # sudo tail -f /var/log/syslog | grep "nftables denied"
-    # sudo tail -f /var/log/syslog
-    # sudo tail -f /var/log/messages
-    # sudo journalctl -f
-
     - name: Journaliser les connexions refusées
-      command: nft add rule ip filter input log prefix "nftables denied: " level debug
+      command: nft add rule ip filter input log prefix \"nft drop:\" level debug
 
-    - name: Vérifier les règles nftables
-      command: nft list ruleset
-      register: nft_ruleset
+    - name: Créer la configuration de rsyslog pour nftables
+      ansible.builtin.copy:
+        dest: /etc/rsyslog.d/nftables.conf
+        content: ":msg, startswith, \"nft drop\" -/var/log/nftables.log\n& stop\n"
+        owner: root
+        group: root
+        mode: '0644'
 
-    - name: Afficher les règles nftables
-      debug:
-        msg: "{{ nft_ruleset.stdout }}"
+    - name: Redémarrer le service rsyslog
+      ansible.builtin.systemd:
+        name: rsyslog
+        state: restarted
+
+    - name: Configurer la rotation des journaux pour nftables
+      ansible.builtin.copy:
+        dest: /etc/logrotate.d/nftables
+        content: |
+          /var/log/nftables.log {
+            size +10M
+            maxage 30
+            sharedscripts
+            postrotate
+              /usr/bin/systemctl kill -s HUP rsyslog.service >/dev/null 2>&1 || true
+            endscript
+          }
+        owner: root
+        group: root
+        mode: '0644'
+
+    # Cette configuration vous permettra de suivre facilement les paquets abandonnés 
+    # et d'éviter que votre fichier journal ne devienne trop volumineux. 
+    # Vous pourrez consulter les logs en temps réel à l'aide de la commande suivante :
+    # sudo tail -f /var/log/nftables.log
+
 
   when: FIREWALL == 'nftables'
