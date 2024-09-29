@@ -21,29 +21,18 @@
     - {src: '{{ SOURCE_DIR }}/misc/dotfiles/scripts', dest: '{{ ansible_env.HOME }}'}
   become: true  # Utilisation des privilèges sudo
 
-- name: Rendre les scripts exécutables
-  ansible.builtin.file:
-    path: "{{ item }}"
-    mode: '0755'
-  loop:
-    - '{{ ansible_env.HOME }}/scripts/*.sh'
-  become: true  # Utilisation des privilèges sudo
 
-
-- name: Rendre tous les scripts d'un dossier exécutables
+- name: Rendre tous les scripts exécutables
   ansible.builtin.file:
     path: "{{ item }}"
     mode: '0755'  # Définit les permissions pour rendre le fichier exécutable
   with_fileglob:
     - "{{ ansible_env.HOME }}/scripts/*.sh"  # Remplacez par le chemin de votre dossier
   become: true
-
-
-
   
 - name: Copier les fichiers de configuration de Mozilla
   ansible.builtin.copy:
-    src: .mozilla/
+    src: '{{ SOURCE_DIR }}/misc/dotfiles/.mozilla'
     dest: ~/
     remote_src: yes
   become: true  # Utilisation des privilèges sudo
@@ -51,14 +40,14 @@
   
 - name: Copier les configurations du terminal Konsole
   ansible.builtin.copy:
-    src: config/konsole/
+    src: '{{ SOURCE_DIR }}/misc/dotfiles/config/konsole'
     dest: ~/.local/share/
     remote_src: yes
   become: true  # Utilisation des privilèges sudo
 
 - name: Copier le thème Sweet-Dark-v40 vers les thèmes système
   ansible.builtin.copy:
-    src: config/Sweet-Dark-v40/
+    src: '{{ SOURCE_DIR }}/misc/dotfiles/config/Sweet-Dark-v40'
     dest: /usr/share/themes/
     remote_src: yes
   become: true  # Utilisation des privilèges sudo
