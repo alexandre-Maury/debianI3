@@ -38,7 +38,7 @@
   with_items:
     - {src: '{{ SOURCE_DIR }}/misc/dotfiles/config/i3', dest: '{{ ansible_env.HOME }}/.config'}
     - {src: '{{ SOURCE_DIR }}/misc/dotfiles/config/i3blocks', dest: '{{ ansible_env.HOME }}/.config'}
-  become: true  # Utilisation des privilèges sudo
+
 
 - name: Rendre les scripts exécutables
   ansible.builtin.file:
