@@ -7,48 +7,41 @@
   become: true
   block:
 
-    # Assurer que les paquets nécessaires sont installés
-    - name: Installer les paquets nécessaires
-      ansible.builtin.apt:
-        name: 
-          - curl
-          - gnupg2
-          - lsb-release
-        state: present
-        update_cache: yes
+    # Télécharger le fichier .deb de VirtualBox 7.0.18
+    - name: Télécharger VirtualBox 7.0.18 pour Debian 12
+      ansible.builtin.get_url:
+        url: https://download.virtualbox.org/virtualbox/7.0.18/virtualbox-7.0_7.0.18-162988~Debian~bookworm_amd64.deb
+        dest: /tmp/virtualbox-7.0.18.deb
 
-    # Ajouter la clé GPG d'Oracle
-    - name: Ajouter la clé GPG d'Oracle
-      ansible.builtin.apt_key:
-        url: https://www.virtualbox.org/download/oracle_vbox_2016.asc
-        state: present
-
-    # Ajouter le dépôt de VirtualBox
-    - name: Ajouter le dépôt VirtualBox d'Oracle
-      ansible.builtin.apt_repository:
-        repo: "deb [signed-by=/usr/share/keyrings/oracle-virtualbox.gpg] https://download.virtualbox.org/virtualbox/debian {{ ansible_distribution_release }} contrib"
-        filename: "oracle-virtualbox"
-        state: present
-
-    # Mettre à jour le cache des paquets apt
-    - name: Mettre à jour le cache apt
-      ansible.builtin.apt:
-        update_cache: yes
-
-    # Installer VirtualBox 7.0
-    - name: Installer VirtualBox 7.0
-      ansible.builtin.apt:
-        name: virtualbox-7.0
-        state: present
-
-    # Installer les paquets supplémentaires pour VirtualBox
-    - name: Installer les paquets supplémentaires pour VirtualBox
-      ansible.builtin.apt:
+    # Installer les dépendances nécessaires
+    - name: Installer les dépendances
+      apt:
         name:
           - dkms
           - linux-headers-{{ ansible_kernel }}
-          - virtualbox-ext-pack
         state: present
+        update_cache: yes
+
+    # Installer VirtualBox depuis le fichier .deb
+    - name: Installer VirtualBox depuis le fichier .deb
+      ansible.builtin.apt:
+        deb: /tmp/virtualbox-7.0.18.deb
+
+    # Corriger les dépendances manquantes si nécessaire
+    - name: Corriger les dépendances manquantes
+      command: apt --fix-broken install -y
+      when: ansible_facts.packages.virtualbox is not defined
+
+    # Télécharger l'Extension Pack de VirtualBox 7.0.18
+    - name: Télécharger l'Extension Pack de VirtualBox 7.0.18
+      ansible.builtin.get_url:
+        url: https://download.virtualbox.org/virtualbox/7.0.18/Oracle_VM_VirtualBox_Extension_Pack-7.0.18.vbox-extpack
+        dest: /tmp/Oracle_VM_VirtualBox_Extension_Pack-7.0.18.vbox-extpack
+
+    # Installer l'Extension Pack
+    - name: Installer l'Extension Pack
+      command: VBoxManage extpack install /tmp/Oracle_VM_VirtualBox_Extension_Pack-7.0.18.vbox-extpack
+      when: ansible_facts.packages.virtualbox is defined
 
     - name: Enregistrer la liste des réseaux NAT de VirtualBox
       ansible.builtin.shell: VBoxManage natnetwork list
