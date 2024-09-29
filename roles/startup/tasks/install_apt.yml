@@ -24,8 +24,9 @@
 
 - name: Détecter les capteurs - lm-sensors
   ansible.builtin.shell: |
-    yes | sensors-detect
+    yes | sudo sensors-detect
   changed_when: true
+  become: true
 
 - name: Activer le service avahi-daemon
   ansible.builtin.systemd:
