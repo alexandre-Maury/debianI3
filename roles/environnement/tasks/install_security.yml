@@ -4,7 +4,7 @@
     # Paramètres de ClamAV uniquement pour le PC hôte, analyse automatique, mais nécessite au moins 1 Go de RAM (les bases de données sont toujours en RAM)
     # La VM peut analyser le système avec ClamTK manuellement
 
-    - name: Installer ClamAV - boîte à outils antivirus open-source et gratuite
+    - name: Installer ClamAV 
       ansible.builtin.apt:
         name: clamav-daemon
         state: present
@@ -56,11 +56,12 @@
         state: restarted
 
 
+# https://docs.ansible.com/ansible/latest/collections/community/general/ufw_module.html
 - name: Installer le pare-feu
   become: true
   block:
 
-    - name: Installer ClamAV - boîte à outils antivirus open-source et gratuite
+    - name: Installer ufw 
       ansible.builtin.apt:
         name: ufw
         state: present
@@ -80,11 +81,23 @@
       community.general.ufw:
         state: enabled
 
-    - name: Vérifier le statut de UFW
-      community.general.ufw:
-        state: status
-      register: ufw_status
+# Les niveaux de journalisation UFW
 
-    - name: Afficher le statut du pare-feu
-      debug:
-        msg: "Le statut de UFW est : {{ ufw_status }}"
+# UFW propose plusieurs niveaux de journalisation. Chaque niveau ajuste la quantité d'informations collectées :
+
+#     off : Désactive la journalisation.
+#     low : Journalise les événements de base, principalement les connexions rejetées ou bloquées.
+#     medium : Journalise les connexions rejetées et autorisées, mais de manière succincte.
+#     high : Journalise davantage de détails, y compris les informations sur le trafic autorisé.
+#     full : Journalise tout, y compris les informations complètes sur les paquets et connexions.
+
+# Où trouver les logs :
+# sudo tail -f /var/log/ufw.log
+
+    - name: Activer la journalisation UFW
+      community.general.ufw:
+        logging: 'on'
+
+    - name: Configurer la journalisation UFW à un niveau élevé
+      community.general.ufw:
+        logging: 'high'
