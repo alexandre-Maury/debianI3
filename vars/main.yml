@@ -25,6 +25,9 @@ FONTS_REPO_JETBRAINSMONO: "https://github.com/ryanoasis/nerd-fonts/releases/late
 FONTS_REPO_IOSEVKA: "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/Iosevka.tar.xz"
 
 ICONS_REPO_CANDY: "https://github.com/EliverLara/candy-icons"
+ICONS_REPO_SWIT: "https://github.com/EliverLara/Sweet-folders.git"
+
+THEMES_REPO_SWIT: "https://github.com/EliverLara/Sweet.git"
 
 
 PACKER_REPO: "https://github.com/wbthomason/packer.nvim"
