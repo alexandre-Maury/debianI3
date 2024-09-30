@@ -67,3 +67,4 @@
       Keywords=tiling;wm;windowmanager;
       StartupNotify=false
     mode: '0644'
+  become: true  # Utilisation des privilèges sudo
