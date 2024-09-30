@@ -74,7 +74,7 @@
 
     - name: Créer le répertoire des icons s'il n'existe pas
       ansible.builtin.file:
-        path: "{{ ansible_env.HOME }}/.icons"
+        path: "{{ ansible_env.HOME }}/.local/share/.icons/"
         state: directory
         mode: '0755'
 
@@ -86,19 +86,9 @@
 
     - name: Extraire le thème icon Sweet
       ansible.builtin.unarchive:
-        src: "/tmp/swit-folders.zip"
-        dest: "{{ ansible_env.HOME }}/.icons/swit"
+        src: "/tmp/Sweet-folders.zip"
+        dest: "{{ ansible_env.HOME }}/.local/share/.icons/"
         remote_src: yes
-
-    # - name: Créer le fichier index.theme pour Sweet Icon
-    #   ansible.builtin.copy:
-    #     dest: "{{ ansible_env.HOME }}/.icons/swit/index.theme"
-    #     content: |
-    #       [Icon Theme]
-    #       Name=Swit Icons
-    #       Comment=Beautiful Swit icons
-    #       Inherits=Default
-    #     mode: '0644'
 
 
     - name: Télécharger les icons Candy Icon depuis GitHub
@@ -110,20 +100,8 @@
     - name: Extraire le thème icon Candy
       ansible.builtin.unarchive:
         src: "/tmp/candy-icons.zip"
-        dest: "{{ ansible_env.HOME }}/.icons/candy"
+        dest: "{{ ansible_env.HOME }}/.local/share/.icons/"
         remote_src: yes
-
-
-    # - name: Créer le fichier index.theme pour Candy Icons
-    #   ansible.builtin.copy:
-    #     dest: "{{ ansible_env.HOME }}/.icons/candy/index.theme"
-    #     content: |
-    #       [Icon Theme]
-    #       Name=Candy Icons
-    #       Comment=Beautiful candy icons
-    #       Inherits=Default
-    #     mode: '0644'
-    #   become: true
 
 
 - name: Finalisation de l'installation
