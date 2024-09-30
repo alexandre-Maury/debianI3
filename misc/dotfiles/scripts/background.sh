@@ -1,1 +1,1 @@
-feh --bg-fill .config/backgrounds/japan-sunset-purple-evening-4k-5m.jpg
+feh --bg-fill .config/backgrounds/wp11258459-hack-the-box-wallpapers.png

@@ -9,7 +9,6 @@ Super + Shift + b - toggle the i3 status bar, repeat to hide it again
 
 Control + Shift + Escape - launch Gnome System Monitor
 
-Super + Shift + f - toggles the firewall on and off
 
 ###Shutdown Restart Hibernate Suspend
 Super + Ctrl + s - then 
