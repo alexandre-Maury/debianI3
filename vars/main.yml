@@ -28,6 +28,7 @@ ICONS_REPO_CANDY: "https://github.com/EliverLara/candy-icons"
 ICONS_REPO_SWIT: "https://github.com/EliverLara/Sweet-folders.git"
 
 THEMES_REPO_SWIT: "https://github.com/EliverLara/Sweet.git"
+THEMES_REPO_SHADES: "https://github.com/EliverLara/Shades-of-purple-gtk.git"
 
 
 PACKER_REPO: "https://github.com/wbthomason/packer.nvim"

@@ -1,9 +1,16 @@
 # roles/parameter/task/main.yml
 
+# https://github.com/EliverLara/Sweet
+# https://github.com/EliverLara/Shades-of-purple-gtk
+# https://github.com/ahmadawais/shades-of-purple-vscode
+# https://github.com/ahmadawais/shades-of-purple-alacritty
+# https://github.com/ahmadawais/shades-of-purple-konsole
+# https://github.com/ahmadawais/shades-of-purple-hyper
+
 ---
 
 # Installation du themes
-- name: Installer le thème Swit Dark
+- name: Installation des thémes GTK
   block:
 
     - name: Créer le répertoire des thèmes s'il n'existe pas
@@ -20,6 +27,17 @@
     - name: Extraire le thème
       ansible.builtin.unarchive:
         src: "/tmp/swit-dark.zip"
+        dest: "{{ ansible_env.HOME }}/.themes"
+        remote_src: yes
+
+    - name: Télécharger le thème Shades depuis GitHub
+      ansible.builtin.get_url:
+        url: "{{ THEMES_REPO_SHADES }}"
+        dest: "/tmp/Shades_of_purple_gtk.zip"
+
+    - name: Extraire le thème
+      ansible.builtin.unarchive:
+        src: "/tmp/Shades_of_purple_gtk.zip"
         dest: "{{ ansible_env.HOME }}/.themes"
         remote_src: yes
 
@@ -56,7 +74,7 @@
 
     - name: Créer le répertoire des icons s'il n'existe pas
       ansible.builtin.file:
-        path: "{{ ansible_env.HOME }}/.local/share/icons"
+        path: "{{ ansible_env.HOME }}/.icons"
         state: directory
         mode: '0755'
 
@@ -69,18 +87,18 @@
     - name: Extraire le thème icon Sweet
       ansible.builtin.unarchive:
         src: "/tmp/swit-folders.zip"
-        dest: "{{ ansible_env.HOME }}/.local/share/icons/swit"
+        dest: "{{ ansible_env.HOME }}/.icons/swit"
         remote_src: yes
 
-    - name: Créer le fichier index.theme pour Sweet Icon
-      ansible.builtin.copy:
-        dest: "{{ ansible_env.HOME }}/.local/share/icons/swit/index.theme"
-        content: |
-          [Icon Theme]
-          Name=Swit Icons
-          Comment=Beautiful Swit icons
-          Inherits=Default
-        mode: '0644'
+    # - name: Créer le fichier index.theme pour Sweet Icon
+    #   ansible.builtin.copy:
+    #     dest: "{{ ansible_env.HOME }}/.icons/swit/index.theme"
+    #     content: |
+    #       [Icon Theme]
+    #       Name=Swit Icons
+    #       Comment=Beautiful Swit icons
+    #       Inherits=Default
+    #     mode: '0644'
 
 
     - name: Télécharger les icons Candy Icon depuis GitHub
@@ -92,20 +110,20 @@
     - name: Extraire le thème icon Candy
       ansible.builtin.unarchive:
         src: "/tmp/candy-icons.zip"
-        dest: "{{ ansible_env.HOME }}/.local/share/icons/candy"
+        dest: "{{ ansible_env.HOME }}/.icons/candy"
         remote_src: yes
 
 
-    - name: Créer le fichier index.theme pour Candy Icons
-      ansible.builtin.copy:
-        dest: "{{ ansible_env.HOME }}/.local/share/icons/candy/index.theme"
-        content: |
-          [Icon Theme]
-          Name=Candy Icons
-          Comment=Beautiful candy icons
-          Inherits=Default
-        mode: '0644'
-      become: true
+    # - name: Créer le fichier index.theme pour Candy Icons
+    #   ansible.builtin.copy:
+    #     dest: "{{ ansible_env.HOME }}/.icons/candy/index.theme"
+    #     content: |
+    #       [Icon Theme]
+    #       Name=Candy Icons
+    #       Comment=Beautiful candy icons
+    #       Inherits=Default
+    #     mode: '0644'
+    #   become: true
 
 
 - name: Finalisation de l'installation
