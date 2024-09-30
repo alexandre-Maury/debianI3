@@ -1,6 +1,9 @@
 # roles/parameter/task/main.yml
 
 # https://github.com/EliverLara/Sweet
+# https://github.com/EliverLara/sweet-vscode
+# https://github.com/EliverLara/sweet-vscode-icons
+# https://github.com/EliverLara/hyper-sweet
 # https://github.com/EliverLara/Shades-of-purple-gtk
 # https://github.com/ahmadawais/shades-of-purple-vscode
 # https://github.com/ahmadawais/shades-of-purple-alacritty
@@ -19,9 +22,9 @@
         state: directory
         mode: '0755'
 
-    - name: Télécharger le thème Swit Dark depuis GitHub
+    - name: Télécharger le thème Sweet Dark depuis GitHub
       ansible.builtin.get_url:
-        url: "{{ THEMES_REPO_SWIT }}"
+        url: "{{ THEMES_REPO_SWEET }}"
         dest: "/tmp/swit-dark.zip"
 
     - name: Extraire le thème
@@ -80,7 +83,7 @@
 
     - name: Télécharger les icons Sweet Icon depuis GitHub
       ansible.builtin.get_url:
-        url: "{{ ICONS_REPO_SWIT }}"
+        url: "{{ ICONS_REPO_SWEET }}"
         dest: "/tmp/Sweet-folders.zip"
         update: yes  # Met à jour le dépôt s'il existe déjà
 

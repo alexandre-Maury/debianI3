@@ -1,6 +1,7 @@
+# roles/vars/main.yml
+
 ---
 
-# roles/vars/main.yml
 PROJECT: 'debianI3'
 BUILD_DIR: '{{ ansible_env.HOME }}/.config/git'
 SOURCE_DIR: '/opt/{{ PROJECT }}'
@@ -25,11 +26,13 @@ FONTS_REPO_JETBRAINSMONO: "https://github.com/ryanoasis/nerd-fonts/releases/late
 FONTS_REPO_IOSEVKA: "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/Iosevka.tar.xz"
 
 ICONS_REPO_CANDY: "https://github.com/EliverLara/candy-icons"
-ICONS_REPO_SWIT: "https://github.com/EliverLara/Sweet-folders.git"
+ICONS_REPO_SWEET: "https://github.com/EliverLara/Sweet-folders.git"
 
-THEMES_REPO_SWIT: "https://github.com/EliverLara/Sweet.git"
+THEMES_REPO_SWEET: "https://github.com/EliverLara/Sweet.git"
 THEMES_REPO_SHADES: "https://github.com/EliverLara/Shades-of-purple-gtk.git"
 
+# https://hyper.is/#installation
+TERM_REPO_HYPER: "https://releases.hyper.is/download/deb"
 
 PACKER_REPO: "https://github.com/wbthomason/packer.nvim"
 
