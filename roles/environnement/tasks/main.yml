@@ -4,7 +4,6 @@
 
 - include_tasks: install_gaps.yml
 # - include_tasks: install_polybar.yml
-# - include_tasks: install_fonts.yml
 - include_tasks: install_vim.yml
 - include_tasks: install_zsh.yml
 - include_tasks: install_lazyvim.yml
