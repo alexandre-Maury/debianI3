@@ -15,7 +15,7 @@
 
     - name: Créer le répertoire des thèmes s'il n'existe pas
       ansible.builtin.file:
-        path: "{{ ansible_env.HOME }}/.themes"
+        path: "{{ ansible_env.HOME }}/.local/share/themes"
         state: directory
         mode: '0755'
 
@@ -27,7 +27,7 @@
     - name: Extraire le thème
       ansible.builtin.unarchive:
         src: "/tmp/swit-dark.zip"
-        dest: "{{ ansible_env.HOME }}/.themes"
+        dest: "{{ ansible_env.HOME }}/.local/share/themes"
         remote_src: yes
 
     - name: Télécharger le thème Shades depuis GitHub
@@ -38,7 +38,7 @@
     - name: Extraire le thème
       ansible.builtin.unarchive:
         src: "/tmp/Shades_of_purple_gtk.zip"
-        dest: "{{ ansible_env.HOME }}/.themes"
+        dest: "{{ ansible_env.HOME }}/.local/share/themes"
         remote_src: yes
 
 
@@ -49,7 +49,7 @@
 
     - name: Créer le répertoire des fonts s'il n'existe pas
       ansible.builtin.file:
-        path: "{{ ansible_env.HOME }}/.fonts"
+        path: "{{ ansible_env.HOME }}/.local/share/fonts"
         state: directory
         mode: '0755'
 
@@ -58,10 +58,10 @@
         src: "{{ item.src }}"
         dest: "{{ item.dest }}"
       with_items:
-        - {src: '{{ SOURCE_DIR }}/misc/dotfiles/fonts/MesloLGS NF Bold Italic.ttf', dest: '{{ ansible_env.HOME }}/.fonts'}
-        - {src: '{{ SOURCE_DIR }}/misc/dotfiles/fonts/MesloLGS NF Bold.ttf', dest: '{{ ansible_env.HOME }}/.fonts'}
-        - {src: '{{ SOURCE_DIR }}/misc/dotfiles/fonts/MesloLGS NF Italic.ttf', dest: '{{ ansible_env.HOME }}/.fonts'}
-        - {src: '{{ SOURCE_DIR }}/misc/dotfiles/fonts/MesloLGS NF Regular.ttf', dest: '{{ ansible_env.HOME }}/.fonts'}
+        - {src: '{{ SOURCE_DIR }}/misc/dotfiles/fonts/MesloLGS NF Bold Italic.ttf', dest: '{{ ansible_env.HOME }}/.local/share/fonts'}
+        - {src: '{{ SOURCE_DIR }}/misc/dotfiles/fonts/MesloLGS NF Bold.ttf', dest: '{{ ansible_env.HOME }}/.local/share/fonts'}
+        - {src: '{{ SOURCE_DIR }}/misc/dotfiles/fonts/MesloLGS NF Italic.ttf', dest: '{{ ansible_env.HOME }}/.local/share/fonts'}
+        - {src: '{{ SOURCE_DIR }}/misc/dotfiles/fonts/MesloLGS NF Regular.ttf', dest: '{{ ansible_env.HOME }}/.local/share/fonts'}
 
     - name: Mettre à jour le cache des polices
       ansible.builtin.command:
@@ -74,7 +74,7 @@
 
     - name: Créer le répertoire des icons s'il n'existe pas
       ansible.builtin.file:
-        path: "{{ ansible_env.HOME }}/.local/share/.icons/"
+        path: "{{ ansible_env.HOME }}/.local/share/icons/"
         state: directory
         mode: '0755'
 
@@ -87,7 +87,7 @@
     - name: Extraire le thème icon Sweet
       ansible.builtin.unarchive:
         src: "/tmp/Sweet-folders.zip"
-        dest: "{{ ansible_env.HOME }}/.local/share/.icons/"
+        dest: "{{ ansible_env.HOME }}/.local/share/icons/"
         remote_src: yes
 
 
@@ -100,7 +100,7 @@
     - name: Extraire le thème icon Candy
       ansible.builtin.unarchive:
         src: "/tmp/candy-icons.zip"
-        dest: "{{ ansible_env.HOME }}/.local/share/.icons/"
+        dest: "{{ ansible_env.HOME }}/.local/share/icons/"
         remote_src: yes
 
 
