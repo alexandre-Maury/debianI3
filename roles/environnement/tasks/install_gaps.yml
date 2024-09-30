@@ -66,4 +66,4 @@
       DesktopNames=i3
       Keywords=tiling;wm;windowmanager;
       StartupNotify=false
-  mode: '0644'
+    mode: '0644'
