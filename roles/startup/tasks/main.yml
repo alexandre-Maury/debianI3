@@ -27,7 +27,7 @@
 
 
 - include_tasks: install_apt.yml
-- include_tasks: install_snap.yml
+# - include_tasks: install_snap.yml
 - include_tasks: install_pipx.yml
 
 
