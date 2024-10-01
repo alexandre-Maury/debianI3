@@ -2,18 +2,17 @@
 
 ---
 
-
-- include_tasks: install_librewolf.yml
 - include_tasks: install_authpass.yml
-- include_tasks: install_bravebrowser.yml
-- include_tasks: install_anydesk.yml
-- include_tasks: install_nordvpn.yml
-- include_tasks: install_cameractrls.yml
-- include_tasks: install_chrome.yml
-- include_tasks: install_discord.yml
-- include_tasks: install_dragon.yml
-- include_tasks: install_nomachine.yml
-- include_tasks: install_obsidian.yml
-- include_tasks: install_signal.yml
+# - include_tasks: install_librewolf.yml
+# - include_tasks: install_bravebrowser.yml
+# - include_tasks: install_anydesk.yml
+# - include_tasks: install_nordvpn.yml
+# - include_tasks: install_cameractrls.yml
+# - include_tasks: install_chrome.yml
+# - include_tasks: install_discord.yml
+# - include_tasks: install_dragon.yml
+# - include_tasks: install_nomachine.yml
+# - include_tasks: install_obsidian.yml
+# - include_tasks: install_signal.yml
 
 
