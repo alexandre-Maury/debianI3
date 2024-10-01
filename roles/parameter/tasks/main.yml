@@ -25,24 +25,14 @@
     - name: Télécharger le thème Sweet Dark depuis GitHub
       ansible.builtin.get_url:
         url: "{{ THEMES_REPO_SWEET }}"
-        dest: "/tmp/swit-dark.zip"
-
-    - name: Extraire le thème
-      ansible.builtin.unarchive:
-        src: "/tmp/swit-dark.zip"
-        dest: "{{ ansible_env.HOME }}/.local/share/themes"
-        remote_src: yes
+        dest: "{{ ansible_env.HOME }}/.local/share/themes/sweet-dark"
 
     - name: Télécharger le thème Shades depuis GitHub
       ansible.builtin.get_url:
         url: "{{ THEMES_REPO_SHADES }}"
-        dest: "/tmp/Shades_of_purple_gtk.zip"
+        dest: "{{ ansible_env.HOME }}/.local/share/themes/Shades-of-purple"
 
-    - name: Extraire le thème
-      ansible.builtin.unarchive:
-        src: "/tmp/Shades_of_purple_gtk.zip"
-        dest: "{{ ansible_env.HOME }}/.local/share/themes"
-        remote_src: yes
+
 
 
 # Installation des fonts
