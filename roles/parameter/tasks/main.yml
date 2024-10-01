@@ -74,27 +74,27 @@
     - name: Télécharger les icons Sweet Icon depuis GitHub
       ansible.builtin.get_url:
         url: "{{ ICONS_REPO_SWEET }}"
-        dest: "/tmp/Sweet-folders.zip"
+        dest: "{{ ansible_env.HOME }}/.local/share/icons/Sweet-folders"
         update: yes  # Met à jour le dépôt s'il existe déjà
 
-    - name: Extraire le thème icon Sweet
-      ansible.builtin.unarchive:
-        src: "/tmp/Sweet-folders.zip"
-        dest: "{{ ansible_env.HOME }}/.local/share/icons/"
-        remote_src: yes
+    # - name: Extraire le thème icon Sweet
+    #   ansible.builtin.unarchive:
+    #     src: "/tmp/Sweet-folders.zip"
+    #     dest: "{{ ansible_env.HOME }}/.local/share/icons/"
+    #     remote_src: yes
 
 
     - name: Télécharger les icons Candy Icon depuis GitHub
       ansible.builtin.git:
         repo: "{{ ICONS_REPO_CANDY }}"
-        dest: "/tmp/candy-icons.zip"
+        dest: "{{ ansible_env.HOME }}/.local/share/icons/candy-icons"
         update: yes  # Met à jour le dépôt s'il existe déjà
 
-    - name: Extraire le thème icon Candy
-      ansible.builtin.unarchive:
-        src: "/tmp/candy-icons.zip"
-        dest: "{{ ansible_env.HOME }}/.local/share/icons/"
-        remote_src: yes
+    # - name: Extraire le thème icon Candy
+    #   ansible.builtin.unarchive:
+    #     src: "/tmp/candy-icons.zip"
+    #     dest: "{{ ansible_env.HOME }}/.local/share/icons/"
+    #     remote_src: yes
 
 
 - name: Finalisation de l'installation
