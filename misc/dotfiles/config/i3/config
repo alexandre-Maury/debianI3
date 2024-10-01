@@ -89,5 +89,5 @@ bar {
 }
 
 # Transparency with picom compositor
-exec_always picom -f
-
+# exec_always picom -f
+exec_always --no-startup-id picom -b --config ~/.config/picom/picom.conf

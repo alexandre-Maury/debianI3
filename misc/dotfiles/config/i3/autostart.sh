@@ -3,7 +3,7 @@
 /usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1 &
 
 #enable picom to support transparency
-picom -b &
+# picom -b &
 dunst -config ~/.config/dunst/dunstrc &
 numlokx on &
 nm-applet &
