@@ -9,10 +9,10 @@
     - name: Télécharger Hyper
       ansible.builtin.get_url:
         url: '{{ TERM_REPO_HYPER }}'
-        dest: '{{ build_dir }}/hyper/hyper-setup.deb'
+        dest: '/tmp/hyper-setup.deb'
 
     
     - name: Installer Hyper
       ansible.builtin.apt:
-        deb: '{{ build_dir }}/hyper/hyper-setup.deb'
+        deb: '/tmp/hyper-setup.deb'
         state: present

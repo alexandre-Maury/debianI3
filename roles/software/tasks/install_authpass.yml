@@ -9,10 +9,10 @@
     - name: Télécharger AuthPass
       ansible.builtin.get_url:
         url: '{{ AUTHPASS_REPO }}'
-        dest: '{{ build_dir }}/authpass/authpass-setup.deb'
+        dest: '/tmp/authpass-setup.deb'
 
     
     - name: Installer AuthPass
       ansible.builtin.apt:
-        deb: '{{ build_dir }}/authpass/authpass-setup.deb'
+        deb: '/tmp/authpass-setup.deb'
         state: present
