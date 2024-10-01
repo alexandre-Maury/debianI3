@@ -23,14 +23,14 @@
         mode: '0755'
 
     - name: Télécharger le thème Sweet Dark depuis GitHub
-      ansible.builtin.get_url:
-        url: "{{ THEMES_REPO_SWEET }}"
+      ansible.builtin.git:
+        repo: "{{ THEMES_REPO_SWEET }}"
         dest: "{{ ansible_env.HOME }}/.local/share/themes/sweet-dark"
 
     - name: Télécharger le thème Shades depuis GitHub
-      ansible.builtin.get_url:
-        url: "{{ THEMES_REPO_SHADES }}"
-        dest: "{{ ansible_env.HOME }}/.local/share/themes/Shades-of-purple"
+      ansible.builtin.git:
+        repo: "{{ THEMES_REPO_SHADES }}"
+        dest: "{{ ansible_env.HOME }}/.local/share/themes/shades-of-purple"
 
 
 
@@ -72,16 +72,10 @@
         mode: '0755'
 
     - name: Télécharger les icons Sweet Icon depuis GitHub
-      ansible.builtin.get_url:
-        url: "{{ ICONS_REPO_SWEET }}"
-        dest: "{{ ansible_env.HOME }}/.local/share/icons/Sweet-folders"
+      ansible.builtin.git:
+        repo: "{{ ICONS_REPO_SWEET }}"
+        dest: "{{ ansible_env.HOME }}/.local/share/icons/sweet-folders"
         update: yes  # Met à jour le dépôt s'il existe déjà
-
-    # - name: Extraire le thème icon Sweet
-    #   ansible.builtin.unarchive:
-    #     src: "/tmp/Sweet-folders.zip"
-    #     dest: "{{ ansible_env.HOME }}/.local/share/icons/"
-    #     remote_src: yes
 
 
     - name: Télécharger les icons Candy Icon depuis GitHub
@@ -89,12 +83,6 @@
         repo: "{{ ICONS_REPO_CANDY }}"
         dest: "{{ ansible_env.HOME }}/.local/share/icons/candy-icons"
         update: yes  # Met à jour le dépôt s'il existe déjà
-
-    # - name: Extraire le thème icon Candy
-    #   ansible.builtin.unarchive:
-    #     src: "/tmp/candy-icons.zip"
-    #     dest: "{{ ansible_env.HOME }}/.local/share/icons/"
-    #     remote_src: yes
 
 
 - name: Finalisation de l'installation
