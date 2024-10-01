@@ -34,6 +34,8 @@ THEMES_REPO_SHADES: "https://github.com/EliverLara/Shades-of-purple-gtk.git"
 # https://hyper.is/#installation
 TERM_REPO_HYPER: "https://releases.hyper.is/download/deb"
 
+AUTHPASS_REPO: "https://github.com/authpass/authpass/releases/download/v1.9.11/authpass-linux-1.9.11_2007.deb"
+
 PACKER_REPO: "https://github.com/wbthomason/packer.nvim"
 
 OHMYZSH_REPO: 'https://github.com/robbyrussell/oh-my-zsh.git'

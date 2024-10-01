@@ -1,0 +1,18 @@
+# roles/software/tasks/install_authpass.yml
+
+---
+
+- name: Installation de AuthPass
+  become: true
+  block:
+
+    - name: Télécharger AuthPass
+      ansible.builtin.get_url:
+        url: '{{ AUTHPASS_REPO }}'
+        dest: '{{ build_dir }}/authpass/authpass-setup.deb'
+
+    
+    - name: Installer AuthPass
+      ansible.builtin.apt:
+        deb: '{{ build_dir }}/authpass/authpass-setup.deb'
+        state: present

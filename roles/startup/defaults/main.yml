@@ -7,8 +7,6 @@ base_cli_pipx:
 
 base_cli_snaps:
   - core
-  - pinta
-  - authpass
 
 
 base_cli_deps:

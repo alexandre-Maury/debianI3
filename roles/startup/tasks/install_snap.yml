@@ -20,16 +20,3 @@
 #     mode: '0755'
 #   become: true  # Utilisation des privilèges sudo
 
-# - name: Copier le fichier pinta.desktop
-#   ansible.builtin.copy:
-#     src: /var/lib/snapd/desktop/applications/pinta_pinta.desktop
-#     dest: ~/.local/share/applications/
-#     remote_src: yes
-#   become: true  # Utilisation des privilèges sudo
-
-# - name: Copier le fichier authpass.desktop
-#   ansible.builtin.copy:
-#     src: /var/lib/snapd/desktop/applications/authpass_authpass.desktop
-#     dest: ~/.local/share/applications/
-#     remote_src: yes
-#   become: true  # Utilisation des privilèges sudo
