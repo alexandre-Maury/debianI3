@@ -31,7 +31,6 @@ base_cli_deps:
   - acpid # Network File Tools/System Events - 
   - gvfs-backends # Network File Tools/System Events
   - terminator # terminal emulators - kitty
-  - konsole # terminal emulators
   - tmux # terminal multiplexer
   - procinfo # hardware info
   - hwinfo # hardware info
@@ -57,8 +56,6 @@ base_cli_deps:
   - bluez # bluetooth support
   - blueman # bluetooth support 
   - galculator # calculator
-  - firefox-esr # non-privacy browsers
-  - chromium # non-privacy browsers
   - feh # background / image manager
   - gthumb # image viewer
   - rofi # app launcher ($mod + Space)
@@ -67,7 +64,6 @@ base_cli_deps:
   - libnotify-bin # notification daemon
   - yad # user dialog
   - snapd # snap store (Supports installation of containerized apps)
-  - geany # text editor
   - cockpit # system management - admin web console
   - arandr # display settings
   - vlc # media player
