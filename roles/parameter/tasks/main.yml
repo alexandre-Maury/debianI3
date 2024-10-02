@@ -66,11 +66,11 @@
         state: directory
         mode: '0755'
 
-    - name: Télécharger les icons Sweet Icon depuis GitHub
-      ansible.builtin.git:
-        repo: "{{ ICONS_REPO_SWEET }}"
-        dest: "{{ ansible_env.HOME }}/.local/share/icons/sweet"
-        update: yes  # Met à jour le dépôt s'il existe déjà
+    # - name: Télécharger les icons Sweet Icon depuis GitHub
+    #   ansible.builtin.git:
+    #     repo: "{{ ICONS_REPO_SWEET }}"
+    #     dest: "{{ ansible_env.HOME }}/.local/share/icons/sweet"
+    #     update: yes  # Met à jour le dépôt s'il existe déjà
 
 
     - name: Télécharger les icons Candy Icon depuis GitHub
