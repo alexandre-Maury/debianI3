@@ -18,7 +18,7 @@ base_cli_deps:
   - network-manager-gnome # network manager
   - lxappearance # appearance managers
   - picom # appearance managers
-  - neno # file managers - krusader, nautilus
+  - nemo # file managers - krusader, nautilus
   - exa # terminal list directory (on steroids)
   - xfce4-settings # settings interface
   - xfce4-power-manager # settings interface
