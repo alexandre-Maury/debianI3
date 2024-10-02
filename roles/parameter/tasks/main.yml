@@ -22,11 +22,13 @@
         state: directory
         mode: '0755'
 
-    - name: Télécharger le thème Shades depuis GitHub
-      ansible.builtin.git:
-        repo: "{{ THEMES_REPO_SHADES }}"
-        dest: "{{ ansible_env.HOME }}/.local/share/themes/shades"
-        update: yes  # Met à jour le dépôt s'il existe déjà
+    - name: Copier les themes 
+      ansible.builtin.copy:
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+      with_items:
+        - {src: '{{ SOURCE_DIR }}/misc/dotfiles/themes/Shades-of-purple', dest: '{{ ansible_env.HOME }}/.local/share/themes'}
+        - {src: '{{ SOURCE_DIR }}/misc/dotfiles/themes/Sweet-Dark', dest: '{{ ansible_env.HOME }}/.local/share/themes'}
 
 
 
@@ -66,18 +68,17 @@
         state: directory
         mode: '0755'
 
-    # - name: Télécharger les icons Sweet Icon depuis GitHub
-    #   ansible.builtin.git:
-    #     repo: "{{ ICONS_REPO_SWEET }}"
-    #     dest: "{{ ansible_env.HOME }}/.local/share/icons/sweet"
-    #     update: yes  # Met à jour le dépôt s'il existe déjà
-
-
-    - name: Télécharger les icons Candy Icon depuis GitHub
-      ansible.builtin.git:
-        repo: "{{ ICONS_REPO_CANDY }}"
-        dest: "{{ ansible_env.HOME }}/.local/share/icons/candy"
-        update: yes  # Met à jour le dépôt s'il existe déjà
+    - name: Copier les icons
+      ansible.builtin.copy:
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+      with_items:
+        - {src: '{{ SOURCE_DIR }}/misc/dotfiles/icons/candy-icons', dest: '{{ ansible_env.HOME }}/.local/share/icons'}
+        - {src: '{{ SOURCE_DIR }}/misc/dotfiles/icons/Sweet-Purple', dest: '{{ ansible_env.HOME }}/.local/share/icons'}
+        - {src: '{{ SOURCE_DIR }}/misc/dotfiles/icons/Sweet-Purple-Filled', dest: '{{ ansible_env.HOME }}/.local/share/icons'}
+        - {src: '{{ SOURCE_DIR }}/misc/dotfiles/icons/Sweet-Rainbow', dest: '{{ ansible_env.HOME }}/.local/share/icons'}
+        - {src: '{{ SOURCE_DIR }}/misc/dotfiles/icons/Sweet-Red', dest: '{{ ansible_env.HOME }}/.local/share/icons'}
+        - {src: '{{ SOURCE_DIR }}/misc/dotfiles/icons/Sweet-Red-Filled', dest: '{{ ansible_env.HOME }}/.local/share/icons'}
 
 
 - name: Finalisation de l'installation
