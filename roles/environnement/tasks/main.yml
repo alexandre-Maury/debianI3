@@ -2,9 +2,7 @@
 
 ---
 
-- include_tasks: install_gaps.yml
-# - include_tasks: install_hyper.yml
-- include_tasks: install_vim.yml
+- include_tasks: install_I3gaps.yml
 - include_tasks: install_zsh.yml
 - include_tasks: install_lazyvim.yml
 - include_tasks: install_cups.yml

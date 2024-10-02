@@ -1,15 +1,5 @@
 # roles/parameter/task/main.yml
 
-# https://github.com/EliverLara/Sweet
-# https://github.com/EliverLara/sweet-vscode
-# https://github.com/EliverLara/sweet-vscode-icons
-# https://github.com/EliverLara/hyper-sweet
-# https://github.com/EliverLara/Shades-of-purple-gtk
-# https://github.com/ahmadawais/shades-of-purple-vscode
-# https://github.com/ahmadawais/shades-of-purple-alacritty
-# https://github.com/ahmadawais/shades-of-purple-konsole
-# https://github.com/ahmadawais/shades-of-purple-hyper
-
 ---
 
 # Installation du themes
@@ -27,8 +17,8 @@
         src: "{{ item.src }}"
         dest: "{{ item.dest }}"
       with_items:
-        - {src: '{{ SOURCE_DIR }}/misc/dotfiles/themes/Shades-of-purple', dest: '{{ ansible_env.HOME }}/.local/share/themes'}
-        - {src: '{{ SOURCE_DIR }}/misc/dotfiles/themes/Sweet-Dark', dest: '{{ ansible_env.HOME }}/.local/share/themes'}
+        - {src: '{{ SOURCE_DIR }}/misc/dotfiles/dot_local/themes/Shades-of-purple', dest: '{{ ansible_env.HOME }}/.local/share/themes'}
+        - {src: '{{ SOURCE_DIR }}/misc/dotfiles/dot_local/themes/Sweet-Dark', dest: '{{ ansible_env.HOME }}/.local/share/themes'}
 
 
 
@@ -48,10 +38,10 @@
         src: "{{ item.src }}"
         dest: "{{ item.dest }}"
       with_items:
-        - {src: '{{ SOURCE_DIR }}/misc/dotfiles/fonts/MesloLGS NF Bold Italic.ttf', dest: '{{ ansible_env.HOME }}/.local/share/fonts'}
-        - {src: '{{ SOURCE_DIR }}/misc/dotfiles/fonts/MesloLGS NF Bold.ttf', dest: '{{ ansible_env.HOME }}/.local/share/fonts'}
-        - {src: '{{ SOURCE_DIR }}/misc/dotfiles/fonts/MesloLGS NF Italic.ttf', dest: '{{ ansible_env.HOME }}/.local/share/fonts'}
-        - {src: '{{ SOURCE_DIR }}/misc/dotfiles/fonts/MesloLGS NF Regular.ttf', dest: '{{ ansible_env.HOME }}/.local/share/fonts'}
+        - {src: '{{ SOURCE_DIR }}/misc/dotfiles/dot_local/fonts/MesloLGS NF Bold Italic.ttf', dest: '{{ ansible_env.HOME }}/.local/share/fonts'}
+        - {src: '{{ SOURCE_DIR }}/misc/dotfiles/dot_local/fonts/MesloLGS NF Bold.ttf', dest: '{{ ansible_env.HOME }}/.local/share/fonts'}
+        - {src: '{{ SOURCE_DIR }}/misc/dotfiles/dot_local/fonts/MesloLGS NF Italic.ttf', dest: '{{ ansible_env.HOME }}/.local/share/fonts'}
+        - {src: '{{ SOURCE_DIR }}/misc/dotfiles/dot_local/fonts/MesloLGS NF Regular.ttf', dest: '{{ ansible_env.HOME }}/.local/share/fonts'}
 
     - name: Mettre à jour le cache des polices
       ansible.builtin.command:
@@ -73,12 +63,12 @@
         src: "{{ item.src }}"
         dest: "{{ item.dest }}"
       with_items:
-        - {src: '{{ SOURCE_DIR }}/misc/dotfiles/icons/candy-icons', dest: '{{ ansible_env.HOME }}/.local/share/icons'}
-        - {src: '{{ SOURCE_DIR }}/misc/dotfiles/icons/Sweet-Purple', dest: '{{ ansible_env.HOME }}/.local/share/icons'}
-        - {src: '{{ SOURCE_DIR }}/misc/dotfiles/icons/Sweet-Purple-Filled', dest: '{{ ansible_env.HOME }}/.local/share/icons'}
-        - {src: '{{ SOURCE_DIR }}/misc/dotfiles/icons/Sweet-Rainbow', dest: '{{ ansible_env.HOME }}/.local/share/icons'}
-        - {src: '{{ SOURCE_DIR }}/misc/dotfiles/icons/Sweet-Red', dest: '{{ ansible_env.HOME }}/.local/share/icons'}
-        - {src: '{{ SOURCE_DIR }}/misc/dotfiles/icons/Sweet-Red-Filled', dest: '{{ ansible_env.HOME }}/.local/share/icons'}
+        - {src: '{{ SOURCE_DIR }}/misc/dotfiles/dot_local/icons/candy-icons', dest: '{{ ansible_env.HOME }}/.local/share/icons'}
+        - {src: '{{ SOURCE_DIR }}/misc/dotfiles/dot_local/icons/Sweet-Purple', dest: '{{ ansible_env.HOME }}/.local/share/icons'}
+        - {src: '{{ SOURCE_DIR }}/misc/dotfiles/dot_local/icons/Sweet-Purple-Filled', dest: '{{ ansible_env.HOME }}/.local/share/icons'}
+        - {src: '{{ SOURCE_DIR }}/misc/dotfiles/dot_local/icons/Sweet-Rainbow', dest: '{{ ansible_env.HOME }}/.local/share/icons'}
+        - {src: '{{ SOURCE_DIR }}/misc/dotfiles/dot_local/icons/Sweet-Red', dest: '{{ ansible_env.HOME }}/.local/share/icons'}
+        - {src: '{{ SOURCE_DIR }}/misc/dotfiles/dot_local/icons/Sweet-Red-Filled', dest: '{{ ansible_env.HOME }}/.local/share/icons'}
 
 
 - name: Finalisation de l'installation
@@ -98,17 +88,6 @@
         mode: '0755'  # Définit les permissions pour rendre le fichier exécutable
       with_fileglob:
         - "{{ ansible_env.HOME }}/scripts/*.sh"  # Remplacez par le chemin de votre dossier
-      
-
-    - name: Copier les configurations 
-      ansible.builtin.copy:
-        src: "{{ item.src }}"
-        dest: "{{ item.dest }}"
-      with_items:
-        - {src: '{{ SOURCE_DIR }}/misc/dotfiles/profile/bashrc', dest: '{{ ansible_env.HOME }}/.bashrc'}
-        - {src: '{{ SOURCE_DIR }}/misc/dotfiles/config/dunst', dest: '{{ ansible_env.HOME }}/.config'}
-        - {src: '{{ SOURCE_DIR }}/misc/dotfiles/config/rofi', dest: '{{ ansible_env.HOME }}/.config'}
-        - {src: '{{ SOURCE_DIR }}/misc/dotfiles/config/backgrounds', dest: '{{ ansible_env.HOME }}/.config'}
       
 
     - name: Supprimer les paquets inutilisés

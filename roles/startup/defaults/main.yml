@@ -18,8 +18,7 @@ base_cli_deps:
   - network-manager-gnome # network manager
   - lxappearance # appearance managers
   - picom # appearance managers
-  - thunar # file managers - krusader, nautilus
-  - fzf # terminal file search
+  - neno # file managers - krusader, nautilus
   - exa # terminal list directory (on steroids)
   - xfce4-settings # settings interface
   - xfce4-power-manager # settings interface
@@ -102,6 +101,10 @@ base_cli_deps:
   - python3-dev
   - meson
   - ninja-build
+  - cmake
+  - vim
+  - zsh
+
   # - i3 # window manager
   # - i3blocks # window manager
   # - acpi-support # window manager

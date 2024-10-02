@@ -36,8 +36,8 @@
     src: "{{ item.src }}"
     dest: "{{ item.dest }}"
   with_items:
-    - {src: '{{ SOURCE_DIR }}/misc/dotfiles/config/i3', dest: '{{ ansible_env.HOME }}/.config'}
-    - {src: '{{ SOURCE_DIR }}/misc/dotfiles/config/i3blocks', dest: '{{ ansible_env.HOME }}/.config'}
+    - {src: '{{ SOURCE_DIR }}/misc/dotfiles/dot_config/i3', dest: '{{ ansible_env.HOME }}/.config'}
+    - {src: '{{ SOURCE_DIR }}/misc/dotfiles/dot_config/i3blocks', dest: '{{ ansible_env.HOME }}/.config'}
 
 
 - name: Rendre les scripts exécutables
