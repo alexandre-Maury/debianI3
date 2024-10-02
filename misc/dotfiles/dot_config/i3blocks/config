@@ -1,56 +1,46 @@
-[CAPS]
-command=~/.config/i3blocks/caps/caps.sh
-signal=11
-color=#db200f
+# For the benefit of emacs users: -*- shell-script -*-
+#
+#  _ _____ _     _            _
+# (_)___ /| |__ | | ___   ___| | _____
+# | | |_ \| '_ \| |/ _ \ / __| |/ / __|
+# | |___) | |_) | | (_) | (__|   <\__ \
+# |_|____/|_.__/|_|\___/ \___|_|\_\___/
 
-#requires an API key and GPS coordinates, see documentation
-#[WEATHER]
-#command=~/.config/i3blocks/weather/weather.sh
-#interval=900
-#color=#00b33c
+align=center
+separator=true
+separator_block_width=25
+markup=pango
 
-[CRYPTO]
-command=~/.config/i3blocks/finance/crypto.sh
-interval=900
-color=#FEC925
+[nettraf]
+command=.config/i3blocks/i3-nettraf
+interval=1
 
-#use below format to add space between blocks
-#[SPACE]
-#full_text="                                 "
-#color=#bf00ff
+[homediskusage]
+command=bin/i3-home-disk
+interval=1
 
-#Display a stock price
-#[STOCK]
-#command=~/.config/i3blocks/finance/stock.sh
-#interval=900
-#color=#db200f
 
-[DISK]
-command=df -h / | awk '/\//{ printf(" 💾 %4s/%s \n", $4, $2) }'
-interval=86400
-color=#00B4EB
+[memory]
+command=.config/i3blocks/i3-disk
+interval=10
+[volume]
+command=.config/i3blocks/i3-volume
+interval=1
 
-#My config for / + /var + /home
-#[DISK]
-#command=~/.config/i3blocks/drives/drives.sh
-#interval=86400
-#color=#00B4EB
+[internet]
+command=.config/i3blocks/i3-internet
+interval=1
 
-[BATTERY]
-command=~/.config/i3blocks/battery/battery_info.sh
-interval=5
+[date]
+command=.config/i3blocks/i3-date
+interval=60
+align=left
 
-[CPU]
-full_text= 🔥 0.00% @ +00.0°C 
-command=~/.config/i3blocks/cpu/cpu_info.sh
-interval=5
-color=#bf00ff
 
-[MEM]
-command=free -h | awk '/Mem:/ { printf(" 🐏 %5s/%s \n", $3, $2) }'
-interval=5
-color=#FEC925
 
-[TIME_DATE]
-command=date +" %a, %d %b - %H:%M:%S"
-interval=15
+[clock]
+command=.config/i3blocks/i3-clock
+interval=60
+align=left
+
+

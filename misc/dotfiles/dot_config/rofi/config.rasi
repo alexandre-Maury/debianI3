@@ -1,1 +1,3 @@
-@theme "/usr/share/rofi/themes/DarkBlue.rasi"
+configuration {
+	theme: "~/.local/share/rofi/themes/nord.rasi";
+}

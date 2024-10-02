@@ -12,16 +12,20 @@
   loop: '{{ i3_gaps_dependencies }}'
   become: true
 
-- name: Cloner, mettre à jour et basculer sur la version spécifique du dépôt i3-gaps
+- name: Cloner le dépôt i3-gaps
   ansible.builtin.git:
     repo: "{{ item.repo }}"
     dest: "{{ item.dest }}"
-    # version: "{{ item.app_version }}"  # Branche, tag ou commit spécifique
     update: yes # Clonage ou mise à jour
   loop: "{{ I3GAPS_REPO }}"
-  # Commande Git associée :
-  # git clone {{ item.repo }} {{ item.dest }} --branch {{ item.app_version }} --single-branch
-  # git pull origin {{ item.app_version }}  # Effectué automatiquement si `dest` existe déjà
+
+
+- name: Cloner le dépôt bumblebee
+  ansible.builtin.git:
+    repo: "{{ item.repo }}"
+    dest: "{{ item.dest }}"
+    update: yes # Clonage ou mise à jour
+  loop: "{{ BUMBLEBEE_REPO }}"
 
 
 - name: Reconfiguration et compilation avec Meson et Ninja i3-gaps
@@ -37,7 +41,7 @@
     dest: "{{ item.dest }}"
   with_items:
     - {src: '{{ SOURCE_DIR }}/misc/dotfiles/dot_config/i3', dest: '{{ ansible_env.HOME }}/.config'}
-    - {src: '{{ SOURCE_DIR }}/misc/dotfiles/dot_config/i3blocks', dest: '{{ ansible_env.HOME }}/.config'}
+    # - {src: '{{ SOURCE_DIR }}/misc/dotfiles/dot_config/i3blocks', dest: '{{ ansible_env.HOME }}/.config'}
 
 
 - name: Rendre les scripts exécutables
@@ -46,10 +50,10 @@
     mode: '0755'
   loop:
     - '{{ ansible_env.HOME }}/.config/i3/autostart.sh'
-    - '{{ ansible_env.HOME }}/.config/i3blocks/cpu/cpu_info.sh'
-    - '{{ ansible_env.HOME }}/.config/i3blocks/battery/battery_info.sh'
-    - '{{ ansible_env.HOME }}/.config/i3blocks/weather/weather.sh'
-    - '{{ ansible_env.HOME }}/.config/i3blocks/weather/weather.py'
+    # - '{{ ansible_env.HOME }}/.config/i3blocks/cpu/cpu_info.sh'
+    # - '{{ ansible_env.HOME }}/.config/i3blocks/battery/battery_info.sh'
+    # - '{{ ansible_env.HOME }}/.config/i3blocks/weather/weather.sh'
+    # - '{{ ansible_env.HOME }}/.config/i3blocks/weather/weather.py'
   become: true  # Utilisation des privilèges sudo
 
 - name: Créer une entrée de session pour i3

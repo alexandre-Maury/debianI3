@@ -11,11 +11,9 @@ FIREWALL: nftables  # Ou 'ufw' selon vos besoins
 I3GAPS_REPO:
   - { repo: "https://www.github.com/Airblader/i3", dest: "{{ BUILD_DIR }}/i3-gaps" }
 
-POLYBAR_REPO:
-  - { repo: "https://github.com/polybar/polybar.git", dest: "{{ BUILD_DIR }}/polybar" }
+BUMBLEBEE_REPO:
+  - { repo: "https://github.com/tobi-wan-kenobi/bumblebee-status.git", dest: "{{ ansible_env.HOME }}/.config/bumblebee-staus" }
 
-POLYBAR_TIMER_REPO:
-  - { repo: "https://github.com/jbirnick/polybar-timer.git", dest: "{{ BUILD_DIR }}/polybar/timer" }
 
 LAZYVIM_REPO: "https://github.com/LazyVim/starter"
 
