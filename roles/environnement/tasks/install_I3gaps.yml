@@ -41,7 +41,7 @@
     dest: "{{ item.dest }}"
   with_items:
     - {src: '{{ SOURCE_DIR }}/misc/dotfiles/dot_config/i3', dest: '{{ ansible_env.HOME }}/.config'}
-    # - {src: '{{ SOURCE_DIR }}/misc/dotfiles/dot_config/i3blocks', dest: '{{ ansible_env.HOME }}/.config'}
+    - {src: '{{ SOURCE_DIR }}/misc/dotfiles/dot_config/i3blocks', dest: '{{ ansible_env.HOME }}/.config'}
 
 
 - name: Rendre les scripts exécutables
@@ -50,10 +50,12 @@
     mode: '0755'
   loop:
     - '{{ ansible_env.HOME }}/.config/i3/autostart.sh'
-    # - '{{ ansible_env.HOME }}/.config/i3blocks/cpu/cpu_info.sh'
-    # - '{{ ansible_env.HOME }}/.config/i3blocks/battery/battery_info.sh'
-    # - '{{ ansible_env.HOME }}/.config/i3blocks/weather/weather.sh'
-    # - '{{ ansible_env.HOME }}/.config/i3blocks/weather/weather.py'
+    - '{{ ansible_env.HOME }}/.config/i3blocks/scripts/i3-clock'
+    - '{{ ansible_env.HOME }}/.config/i3blocks/scripts/i3-date'
+    - '{{ ansible_env.HOME }}/.config/i3blocks/scripts/i3-disk'
+    - '{{ ansible_env.HOME }}/.config/i3blocks/scripts/i3-internet'
+    - '{{ ansible_env.HOME }}/.config/i3blocks/scripts/i3-nettraf'
+    - '{{ ansible_env.HOME }}/.config/i3blocks/scripts/i3-volume'
   become: true  # Utilisation des privilèges sudo
 
 
@@ -70,7 +72,7 @@
     mode: '0755'  # Définit les permissions pour rendre le fichier exécutable
   with_fileglob:
     - "{{ ansible_env.HOME }}/scripts/*.sh"  # Remplacez par le chemin de votre dossier
-    
+
 
 - name: Créer une entrée de session pour i3
   ansible.builtin.copy:
