@@ -42,6 +42,7 @@
   with_items:
     - {src: '{{ SOURCE_DIR }}/misc/dotfiles/dot_config/i3', dest: '{{ ansible_env.HOME }}/.config'}
     - {src: '{{ SOURCE_DIR }}/misc/dotfiles/dot_config/i3blocks', dest: '{{ ansible_env.HOME }}/.config'}
+    - {src: '{{ SOURCE_DIR }}/misc/dotfiles/dot_config/bumblebee-status/black.json', dest: '{{ ansible_env.HOME }}/.config/bumblebee-status/themes'}
 
 
 - name: Rendre les scripts exécutables

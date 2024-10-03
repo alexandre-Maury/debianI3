@@ -12,7 +12,7 @@ I3GAPS_REPO:
   - { repo: "https://www.github.com/Airblader/i3", dest: "{{ BUILD_DIR }}/i3-gaps" }
 
 BUMBLEBEE_REPO:
-  - { repo: "https://github.com/tobi-wan-kenobi/bumblebee-status.git", dest: "{{ ansible_env.HOME }}/.config/bumblebee-staus" }
+  - { repo: "https://github.com/tobi-wan-kenobi/bumblebee-status.git", dest: "{{ ansible_env.HOME }}/.config/bumblebee-status" }
 
 
 LAZYVIM_REPO: "https://github.com/LazyVim/starter"
