@@ -56,6 +56,22 @@
     # - '{{ ansible_env.HOME }}/.config/i3blocks/weather/weather.py'
   become: true  # Utilisation des privilèges sudo
 
+
+- name: Copier les scripts vers le répertoire personnel 
+  ansible.builtin.copy:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+  with_items:
+    - {src: '{{ SOURCE_DIR }}/misc/dotfiles/scripts', dest: '{{ ansible_env.HOME }}'}
+
+- name: Rendre tous les scripts exécutables
+  ansible.builtin.file:
+    path: "{{ item }}"
+    mode: '0755'  # Définit les permissions pour rendre le fichier exécutable
+  with_fileglob:
+    - "{{ ansible_env.HOME }}/scripts/*.sh"  # Remplacez par le chemin de votre dossier
+    
+
 - name: Créer une entrée de session pour i3
   ansible.builtin.copy:
     dest: /usr/share/xsessions/i3.desktop
