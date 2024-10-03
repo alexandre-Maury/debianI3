@@ -12,34 +12,33 @@ separator_block_width=25
 markup=pango
 
 [nettraf]
-command=.config/i3blocks/i3-nettraf
+command=~/.config/i3blocks/scripts/i3-nettraf
 interval=1
 
-[homediskusage]
-command=bin/i3-home-disk
-interval=1
-
+; [homediskusage]
+; command=bin/i3-home-disk
+; interval=1
 
 [memory]
-command=.config/i3blocks/i3-disk
+command=~/.config/i3blocks/scripts/i3-disk
 interval=10
+
 [volume]
-command=.config/i3blocks/i3-volume
+command=~/.config/i3blocks/scripts/i3-volume
 interval=1
 
 [internet]
-command=.config/i3blocks/i3-internet
+command=~/.config/i3blocks/scripts/i3-internet
 interval=1
 
 [date]
-command=.config/i3blocks/i3-date
+command=~/.config/i3blocks/scripts/i3-date
 interval=60
 align=left
 
 
-
 [clock]
-command=.config/i3blocks/i3-clock
+command=~/.config/i3blocks/scripts/i3-clock
 interval=60
 align=left
 
