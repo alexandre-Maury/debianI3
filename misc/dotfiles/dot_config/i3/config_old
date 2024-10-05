@@ -360,52 +360,34 @@ bindsym $mod+r mode "resize"
 # Start i3bar to display a workspace bar (plus the system information i3status
 # finds out, if available)
 bar { 
-colors {
-   # background #22272F
- background #00000
-    separator #4b5262
-    statusline #d8dee8
-     
-
-
-# colour of border, background, and text
-   # focused_workspace   #2E3440 #4C566A #ffffff
-  #  active_workspace    #20242D #20242D #ffffff
- #   inactive_workspace  #20242D #20242D #ffffff
-#    urgent_workspace    #2E3440 #ebcb8b #2f343f
-
-
-
-
-
-
-
-
-    # colour of border, background, and text
-    focused_workspace   #141414 #383838 #ffffff
-    active_workspace    #141414 #1A1A1A #ffffff
-    inactive_workspace  #141414 #1A1A1A #ffffff
-    urgent_workspace    #2E3440 #ebcb8b #2f343f
-    }
-#status_command ~/.config/polybar/launch.sh
- # status_command i3blocks
-status_command ~/.config/bumblebee-status/bumblebee-status \
- -t navy\
- -m  cpu  nic amixer date time  
-
+        colors {
+                # background #22272F
+                background #00000
+                separator #4b5262
+                statusline #d8dee8
         
-#bf616a    
-         
-position top
+                # colour of border, background, and text
+                focused_workspace   #141414 #383838 #ffffff
+                active_workspace    #141414 #1A1A1A #ffffff
+                inactive_workspace  #141414 #1A1A1A #ffffff
+                urgent_workspace    #2E3440 #ebcb8b #2f343f
+        }
 
-#mode hide
-output primary
+        status_command ~/.config/bumblebee-status/bumblebee-status \
+        -t navy \
+        -m  cpu  nic amixer date time  
 
-tray_output center
-font pango:Jetbrains Mono 10 
-separator_symbol |
-workspace_buttons       yes
-strip_workspace_numbers yes
+                 
+        position top
+
+        #mode hide
+        output primary
+
+        tray_output center
+        font pango:Jetbrains Mono 10 
+        separator_symbol |
+        workspace_buttons       yes
+        strip_workspace_numbers yes
     
         
 }

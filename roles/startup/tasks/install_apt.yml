@@ -61,7 +61,7 @@
     - {src: '{{ SOURCE_DIR }}/misc/dotfiles/dot_profile/vimrc', dest: '{{ ansible_env.HOME }}/.vimrc'}
     - {src: '{{ SOURCE_DIR }}/misc/dotfiles/dot_profile/zshrc', dest: '{{ ansible_env.HOME }}/.zshrc'}
     - {src: '{{ SOURCE_DIR }}/misc/dotfiles/dot_config/dunst', dest: '{{ ansible_env.HOME }}/.config'}
-    - {src: '{{ SOURCE_DIR }}/misc/dotfiles/dot_config/rofi', dest: '{{ ansible_env.HOME }}/.config'}
+    - {src: '{{ SOURCE_DIR }}/misc/dotfiles/dot_config/rofi', dest: '{{ ansible_env.HOME }}/.local/share'}
     - {src: '{{ SOURCE_DIR }}/misc/dotfiles/dot_config/backgrounds', dest: '{{ ansible_env.HOME }}/.config'}
     - {src: '{{ SOURCE_DIR }}/misc/dotfiles/dot_config/terminator', dest: '{{ ansible_env.HOME }}/.config'}
     - {src: '{{ SOURCE_DIR }}/misc/dotfiles/dot_config/picom', dest: '{{ ansible_env.HOME }}/.config'}

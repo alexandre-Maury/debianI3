@@ -71,10 +71,24 @@ bindsym $mod+Shift+b exec sh scripts/togglebar.sh
 # Start i3bar to display a workspace bar (plus the system information i3status
 # finds out, if available)
 bar {
-        status_command i3blocks
-        tray_output primary 
+        # status_command i3blocks
+		# i3bar_command i3bar --transparency
+        tray_output center 
+		output primary
         font pango:Source Code Pro Bold 10
-        i3bar_command i3bar --transparency
+		# font pango:Jetbrains Mono 10 
+		separator_symbol |
+        workspace_buttons       yes
+        strip_workspace_numbers yes
+        
+
+		status_command ~/.config/bumblebee-status/bumblebee-status \
+        -t navy \
+        -m cpu nic amixer date time  
+
+		status_command ~/.config/bumblebee-status/bumblebee-status -m cpu memory battery time \
+		pasink pasource -p time.format="%H:%M" -t navy-blue
+
         colors {
 			background #00000000
 			statusline #ffffff
@@ -86,8 +100,10 @@ bar {
 			urgent_workspace   #e01e1e #e01e1e #ffffff
 			binding_mode       #e01e1e #ffffff #e01e1e
 		}
+
+
 }
 
 # Transparency with picom compositor
 # exec_always picom -f
-exec_always --no-startup-id picom -b --config ~/.config/picom/picom.conf
+# exec_always --no-startup-id picom -b --config ~/.config/picom/picom.conf
